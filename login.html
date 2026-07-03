@@ -1,0 +1,888 @@
+<!-- ======================================================== -->
+<!-- login.html - dengan setup khusus untuk mahasiswa2 -->
+<!-- ======================================================== -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Sistem Informasi Satuan Kredit Prestasi (SKP)</title>
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1A1A1A;
+            --accent: #F4B400;
+            --accent-hover: #D99E00;
+            --accent-light: #FFF8E1;
+            --white: #FFFFFF;
+            --dark-gray: #2C2C2C;
+            --light-gray: #F5F5F5;
+            --border: #E5E7EB;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 25px 60px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FAFAFA;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(244, 180, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(26, 26, 26, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(244, 180, 0, 0.01) 0%, transparent 70%);
+        }
+
+        .login-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1100px;
+            min-height: 620px;
+            display: flex;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            background: var(--white);
+            margin: 20px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-branding {
+            flex: 0 0 46%;
+            background: var(--primary);
+            color: var(--white);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .login-branding::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 2px solid rgba(244, 180, 0, 0.15);
+            animation: floatSlow 12s ease-in-out infinite;
+        }
+
+        .login-branding::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid rgba(244, 180, 0, 0.1);
+            animation: floatSlow 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(15px,-20px) scale(1.05); }
+            50% { transform: translate(-10px,-10px) scale(0.95); }
+            75% { transform: translate(20px,15px) scale(1.03); }
+        }
+
+        .branding-pattern {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.06;
+            background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .branding-logo-container {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            border: 2px solid rgba(244,180,0,0.3);
+            animation: logoPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(244,180,0,0.3); }
+            50% { box-shadow: 0 0 0 20px rgba(244,180,0,0); }
+        }
+
+        .branding-logo-container i {
+            font-size: 44px;
+            color: var(--accent);
+            transition: transform 0.3s;
+        }
+        .branding-logo-container:hover i { transform: scale(1.1); }
+
+        .branding-title {
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+        .branding-subtitle {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+        .branding-accent-line {
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 10px;
+            margin-bottom: 24px;
+            animation: lineWidth 3s ease-in-out infinite;
+        }
+        @keyframes lineWidth {
+            0%,100% { width: 50px; }
+            50% { width: 80px; }
+        }
+        .branding-info {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.7;
+            max-width: 320px;
+        }
+        .branding-info i { color: var(--accent); margin-right: 8px; }
+        .branding-footer-text {
+            position: absolute;
+            bottom: 30px;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+        }
+
+        .login-form-panel {
+            flex: 0 0 54%;
+            padding: 50px 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--white);
+        }
+
+        .form-header { margin-bottom: 32px; }
+        .form-header .welcome-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .form-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .form-header .form-subtitle { font-size: 0.88rem; color: var(--text-secondary); }
+
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 16px;
+            color: var(--text-muted);
+            font-size: 1rem;
+            z-index: 2;
+            transition: color var(--transition);
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            outline: none;
+            transition: all var(--transition);
+        }
+        .input-wrapper input::placeholder { color: var(--text-muted); font-weight: 300; }
+        .input-wrapper input:focus {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(244,180,0,0.08);
+        }
+        .input-wrapper input:focus~.input-icon { color: var(--accent); }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1rem;
+            z-index: 2;
+            padding: 6px;
+            transition: color var(--transition);
+        }
+        .toggle-password:hover { color: var(--text-primary); }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+        .remember-me input[type="checkbox"] { display: none; }
+        .custom-checkbox {
+            width: 18px; height: 18px;
+            border-radius: 5px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .remember-me input:checked+.custom-checkbox {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .custom-checkbox i {
+            font-size: 10px;
+            color: white;
+            opacity: 0;
+            transform: scale(0);
+            transition: 0.15s;
+        }
+        .remember-me input:checked+.custom-checkbox i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .forgot-link {
+            font-size: 0.82rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .forgot-link:hover { text-decoration: underline; }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: white;
+            background: var(--primary);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-login:hover { background: #2C2C2C; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-login:active { transform: translateY(0); }
+
+        .btn-login .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(244,180,0,0.4);
+            transform: scale(0);
+            animation: rippleEffect 0.7s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes rippleEffect { to { transform: scale(6); opacity: 0; } }
+
+        .btn-login.loading { pointer-events: none; opacity: 0.8; }
+        .btn-login.loading .btn-text { opacity: 0; }
+        .btn-login .spinner {
+            display: none;
+            width: 20px; height: 20px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            position: absolute;
+        }
+        .btn-login.loading .spinner { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .btn-google {
+            width: 100%;
+            padding: 13px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 2px solid var(--border);
+            background: var(--white);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .btn-google:hover {
+            border-color: #1A1A1A;
+            background: #fafafa;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-google i { font-size: 1.2rem; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            z-index: 9990;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.25s ease;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-dialog {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            width: 90%;
+            max-width: 460px;
+            box-shadow: var(--shadow-xl);
+            animation: modalPop 0.35s cubic-bezier(0.4,0,0.2,1);
+            text-align: center;
+        }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .modal-dialog .modal-icon { font-size: 3rem; margin-bottom: 16px; }
+        .modal-dialog h4 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .modal-dialog p { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+
+        .btn-modal {
+            padding: 12px 28px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+        }
+        .btn-modal-close { background: var(--light-gray); color: var(--text-primary); margin-right: 10px; }
+        .btn-modal-close:hover { background: var(--border); }
+        .btn-modal-confirm { background: var(--accent); color: #1A1A1A; }
+        .btn-modal-confirm:hover { background: var(--accent-hover); }
+
+        .google-account-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 20px 0 10px;
+            text-align: left;
+        }
+        .google-account-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--white);
+        }
+        .google-account-item:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .google-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .google-account-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .google-account-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .google-account-email {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .google-account-item i.fa-chevron-right {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .modal-footer-note {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .login-wrapper { flex-direction: column; max-width: 500px; margin: 16px; }
+            .login-branding { padding: 36px 30px; }
+            .branding-logo-container { width: 64px; height: 64px; margin-bottom: 16px; }
+            .branding-logo-container i { font-size: 30px; }
+            .branding-title { font-size: 1.3rem; }
+            .branding-subtitle { font-size: 0.78rem; }
+            .branding-info { display: none; }
+            .branding-footer-text { display: none; }
+            .login-form-panel { padding: 32px 28px; }
+            .form-header h2 { font-size: 1.5rem; }
+            .btn-google { margin-bottom: 14px; }
+        }
+
+        @media (max-width: 400px) {
+            .login-wrapper { margin: 8px; border-radius: var(--radius-md); }
+            .login-branding { padding: 24px 20px; }
+            .login-form-panel { padding: 24px 18px; }
+            .google-account-item { padding: 10px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== FORGOT PASSWORD MODAL ==================== -->
+    <div class="modal-overlay hidden" id="forgotPasswordModal">
+        <div class="modal-dialog">
+            <div class="modal-icon"><i class="fa-solid fa-lock-open" style="color:var(--accent);"></i></div>
+            <h4>Lupa Kata Sandi?</h4>
+            <p>Silakan hubungi <strong>Administrator Sistem</strong> atau <strong>IT Support</strong> kampus untuk reset kata sandi Anda.</p>
+            <p style="font-size:0.78rem;color:var(--text-muted);">
+                <i class="fa-solid fa-envelope"></i> support@plai.ac.id<br>
+                <i class="fa-solid fa-phone"></i> (021) 1234-5678
+            </p>
+            <button class="btn-modal btn-modal-confirm" onclick="closeModal('forgotPasswordModal')">Mengerti</button>
+        </div>
+    </div>
+
+    <!-- ==================== GENERAL MESSAGE MODAL ==================== -->
+    <div class="modal-overlay hidden" id="messageModal">
+        <div class="modal-dialog">
+            <div class="modal-icon" id="msgModalIcon"></div>
+            <h4 id="msgModalTitle"></h4>
+            <p id="msgModalText"></p>
+            <div id="msgModalButtons"></div>
+        </div>
+    </div>
+
+    <!-- ==================== GOOGLE SIGN‑IN MODAL ==================== -->
+    <div class="modal-overlay hidden" id="googleAccountModal">
+        <div class="modal-dialog" style="max-width:480px;">
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10px;">
+                <i class="fa-brands fa-google" style="font-size:2.5rem; color:#4285F4; margin-bottom:8px;"></i>
+                <h4 style="margin-bottom:2px;">Masuk dengan Google</h4>
+                <p style="font-size:0.82rem; color:var(--text-secondary);">Pilih akun untuk melanjutkan ke <strong>Sistem Informasi SKP</strong></p>
+            </div>
+            <div class="google-account-list" id="googleAccountList"></div>
+            <button class="btn-modal btn-modal-close" style="margin-top:16px; width:100%;" onclick="closeModal('googleAccountModal')">Batal</button>
+            <div class="modal-footer-note">
+                <i class="fa-solid fa-shield-halved"></i> Prototype — Simulasi akun Google kampus
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIN WRAPPER ==================== -->
+    <div class="login-wrapper">
+        <!-- Branding -->
+        <div class="login-branding">
+            <div class="branding-pattern"></div>
+            <div class="branding-logo-container"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="branding-title">Sistem Informasi SKP</div>
+            <div class="branding-subtitle">Satuan Kredit Prestasi</div>
+            <div class="branding-accent-line"></div>
+            <div class="branding-info">
+                <i class="fa-solid fa-circle-check"></i> Pencatatan prestasi mahasiswa terintegrasi<br>
+                <i class="fa-solid fa-circle-check"></i> Workflow validasi multi-role<br>
+                <i class="fa-solid fa-circle-check"></i> Rekapitulasi & cetak SKPI
+            </div>
+            <div class="branding-footer-text">© 2026 Politeknik AI LPI</div>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="login-form-panel">
+            <div class="form-header">
+                <div class="welcome-text">Selamat Datang</div>
+                <h2>Masuk ke Akun</h2>
+                <p class="form-subtitle">Silakan login menggunakan email kampus</p>
+            </div>
+
+            <form id="loginForm" autocomplete="off" novalidate>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="email" placeholder="nama@plai.ac.id" required autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Kata Sandi</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="password" placeholder="Masukkan kata sandi" required>
+                        <button type="button" class="toggle-password" id="togglePasswordBtn" tabindex="-1">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Google Button -->
+                <button type="button" class="btn-google" id="btnGoogleLogin">
+                    <i class="fa-brands fa-google"></i> Masuk dengan Google
+                </button>
+
+                <!-- Remember & Forgot -->
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="custom-checkbox"><i class="fa-solid fa-check"></i></span> Ingat saya
+                    </label>
+                    <a class="forgot-link" onclick="openModal('forgotPasswordModal')">Lupa kata sandi?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="btn-login" id="btnLogin">
+                    <span class="spinner"></span>
+                    <span class="btn-text"><i class="fa-solid fa-right-to-bracket"></i> &nbsp;Masuk</span>
+                </button>
+            </form>
+
+            <div style="text-align:center; margin-top:20px; font-size:0.75rem; color:var(--text-muted);">
+                Prototype Version 1.0
+            </div>
+        </div>
+    </div>
+
+    <script src="state.js"></script>
+    <script>
+        // ==================== DUMMY ACCOUNTS (sumber tunggal: state.js) ====================
+        // Akun didefinisikan di state.js (AppState.getAllAccounts) agar seluruh halaman
+        // (login, dashboard, detail-pengajuan, dll) memakai data identitas yang sama.
+        const dummyAccounts = AppState.getAllAccounts();
+
+        // ==================== DOM ELEMENTS ====================
+        const loginForm = document.getElementById('loginForm');
+        const btnLogin = document.getElementById('btnLogin');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const btnGoogle = document.getElementById('btnGoogleLogin');
+
+        // Toggle password visibility
+        togglePasswordBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            togglePasswordBtn.querySelector('i').classList.toggle('fa-eye');
+            togglePasswordBtn.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        // Ripple effect on login button
+        btnLogin.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+            this.appendChild(ripple);
+            ripple.addEventListener('animationend', () => ripple.remove());
+        });
+
+        // ==================== MODAL HELPERS ====================
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Generic message popup
+        function showMessageModal(iconHtml, title, text, buttonsHtml) {
+            document.getElementById('msgModalIcon').innerHTML = iconHtml;
+            document.getElementById('msgModalTitle').textContent = title;
+            document.getElementById('msgModalText').textContent = text;
+            document.getElementById('msgModalButtons').innerHTML = buttonsHtml;
+            openModal('messageModal');
+        }
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) closeModal(this.id);
+            });
+        });
+
+        // Escape key to close any open modal
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(m => closeModal(m.id));
+            }
+        });
+
+        // ==================== LOGIN LOGIC ====================
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            if (!email) {
+                showMessageModal('<i class="fa-solid fa-triangle-exclamation" style="color:#F59E0B; font-size:3rem;"></i>',
+                    'Email Diperlukan', 'Silakan masukkan email Anda.',
+                    '<button class="btn-modal btn-modal-confirm" onclick="closeModal(\'messageModal\')">OK</button>');
+                return;
+            }
+            if (!password) {
+                showMessageModal('<i class="fa-solid fa-triangle-exclamation" style="color:#F59E0B; font-size:3rem;"></i>',
+                    'Password Diperlukan', 'Silakan masukkan kata sandi Anda.',
+                    '<button class="btn-modal btn-modal-confirm" onclick="closeModal(\'messageModal\')">OK</button>');
+                return;
+            }
+
+            const account = dummyAccounts[email];
+            if (!account || account.password !== password) {
+                showMessageModal('<i class="fa-solid fa-circle-xmark" style="color:#EF4444; font-size:3rem;"></i>',
+                    'Login Gagal', 'Email atau kata sandi salah. Silakan coba lagi.',
+                    '<button class="btn-modal btn-modal-confirm" onclick="closeModal(\'messageModal\')">Coba Lagi</button>');
+                return;
+            }
+
+            // Success – show loading then modal
+            btnLogin.classList.add('loading');
+            btnLogin.querySelector('.btn-text').textContent = '';
+
+            setTimeout(() => {
+                // Inisialisasi state aplikasi HANYA jika belum ada (supaya draft/aktivitas
+                // yang sudah dibuat sebelumnya di sesi browser ini tidak ikut terhapus
+                // setiap kali ada yang login).
+                if (!sessionStorage.getItem('skp_app_state')) {
+                    AppState.initState();
+                }
+
+                // ============================================================
+                // SETUP KHUSUS UNTUK MAHASISWA2 (total poin >= 100)
+                // Hanya dijalankan sekali — ditandai lewat flag di sessionStorage
+                // ============================================================
+                if (email === 'mahasiswa2@plai.ac.id' && !sessionStorage.getItem('skp_mhs2_seeded')) {
+                    const state = AppState.getState();
+                    // Tambahkan data pengajuan yang sudah disetujui (total poin 118)
+                    const approvedPengajuan = [
+                        { id: 'SKP-2024-001', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal', poin: 25, status: 'Disetujui', tanggal: '2024-01-10', validator: 'Kaprodi', estimasiPoin: 25 },
+                        { id: 'SKP-2024-002', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Organisasi', judul: 'Ketua BEM', poin: 15, status: 'Disetujui', tanggal: '2024-02-15', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 },
+                        { id: 'SKP-2024-003', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Kompetisi', judul: 'Juara 1 Hackathon', poin: 30, status: 'Disetujui', tanggal: '2024-03-20', validator: 'Wakil Direktur', estimasiPoin: 30 },
+                        { id: 'SKP-2024-004', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Internasional', poin: 15, status: 'Disetujui', tanggal: '2024-04-05', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 },
+                        { id: 'SKP-2024-005', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Data Science', poin: 18, status: 'Disetujui', tanggal: '2024-05-10', validator: 'Admin Kemahasiswaan', estimasiPoin: 18 },
+                        { id: 'SKP-2024-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Masyarakat', poin: 15, status: 'Disetujui', tanggal: '2024-06-01', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 }
+                    ].map(p => ({
+                        ...p,
+                        validasiMulai: null,
+                        workflow: AppState.buildWorkflow(p.kategori).map(w => ({ ...w, status: 'completed', date: p.tanggal })),
+                        timeline: [
+                            { title: 'Pengajuan dibuat', date: p.tanggal + 'T08:00:00.000Z' },
+                            { title: `Disetujui oleh ${p.validator}`, date: p.tanggal + 'T15:00:00.000Z' }
+                        ],
+                        riwayat: [
+                            { tanggal: p.tanggal + 'T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' },
+                            { tanggal: p.tanggal + 'T15:00:00.000Z', status: 'Disetujui', validator: p.validator, keterangan: `Disetujui oleh ${p.validator}` }
+                        ],
+                        catatan: [],
+                        dokumen: []
+                    }));
+                    // Gabungkan dengan data dummy yang sudah ada (state.pengajuan)
+                    state.pengajuan = state.pengajuan.concat(approvedPengajuan);
+                    state.totalPoin = 118; // 25+15+30+15+18+15 = 118
+                    AppState.setState(state);
+                    sessionStorage.setItem('skp_mhs2_seeded', 'true');
+                }
+                // ============================================================
+
+
+                sessionStorage.setItem('skp_user_session', JSON.stringify({
+                    fullName: account.fullName,
+                    role: account.role,
+                    roleKey: account.roleKey,
+                    email: email,
+                    dashboardUrl: account.dashboardUrl,
+                    avatar: account.avatar,
+                    nim: account.nim || null,
+                    nip: account.nip || null,
+                    prodi: account.prodi
+                }));
+                sessionStorage.setItem('skp_is_logged_in', 'true');
+
+                btnLogin.classList.remove('loading');
+                btnLogin.querySelector('.btn-text').innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> &nbsp;Masuk';
+
+                showMessageModal(
+                    '<i class="fa-solid fa-circle-check" style="color:#22C55E; font-size:3rem;"></i>',
+                    'Login Berhasil',
+                    `Selamat datang, ${account.fullName}. Anda akan diarahkan ke dashboard.`,
+                    `<button class="btn-modal btn-modal-confirm" id="btnGoDashboard">Lanjutkan ke Dashboard</button>`
+                );
+                document.getElementById('btnGoDashboard').addEventListener('click', () => {
+                    window.location.href = account.dashboardUrl;
+                });
+            }, 1000);
+        });
+
+        // ==================== GOOGLE LOGIN ====================
+        function buildGoogleAccountList() {
+            const listContainer = document.getElementById('googleAccountList');
+            listContainer.innerHTML = '';
+
+            Object.entries(dummyAccounts).forEach(([email, account]) => {
+                const initials = account.fullName.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+                const item = document.createElement('div');
+                item.className = 'google-account-item';
+                item.innerHTML = `
+                    <div class="google-avatar">${initials}</div>
+                    <div class="google-account-info">
+                        <span class="google-account-name">${account.fullName}</span>
+                        <span class="google-account-email">${email}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right"></i>
+                `;
+                item.addEventListener('click', () => {
+                    closeModal('googleAccountModal');
+                    emailInput.value = email;
+                    passwordInput.value = account.password;
+                    loginForm.dispatchEvent(new Event('submit'));
+                });
+                listContainer.appendChild(item);
+            });
+        }
+
+        btnGoogle.addEventListener('click', () => {
+            buildGoogleAccountList();
+            openModal('googleAccountModal');
+        });
+
+        // ==================== CHECK EXISTING SESSION ====================
+        (function() {
+            if (sessionStorage.getItem('skp_is_logged_in') === 'true') {
+                const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
+                if (session && session.dashboardUrl) {
+                    const banner = document.createElement('div');
+                    banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;background:white;padding:12px 22px;border-radius:30px;box-shadow:0 10px 25px rgba(0,0,0,0.15);font-size:0.82rem;display:flex;align-items:center;gap:12px;animation:fadeInUp 0.5s;border:1px solid #e5e7eb;';
+                    banner.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#22C55E;"></i> Anda sudah login sebagai <strong>${session.fullName}</strong> 
+                    <a href="${session.dashboardUrl}" style="color:#F4B400;font-weight:600;text-decoration:none;">Ke Dashboard <i class="fa-solid fa-arrow-right"></i></a>
+                    <button onclick="this.parentElement.remove(); sessionStorage.clear();" style="background:none;border:none;cursor:pointer;color:#9CA3AF;">✕</button>`;
+                    document.body.appendChild(banner);
+                    setTimeout(() => { if(banner.parentElement) banner.remove(); }, 8000);
+                }
+            }
+        })();
+
+        console.log('🔐 Sistem Informasi SKP — Login Page');
+        console.log('Demo accounts:');
+        console.table(Object.entries(dummyAccounts).map(([email, val]) => ({ Email: email, Password: val.password, Role: val.role })));
+    </script>
+</body>
+</html>

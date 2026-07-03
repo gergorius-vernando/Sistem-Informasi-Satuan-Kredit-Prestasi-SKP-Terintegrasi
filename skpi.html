@@ -1,0 +1,923 @@
+<!-- ======================================================== -->
+<!-- skpi.html - Versi dengan Preview Dokumen Realistis -->
+<!-- ======================================================== -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKPI — Sistem Informasi SKP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1A1A1A;
+            --accent: #F4B400;
+            --accent-hover: #D99E00;
+            --accent-light: #FFF8E1;
+            --white: #FFFFFF;
+            --dark-gray: #2C2C2C;
+            --light-gray: #F5F5F5;
+            --border: #E5E7EB;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.08);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --transition: 0.25s ease;
+            --sidebar-width: 260px;
+            --topbar-height: 68px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #F8F9FA;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        body.dark-mode { background: #111; filter: invert(0.9) hue-rotate(180deg); }
+        body.dark-mode img, body.dark-mode canvas { filter: invert(1) hue-rotate(180deg); }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            position: fixed; top: 0; left: 0; width: var(--sidebar-width); height: 100vh;
+            background: var(--white); z-index: 1000; display: flex; flex-direction: column;
+            transition: transform 0.3s; overflow-y: auto; box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            border-right: 1px solid var(--border);
+        }
+        .sidebar-logo {
+            padding: 24px 20px; display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid var(--border); margin-bottom: 8px;
+        }
+        .sidebar-logo .logo-icon {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(244,180,0,0.12); display: flex; align-items: center; justify-content: center;
+        }
+        .sidebar-logo .logo-icon i { font-size: 22px; color: var(--accent); }
+        .sidebar-logo .logo-text { color: var(--text-primary); font-weight: 700; font-size: 0.9rem; line-height: 1.3; }
+        .sidebar-menu { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 2px; }
+        .sidebar-menu a {
+            display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+            color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm);
+            font-size: 0.84rem; font-weight: 500; transition: all var(--transition); white-space: nowrap;
+        }
+        .sidebar-menu a i { width: 20px; text-align: center; font-size: 1rem; }
+        .sidebar-menu a:hover { background: var(--accent-light); color: var(--accent-hover); transform: translateX(4px); }
+        .sidebar-menu a.active { background: var(--accent); color: var(--primary); font-weight: 600; box-shadow: 0 4px 12px rgba(244,180,0,0.25); }
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-footer a.sidebar-footer-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .sidebar-footer a.sidebar-footer-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .sidebar-footer a.sidebar-footer-link:hover {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+        .sidebar-footer button {
+            width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+            background: transparent; border: none; color: var(--text-secondary); cursor: pointer;
+            border-radius: var(--radius-sm); font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 500;
+            transition: all var(--transition);
+        }
+        .sidebar-footer button:hover { background: #FEE2E2; color: var(--danger); transform: translateX(4px); }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column;
+            min-height: 100vh; background: #F8F9FA; overflow-y: auto; height: 100vh;
+        }
+
+        /* ==================== TOPBAR (statis) ==================== */
+        .topbar {
+            height: var(--topbar-height); background: var(--white); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+            position: sticky; top: 0; z-index: 999; box-shadow: var(--shadow-sm); gap: 16px;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 16px; flex: 1; max-width: 400px; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .icon-btn {
+            position: relative; background: transparent; border: none; cursor: pointer;
+            font-size: 1.2rem; color: var(--text-secondary); padding: 8px; border-radius: 50%;
+            transition: all var(--transition); width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-btn:hover { background: var(--light-gray); color: var(--accent); }
+
+        .topbar-right .user-display {
+            display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 30px;
+        }
+        .topbar-right .user-avatar {
+            width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: var(--accent);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .topbar-right .user-info { display: flex; flex-direction: column; }
+        .topbar-right .user-info .user-name { font-weight: 600; font-size: 0.82rem; color: var(--text-primary); }
+        .topbar-right .user-info .user-role { font-size: 0.7rem; color: var(--text-muted); }
+
+        /* ==================== PAGE CONTENT ==================== */
+        .page-content { padding: 28px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); }
+        .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .breadcrumb i { font-size: 0.7rem; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .header-section h1 { font-size: 1.6rem; font-weight: 700; }
+        .card {
+            background: var(--white); border-radius: var(--radius-md); padding: 24px;
+            box-shadow: var(--shadow); margin-bottom: 0;
+        }
+        .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .card h3 i { color: var(--accent); }
+        .status-card {
+            display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+        }
+        .status-icon { font-size: 3.5rem; }
+        .status-icon.success { color: var(--success); }
+        .status-icon.warning { color: var(--warning); }
+        .progress-bar-container { width: 100%; height: 12px; background: var(--light-gray); border-radius: 10px; overflow: hidden; margin: 12px 0; }
+        .progress-bar-fill { height: 100%; border-radius: 10px; background: var(--accent); transition: width 1.5s ease; }
+        .progress-bar-fill.complete { background: var(--success); }
+        .badge-status-lg {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px;
+            border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+        }
+        .badge-status-lg.warning { background: #FEF3C7; color: #92400E; }
+        .badge-status-lg.success { background: #D1FAE5; color: #065F46; }
+        .btn {
+            padding: 12px 24px; border-radius: 30px; font-family: 'Poppins', sans-serif;
+            font-weight: 600; font-size: 0.84rem; cursor: pointer; border: none;
+            transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-accent { background: var(--accent); color: var(--primary); }
+        .btn-accent:hover { background: var(--accent-hover); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #16A34A; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #2C2C2C; }
+
+        .badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+        }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+
+        /* ==================== PREVIEW DOKUMEN SKPI REALISTIS ==================== */
+        .preview-doc {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 40px 48px;
+            background: #FFFFFF;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .preview-doc .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 6rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.03);
+            letter-spacing: 12px;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .preview-doc .doc-header {
+            text-align: center;
+            border-bottom: 3px double var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .preview-doc .doc-header .logo-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .preview-doc .doc-header .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .preview-doc .doc-header .institution {
+            text-align: left;
+        }
+
+        .preview-doc .doc-header .institution .inst-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+        }
+
+        .preview-doc .doc-header .institution .inst-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .preview-doc .doc-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+
+        .preview-doc .doc-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .preview-doc .doc-number {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .preview-doc .doc-number strong {
+            color: var(--text-primary);
+        }
+
+        /* Body dokumen */
+        .preview-doc .doc-body {
+            padding: 8px 0;
+        }
+
+        .preview-doc .doc-body .greeting {
+            font-size: 0.92rem;
+            margin-bottom: 16px;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .preview-doc .doc-body .greeting span {
+            font-weight: 600;
+        }
+
+        .preview-doc .doc-body .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 32px;
+            margin: 16px 0 20px;
+            padding: 16px 20px;
+            background: var(--light-gray);
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--accent);
+        }
+
+        .preview-doc .doc-body .info-grid .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 0.84rem;
+        }
+
+        .preview-doc .doc-body .info-grid .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-doc .doc-body .info-grid .info-item .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .preview-doc .doc-body .info-grid .info-item .value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .preview-doc .doc-body .poin-summary {
+            margin: 20px 0;
+            padding: 16px 20px;
+            background: var(--accent-light);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(244,180,0,0.25);
+            text-align: center;
+        }
+
+        .preview-doc .doc-body .poin-summary .poin-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .preview-doc .doc-body .poin-summary .poin-label {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .preview-doc .doc-body .table-prestasi {
+            margin: 16px 0 20px;
+            overflow-x: auto;
+        }
+
+        .preview-doc .doc-body .table-prestasi table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .preview-doc .doc-body .table-prestasi table th {
+            background: var(--light-gray);
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .preview-doc .doc-body .table-prestasi table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .preview-doc .doc-body .table-prestasi table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .preview-doc .doc-footer {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .preview-doc .doc-footer .signature {
+            text-align: center;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .preview-doc .doc-footer .signature .sign-line {
+            width: 200px;
+            border-bottom: 1.5px solid var(--primary);
+            margin: 40px auto 6px;
+        }
+
+        .preview-doc .doc-footer .signature .sign-name {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+        }
+
+        .preview-doc .doc-footer .signature .sign-title {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .preview-doc .doc-footer .stamp {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--light-gray);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .preview-doc .doc-footer .stamp i {
+            font-size: 1.6rem;
+            color: var(--accent);
+        }
+
+        .preview-doc .doc-footer .stamp .stamp-text {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+
+        .preview-doc .doc-footer .stamp .stamp-text strong {
+            color: var(--text-primary);
+        }
+
+        /* Tombol unduh di bawah preview */
+        .download-section {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* QR Code */
+        .qr-placeholder {
+            width: 140px;
+            height: 140px;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            margin: 0 auto 12px;
+            font-size: 3.5rem;
+            color: var(--primary);
+            border: 2px solid var(--border);
+            position: relative;
+        }
+
+        .qr-placeholder::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            background:
+                linear-gradient(45deg, var(--primary) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--primary) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--primary) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--primary) 75%);
+            background-size: 20px 20px;
+            opacity: 0.15;
+            border-radius: 4px;
+        }
+
+        .qr-placeholder i {
+            position: relative;
+            z-index: 1;
+            background: var(--white);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .qr-info {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+
+        .qr-info .qr-number {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .qr-info .qr-date {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .qr-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #D1FAE5;
+            color: #065F46;
+            margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed; top: 24px; right: 24px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            padding: 14px 20px; border-radius: var(--radius); background: var(--primary);
+            color: white; font-size: 0.85rem; font-weight: 500; box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 10px; min-width: 280px;
+        }
+        .toast.success { border-left: 4px solid var(--success); }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+
+        .footer { background: var(--white); border-top: 1px solid var(--border); padding: 16px 28px; text-align: center; font-size: 0.74rem; color: var(--text-muted); margin-top: auto; }
+
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-primary); padding: 8px; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .page-content { padding: 16px; }
+            .topbar { padding: 0 16px; }
+            .topbar-right .user-info { display: none; }
+            .mobile-menu-btn { display: block !important; }
+            .status-card { flex-direction: column; text-align: center; }
+            .preview-doc { padding: 20px 16px; }
+            .preview-doc .doc-body .info-grid { grid-template-columns: 1fr; }
+            .preview-doc .doc-footer { flex-direction: column; align-items: center; }
+            .preview-doc .doc-header .logo-wrap { flex-direction: column; text-align: center; }
+            .preview-doc .doc-header .institution { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="logo-text">Sistem Informasi<br>SKP</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="pengajuan.html"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
+            <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
+            <a href="rekapitulasi.html"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
+            <a href="skpi.html" class="active"><i class="fa-solid fa-award"></i> SKPI</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profil.html" class="sidebar-footer-link">
+                <i class="fa-solid fa-user-gear"></i> Profil
+            </a>
+            <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main-content" id="mainContent">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="darkModeToggle"><i class="fa-solid fa-moon"></i></button>
+                <div class="user-display">
+                    <div class="user-avatar" id="topbarAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="topbarName">User</span>
+                        <span class="user-role" id="topbarRole">Role</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content">
+            <div class="breadcrumb">
+                <a href="dashboard-mahasiswa.html">Dashboard</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>SKPI</span>
+            </div>
+
+            <div class="header-section">
+                <div>
+                    <h1>Surat Keterangan Pendamping Ijazah (SKPI)</h1>
+                    <p style="color:var(--text-secondary); font-size:0.88rem;">Dokumen resmi yang memuat capaian prestasi mahasiswa selama masa studi.</p>
+                </div>
+                <span class="badge-status-lg warning" id="headerBadge"><i class="fa-solid fa-triangle-exclamation"></i> Belum Memenuhi Persyaratan</span>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- CARD 1: STATUS SKPI -->
+            <!-- ============================================================ -->
+            <div class="card" id="statusCard">
+                <div class="status-card" id="statusContent"></div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- CARD 2: TOTAL SKP -->
+            <!-- ============================================================ -->
+            <div class="card">
+                <h3><i class="fa-solid fa-star"></i> Total SKP</h3>
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div style="font-size:2.5rem; font-weight:700; color:var(--accent);" id="totalPoinDisplay">0</div>
+                    <div>
+                        <p style="font-size:0.88rem; color:var(--text-secondary);">Target: <strong>100 Poin</strong></p>
+                        <span class="badge badge-success" id="statusBadgeSmall">Memenuhi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- CARD 3: PREVIEW DOKUMEN SKPI (Realistis) -->
+            <!-- ============================================================ -->
+            <div class="card" id="previewCard" style="display:none;">
+                <h3><i class="fa-solid fa-file-alt"></i> Preview Dokumen SKPI</h3>
+                <div class="preview-doc" id="docPreview">
+                    <div class="watermark">SKPI</div>
+
+                    <!-- HEADER -->
+                    <div class="doc-header">
+                        <div class="logo-wrap">
+                            <div class="logo"><i class="fa-solid fa-building-columns"></i></div>
+                            <div class="institution">
+                                <div class="inst-name">Politeknik AI Lembaga Pendidikan Indonesia</div>
+                                <div class="inst-sub">Terakreditasi BAN-PT No. 1234/SK/BAN-PT/Ak/2024</div>
+                            </div>
+                        </div>
+                        <div class="doc-title">Surat Keterangan Pendamping Ijazah</div>
+                        <div class="doc-subtitle">(SKPI - Diploma IV)</div>
+                        <div class="doc-number">Nomor: SKPI/2026/<span id="docNumber">00001</span></div>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="doc-body">
+                        <div class="greeting">
+                            Yang bertanda tangan di bawah ini, <span>Direktur Politeknik AI Lembaga Pendidikan Indonesia</span>, menerangkan dengan sesungguhnya bahwa:
+                        </div>
+
+                        <div class="info-grid" id="infoGrid">
+                            <!-- diisi JS -->
+                        </div>
+
+                        <div class="greeting" style="margin-top:8px;">
+                            Telah menyelesaikan seluruh persyaratan akademik dan non-akademik dengan capaian prestasi sebagai berikut:
+                        </div>
+
+                        <div class="poin-summary">
+                            <div class="poin-number" id="docPoinNumber">118</div>
+                            <div class="poin-label">Total Satuan Kredit Prestasi (SKP)</div>
+                        </div>
+
+                        <div class="table-prestasi">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kategori</th>
+                                        <th>Kegiatan</th>
+                                        <th>Poin</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="docTableBody">
+                                    <!-- diisi JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="greeting" style="font-size:0.85rem; margin-top:8px;">
+                            Surat keterangan ini diterbitkan sebagai pendamping ijazah dan dapat digunakan untuk keperluan akademik, administratif, serta pengakuan prestasi.
+                        </div>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="doc-footer">
+                        <div class="signature">
+                            <div class="sign-line"></div>
+                            <div class="sign-name">Prof. Dr. Ir. Rachmat Wijaya, M.Eng.</div>
+                            <div class="sign-title">Direktur</div>
+                        </div>
+                        <div class="stamp">
+                            <i class="fa-solid fa-stamp"></i>
+                            <div class="stamp-text">
+                                <strong>Diterbitkan secara digital</strong><br>
+                                <span id="docDate">2026-06-29</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Unduh -->
+                <div class="download-section">
+                    <button class="btn btn-success" onclick="simulateDownload()">
+                        <i class="fa-solid fa-download"></i> Unduh SKPI (PDF)
+                    </button>
+                    <button class="btn btn-outline" onclick="alert('Preview PDF akan terbuka di tab baru (simulasi).')">
+                        <i class="fa-solid fa-eye"></i> Preview PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- CARD 4: QR CODE VERIFIKASI -->
+            <!-- ============================================================ -->
+            <div class="card" style="text-align:center; max-width:400px; margin:0 auto;">
+                <h3><i class="fa-solid fa-qrcode"></i> Verifikasi SKPI</h3>
+                <div class="qr-placeholder"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="qr-info">
+                    <div>Nomor Verifikasi: <span class="qr-number" id="qrNumber">SKPI-2026-00001</span></div>
+                    <div>Tanggal Terbit: <span class="qr-date" id="tglTerbit">-</span></div>
+                    <div class="qr-badge"><i class="fa-solid fa-check-circle"></i> Valid</div>
+                    <p style="font-size:0.72rem; color:var(--text-muted); margin-top:8px;">
+                        Scan QR code untuk memverifikasi keaslian dokumen
+                    </p>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            © 2026 Politeknik AI Lembaga Pendidikan Indonesia &nbsp;|&nbsp; Prototype Version 1.0
+        </footer>
+    </div>
+
+    <!-- ==================== TOAST ==================== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="state.js"></script>
+    <script>
+        (function() {
+            const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
+            if (!session || session.roleKey !== 'mahasiswa') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('topbarAvatar').textContent = session.avatar || 'MA';
+            document.getElementById('topbarName').textContent = session.fullName || 'User';
+            document.getElementById('topbarRole').textContent = (session.prodi || '') + ' • Mahasiswa';
+
+            // ==================== RENDER ====================
+            function renderSKPI() {
+                const state = AppState.getState();
+                const totalPoin = state.totalPoin || 0;
+                const targetPoin = state.targetPoin || 100;
+                const isEligible = totalPoin >= targetPoin;
+
+                // Header badge
+                const headerBadge = document.getElementById('headerBadge');
+                if (isEligible) {
+                    headerBadge.className = 'badge-status-lg success';
+                    headerBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> SKPI Siap Diterbitkan';
+                } else {
+                    headerBadge.className = 'badge-status-lg warning';
+                    headerBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Belum Memenuhi Persyaratan';
+                }
+
+                // Status card
+                const statusContent = document.getElementById('statusContent');
+                if (isEligible) {
+                    statusContent.innerHTML = `
+                        <div><i class="fa-solid fa-circle-check status-icon success"></i></div>
+                        <div style="flex:1;">
+                            <h4 style="color:var(--success);">SKPI Siap Diterbitkan</h4>
+                            <p style="color:var(--text-secondary);">Selamat! Seluruh persyaratan SKP telah terpenuhi. Anda dapat mengunduh dokumen SKPI di bawah.</p>
+                            <div class="progress-bar-container"><div class="progress-bar-fill complete" style="width:100%;"></div></div>
+                            <span style="font-size:0.88rem;">Progress: <strong>100%</strong></span>
+                        </div>`;
+                } else {
+                    const sisa = targetPoin - totalPoin;
+                    const progress = Math.round((totalPoin / targetPoin) * 100);
+                    statusContent.innerHTML = `
+                        <div><i class="fa-solid fa-triangle-exclamation status-icon warning"></i></div>
+                        <div style="flex:1;">
+                            <h4 style="color:var(--warning);">Belum Memenuhi Persyaratan</h4>
+                            <p style="color:var(--text-secondary);">Anda belum dapat memperoleh SKPI karena target poin SKP belum terpenuhi. Target: <strong>${targetPoin} Poin</strong>, Poin Saat Ini: <strong>${totalPoin} Poin</strong>, Sisa: <strong>${sisa} Poin</strong>.</p>
+                            <div class="progress-bar-container"><div class="progress-bar-fill" style="width:${progress}%;"></div></div>
+                            <span style="font-size:0.88rem;">Progress: <strong>${progress}%</strong></span>
+                        </div>`;
+                }
+
+                // Total SKP
+                document.getElementById('totalPoinDisplay').textContent = totalPoin;
+                const statusBadgeSmall = document.getElementById('statusBadgeSmall');
+                if (isEligible) {
+                    statusBadgeSmall.className = 'badge badge-success';
+                    statusBadgeSmall.textContent = 'Memenuhi';
+                } else {
+                    statusBadgeSmall.className = 'badge badge-warning';
+                    statusBadgeSmall.textContent = 'Belum Memenuhi';
+                }
+
+                // Preview SKPI
+                const previewCard = document.getElementById('previewCard');
+                if (isEligible) {
+                    previewCard.style.display = 'block';
+                    const docNumber = 'SKPI-2026-' + String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+                    document.getElementById('docNumber').textContent = docNumber;
+                    document.getElementById('qrNumber').textContent = docNumber;
+                    document.getElementById('tglTerbit').textContent = new Date().toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                    });
+                    document.getElementById('docDate').textContent = new Date().toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                    });
+
+                    // Isi info grid
+                    const infoGrid = document.getElementById('infoGrid');
+                    infoGrid.innerHTML = `
+                        <div class="info-item"><span class="label">Nama Lengkap</span><span class="value">${session.fullName}</span></div>
+                        <div class="info-item"><span class="label">NIM</span><span class="value">${session.nim || '-'}</span></div>
+                        <div class="info-item"><span class="label">Program Studi</span><span class="value">${session.prodi || '-'}</span></div>
+                        <div class="info-item"><span class="label">Jenjang</span><span class="value">Diploma IV (D4)</span></div>
+                        <div class="info-item"><span class="label">Fakultas</span><span class="value">Fakultas Teknologi Informasi</span></div>
+                        <div class="info-item"><span class="label">Tahun Lulus</span><span class="value">2026</span></div>
+                    `;
+
+                    // Isi tabel prestasi — hanya milik mahasiswa pemegang dokumen ini
+                    const allPengajuan = (state.pengajuan || []).filter(p => p.email === session.email);
+                    const approved = allPengajuan.filter(p => p.status === 'Disetujui' || p.status === 'Selesai');
+                    const docBody = document.getElementById('docTableBody');
+                    docBody.innerHTML = approved.map((p, i) => `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td>${p.kategoriText || p.kategori}</td>
+                            <td>${p.judul || '-'}</td>
+                            <td>${p.poin || p.estimasiPoin || 0}</td>
+                            <td><span class="badge badge-success">Tervalidasi</span></td>
+                        </tr>
+                    `).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Tidak ada data prestasi</td></tr>';
+
+                    // Total poin di dokumen
+                    document.getElementById('docPoinNumber').textContent = totalPoin;
+                } else {
+                    previewCard.style.display = 'none';
+                }
+            }
+
+            // ==================== SIMULASI DOWNLOAD ====================
+            window.simulateDownload = function() {
+                const btn = event.target;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunduh...';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-solid fa-download"></i> Unduh SKPI (PDF)';
+                    btn.disabled = false;
+                    AppState.showToast('SKPI berhasil diunduh. (Simulasi)');
+                }, 2000);
+            };
+
+            // ==================== VALIDASI CHECK ====================
+            let intervalId = null;
+
+            function startValidationCheck() {
+                if (intervalId) clearInterval(intervalId);
+                intervalId = setInterval(() => {
+                    const updated = AppState.checkAndUpdateValidasi();
+                    if (updated) {
+                        renderSKPI();
+                    }
+                }, 2000);
+            }
+
+            // ==================== INIT ====================
+            document.addEventListener('DOMContentLoaded', function() {
+                renderSKPI();
+                startValidationCheck();
+
+                document.getElementById('darkModeToggle').addEventListener('click', function() {
+                    document.body.classList.toggle('dark-mode');
+                    const icon = this.querySelector('i');
+                    icon.classList.toggle('fa-moon');
+                    icon.classList.toggle('fa-sun');
+                });
+            });
+
+            window.toggleSidebar = function() {
+                document.getElementById('sidebar').classList.toggle('open');
+            };
+
+            window.handleLogout = function() {
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            };
+
+        })();
+    </script>
+</body>
+</html>

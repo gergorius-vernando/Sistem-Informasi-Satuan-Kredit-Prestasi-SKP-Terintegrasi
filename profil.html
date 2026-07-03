@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Mahasiswa — Sistem Informasi SKP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== CSS SAMA SEPERTI PROFIL ASLI ==================== */
+        :root {
+            --primary: #1A1A1A;
+            --accent: #F4B400;
+            --accent-hover: #D99E00;
+            --accent-light: #FFF8E1;
+            --white: #FFFFFF;
+            --dark-gray: #2C2C2C;
+            --light-gray: #F5F5F5;
+            --border: #E5E7EB;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.08);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --transition: 0.25s ease;
+            --sidebar-width: 260px;
+            --topbar-height: 68px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #F8F9FA;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        body.dark-mode {
+            background: #111;
+            filter: invert(0.9) hue-rotate(180deg);
+        }
+        body.dark-mode img,
+        body.dark-mode canvas {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--white);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .sidebar-logo .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(244, 180, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .sidebar-logo .logo-icon i {
+            font-size: 22px;
+            color: var(--accent);
+        }
+        .sidebar-logo .logo-text {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            letter-spacing: 0.2px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 8px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .sidebar-menu a:hover {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+        .sidebar-menu a.active {
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(244, 180, 0, 0.25);
+        }
+
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-footer a.sidebar-footer-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .sidebar-footer a.sidebar-footer-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .sidebar-footer a.sidebar-footer-link:hover {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+        .sidebar-footer button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+        .sidebar-footer button:hover {
+            background: #FEE2E2;
+            color: var(--danger);
+            transform: translateX(4px);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #F8F9FA;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .topbar {
+            height: var(--topbar-height);
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: var(--shadow-sm);
+            gap: 16px;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            max-width: 400px;
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .topbar-right .icon-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 50%;
+            transition: all var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .topbar-right .icon-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent);
+        }
+        .topbar-right .user-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 8px;
+            border-radius: 30px;
+        }
+        .topbar-right .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .topbar-right .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .topbar-right .user-info .user-name {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .topbar-right .user-info .user-role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .page-content {
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .breadcrumb i {
+            font-size: 0.7rem;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header-section h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .header-section p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-top: 2px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 0;
+            transition: all var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 i {
+            color: var(--accent);
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .profile-photo-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            border: 4px solid var(--accent);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+        .profile-photo-wrapper .profile-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .profile-photo-wrapper .profile-nim {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .profile-photo-wrapper .profile-prodi {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .profile-photo-wrapper .profile-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #D1FAE5;
+            color: #065F46;
+            margin-top: 4px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            outline: none;
+            transition: all var(--transition);
+            background: var(--light-gray);
+            color: var(--text-primary);
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
+        }
+        .form-group input:read-only {
+            background: var(--light-gray);
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .switch-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .switch-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .switch-item:last-child {
+            border-bottom: none;
+        }
+        .switch-item .switch-label {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .switch-item .switch-label small {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            border-radius: 26px;
+            transition: all var(--transition);
+        }
+        .switch .slider::before {
+            content: '';
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: all var(--transition);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+        .switch input:checked+.slider {
+            background: var(--accent);
+        }
+        .switch input:checked+.slider::before {
+            transform: translateX(22px);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.84rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-dialog {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: var(--shadow-xl);
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-dialog h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .modal-dialog p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .modal-dialog .form-group {
+            margin-bottom: 14px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .btn-modal {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.84rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+        }
+        .btn-modal-cancel {
+            background: var(--light-gray);
+            color: var(--text-primary);
+        }
+        .btn-modal-primary {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        .btn-modal-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        table th {
+            background: var(--light-gray);
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        table tbody tr:hover {
+            background: var(--accent-light);
+        }
+        .badge-table {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-table.success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+        }
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .footer {
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 16px 28px;
+            text-align: center;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .page-content {
+                padding: 16px;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .topbar-right .user-info {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+            }
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SIDEBAR
+    ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div class="logo-text">Sistem Informasi<br>SKP</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="pengajuan.html"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
+            <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
+            <a href="rekapitulasi.html"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
+            <a href="skpi.html"><i class="fa-solid fa-award"></i> SKPI</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profil.html" class="sidebar-footer-link active">
+                <i class="fa-solid fa-user-gear"></i> Profil
+            </a>
+            <button onclick="handleLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <div class="main-content" id="mainContent">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="user-display">
+                    <div class="user-avatar" id="topbarAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="topbarName">User</span>
+                        <span class="user-role" id="topbarRole">Role</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="dashboard-mahasiswa.html">Dashboard</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>Profil Saya</span>
+            </div>
+
+            <!-- Header -->
+            <div class="header-section">
+                <div>
+                    <h1>Profil Mahasiswa</h1>
+                    <p>Kelola informasi akun dan identitas mahasiswa.</p>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CARD FOTO PROFIL
+            ============================================================ -->
+            <div class="card">
+                <div class="profile-photo-wrapper">
+                    <div class="profile-photo" id="profilePhoto">U</div>
+                    <div class="profile-name" id="profileName">Mahasiswa</div>
+                    <div class="profile-nim" id="profileNim">NIM: -</div>
+                    <div class="profile-prodi" id="profileProdi">-</div>
+                    <span class="profile-status"><i class="fa-solid fa-circle-check"></i> Mahasiswa Aktif</span>
+                    <button class="btn btn-outline" onclick="simulateUploadPhoto()">
+                        <i class="fa-solid fa-camera"></i> Ubah Foto
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CARD IDENTITAS & CARD INFORMASI AKADEMIK (2 columns)
+            ============================================================ -->
+            <div class="grid-2col">
+                <!-- Card Identitas -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-id-card"></i> Identitas</h3>
+                    <form id="identitasForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nama Lengkap</label>
+                                <input type="text" id="editNama" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>NIM</label>
+                                <input type="text" id="editNim" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="editEmail" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Program Studi</label>
+                                <input type="text" id="editProdi" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fakultas / Jurusan</label>
+                                <input type="text" id="editFakultas" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Angkatan</label>
+                                <input type="text" id="editAngkatan" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Semester Aktif</label>
+                                <input type="text" id="editSemester" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Jenis Kelamin</label>
+                                <input type="text" id="editJenisKelamin" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tempat Lahir</label>
+                                <input type="text" id="editTempatLahir" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Tanggal Lahir</label>
+                                <input type="text" id="editTanggalLahir" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nomor HP <span style="color:var(--accent);">*</span></label>
+                                <input type="text" id="editNoHp" placeholder="Masukkan nomor HP">
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat <span style="color:var(--accent);">*</span></label>
+                                <textarea id="editAlamat" rows="2" placeholder="Masukkan alamat"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Status Akademik</label>
+                                <input type="text" id="editStatusAkademik" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Card Informasi Akademik -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-graduation-cap"></i> Informasi Akademik</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Program Studi</label>
+                            <input type="text" id="akademikProdi" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Jenjang</label>
+                            <input type="text" id="akademikJenjang" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Angkatan</label>
+                            <input type="text" id="akademikAngkatan" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Semester Aktif</label>
+                            <input type="text" id="akademikSemester" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Dosen Pembimbing Akademik</label>
+                            <input type="text" id="akademikDosen" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Status Akademik</label>
+                            <input type="text" id="akademikStatus" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>IPK (Dummy)</label>
+                            <input type="text" id="akademikIpk" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Total SKP Saat Ini</label>
+                            <input type="text" id="akademikTotalSkp" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Target SKP</label>
+                            <input type="text" id="akademikTarget" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CARD KEAMANAN AKUN & CARD RIWAYAT LOGIN (2 columns)
+            ============================================================ -->
+            <div class="grid-2col">
+                <!-- Card Keamanan Akun -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-lock"></i> Keamanan Akun</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="securityEmail" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" value="••••••••" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Terakhir Login</label>
+                            <input type="text" id="securityLastLogin" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Perangkat Terakhir</label>
+                            <input type="text" id="securityDevice" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Browser</label>
+                            <input type="text" id="securityBrowser" readonly>
+                        </div>
+                    </div>
+                    <button class="btn btn-accent" onclick="openPasswordModal()">
+                        <i class="fa-solid fa-key"></i> Ubah Password
+                    </button>
+                </div>
+
+                <!-- Card Riwayat Login -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Login</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jam</th>
+                                    <th>Perangkat</th>
+                                    <th>Browser</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loginHistoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CARD PREFERENSI
+            ============================================================ -->
+            <div class="card">
+                <h3><i class="fa-solid fa-sliders"></i> Preferensi</h3>
+                <div class="switch-group" id="preferenceGroup">
+                    <div class="switch-item">
+                        <div class="switch-label">
+                            Dark Mode
+                            <small>Mode tampilan gelap untuk kenyamanan mata.</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="prefDarkMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-item">
+                        <div class="switch-label">
+                            Notifikasi Email
+                            <small>Terima notifikasi melalui email.</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="prefEmailNotif" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-item">
+                        <div class="switch-label">
+                            Notifikasi Sistem
+                            <small>Terima notifikasi di dalam aplikasi.</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="prefSystemNotif" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="switch-item">
+                        <div class="switch-label">
+                            Animasi Interface
+                            <small>Efek animasi saat berpindah halaman.</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="prefAnimasi" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            © 2026 Politeknik AI Lembaga Pendidikan Indonesia &nbsp;|&nbsp; Prototype Version 1.0
+        </footer>
+    </div>
+
+    <!-- ============================================================
+    MODAL UBAH PASSWORD
+    ============================================================ -->
+    <div class="modal-overlay hidden" id="passwordModal">
+        <div class="modal-dialog">
+            <h4><i class="fa-solid fa-key"></i> Ubah Password</h4>
+            <p>Masukkan password lama dan baru untuk mengubah password akun.</p>
+            <div class="form-group">
+                <label>Password Lama</label>
+                <input type="password" id="oldPassword" placeholder="Masukkan password lama">
+            </div>
+            <div class="form-group">
+                <label>Password Baru</label>
+                <input type="password" id="newPassword" placeholder="Masukkan password baru">
+            </div>
+            <div class="form-group">
+                <label>Konfirmasi Password</label>
+                <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closePasswordModal()">Batal</button>
+                <button class="btn-modal btn-modal-primary" onclick="changePassword()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script src="state.js"></script>
+    <script>
+        (function() {
+            const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
+            if (!session || session.roleKey !== 'mahasiswa') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const currentEmail = session.email;
+            const state = AppState.getState();
+            const totalPoin = state.totalPoin || 0;
+            const targetPoin = state.targetPoin || 100;
+
+            // Topbar
+            document.getElementById('topbarAvatar').textContent = session.avatar || 'MA';
+            document.getElementById('topbarName').textContent = session.fullName || 'User';
+            document.getElementById('topbarRole').textContent = (session.prodi || '') + ' • Mahasiswa';
+
+            // Profil foto
+            document.getElementById('profilePhoto').textContent = session.avatar || 'U';
+            document.getElementById('profileName').textContent = session.fullName || '-';
+            document.getElementById('profileNim').textContent = 'NIM: ' + (session.nim || '-');
+            document.getElementById('profileProdi').textContent = session.prodi || '-';
+
+            // Identitas
+            document.getElementById('editNama').value = session.fullName || '';
+            document.getElementById('editNim').value = session.nim || '';
+            document.getElementById('editEmail').value = session.email || '';
+            document.getElementById('editProdi').value = session.prodi || '';
+            document.getElementById('editFakultas').value = 'Fakultas Teknologi Informasi';
+            document.getElementById('editAngkatan').value = session.angkatan || '2024';
+            document.getElementById('editSemester').value = '4';
+            document.getElementById('editJenisKelamin').value = 'Laki-laki';
+            document.getElementById('editTempatLahir').value = 'Jakarta';
+            document.getElementById('editTanggalLahir').value = '2004-01-01';
+            document.getElementById('editNoHp').value = '';
+            document.getElementById('editAlamat').value = '';
+            document.getElementById('editStatusAkademik').value = 'Mahasiswa Aktif';
+
+            // Akademik
+            document.getElementById('akademikProdi').value = session.prodi || '';
+            document.getElementById('akademikJenjang').value = 'D4';
+            document.getElementById('akademikAngkatan').value = session.angkatan || '2024';
+            document.getElementById('akademikSemester').value = '4';
+            document.getElementById('akademikDosen').value = 'Dr. Ir. Budi Santoso, M.Kom.';
+            document.getElementById('akademikStatus').value = 'Mahasiswa Aktif';
+            document.getElementById('akademikIpk').value = '3.75';
+            document.getElementById('akademikTotalSkp').value = totalPoin + ' Poin';
+            document.getElementById('akademikTarget').value = targetPoin + ' Poin';
+
+            // Keamanan
+            document.getElementById('securityEmail').value = session.email || '';
+            document.getElementById('securityLastLogin').value = new Date().toLocaleString('id-ID');
+            document.getElementById('securityDevice').value = 'Chrome Windows';
+            document.getElementById('securityBrowser').value = 'Chrome 120';
+
+            // Preferensi
+            const pref = state.preferences || {};
+            document.getElementById('prefDarkMode').checked = pref.darkMode || false;
+            document.getElementById('prefEmailNotif').checked = pref.emailNotif !== undefined ? pref.emailNotif : true;
+            document.getElementById('prefSystemNotif').checked = pref.systemNotif !== undefined ? pref.systemNotif : true;
+            document.getElementById('prefAnimasi').checked = pref.animasi !== undefined ? pref.animasi : true;
+
+            // Dark mode dari preferensi
+            if (pref.darkMode) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('#darkModeToggle i').className = 'fa-solid fa-sun';
+            }
+
+            // Auto-save untuk preferensi
+            document.getElementById('prefDarkMode').addEventListener('change', function() {
+                const state = AppState.getState();
+                if (!state.preferences) state.preferences = {};
+                state.preferences.darkMode = this.checked;
+                AppState.setState(state);
+                document.body.classList.toggle('dark-mode', this.checked);
+                const icon = document.querySelector('#darkModeToggle i');
+                if (this.checked) {
+                    icon.className = 'fa-solid fa-sun';
+                } else {
+                    icon.className = 'fa-solid fa-moon';
+                }
+            });
+
+            document.getElementById('prefEmailNotif').addEventListener('change', function() {
+                const state = AppState.getState();
+                if (!state.preferences) state.preferences = {};
+                state.preferences.emailNotif = this.checked;
+                AppState.setState(state);
+            });
+
+            document.getElementById('prefSystemNotif').addEventListener('change', function() {
+                const state = AppState.getState();
+                if (!state.preferences) state.preferences = {};
+                state.preferences.systemNotif = this.checked;
+                AppState.setState(state);
+            });
+
+            document.getElementById('prefAnimasi').addEventListener('change', function() {
+                const state = AppState.getState();
+                if (!state.preferences) state.preferences = {};
+                state.preferences.animasi = this.checked;
+                AppState.setState(state);
+            });
+
+            // Dark mode toggle topbar
+            document.getElementById('darkModeToggle').addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const isDark = document.body.classList.toggle('dark-mode');
+                icon.classList.toggle('fa-moon');
+                icon.classList.toggle('fa-sun');
+                const state = AppState.getState();
+                if (!state.preferences) state.preferences = {};
+                state.preferences.darkMode = isDark;
+                AppState.setState(state);
+                document.getElementById('prefDarkMode').checked = isDark;
+            });
+
+            // Upload foto (simulasi)
+            window.simulateUploadPhoto = function() {
+                AppState.showToast('Fitur upload foto akan tersedia pada versi implementasi.', 'success');
+            };
+
+            // Ubah password
+            window.openPasswordModal = function() {
+                document.getElementById('passwordModal').classList.remove('hidden');
+                document.getElementById('oldPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            };
+
+            window.closePasswordModal = function() {
+                document.getElementById('passwordModal').classList.add('hidden');
+            };
+
+            window.changePassword = function() {
+                const old = document.getElementById('oldPassword').value.trim();
+                const newp = document.getElementById('newPassword').value.trim();
+                const confirm = document.getElementById('confirmPassword').value.trim();
+                if (!old || !newp || !confirm) {
+                    AppState.showToast('Semua field harus diisi.', 'error');
+                    return;
+                }
+                if (newp !== confirm) {
+                    AppState.showToast('Password baru dan konfirmasi tidak cocok.', 'error');
+                    return;
+                }
+                if (newp.length < 6) {
+                    AppState.showToast('Password baru minimal 6 karakter.', 'error');
+                    return;
+                }
+                AppState.showToast('Password berhasil diperbarui.', 'success');
+                closePasswordModal();
+            };
+
+            // Logout
+            window.handleLogout = function() {
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            };
+
+            // Sidebar
+            window.toggleSidebar = function() {
+                document.getElementById('sidebar').classList.toggle('open');
+            };
+
+        })();
+    </script>
+</body>
+</html>

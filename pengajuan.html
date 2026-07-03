@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengajuan SKP — Sistem Informasi SKP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #1A1A1A;
+            --accent: #F4B400;
+            --accent-hover: #D99E00;
+            --accent-light: #FFF8E1;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --border: #E5E7EB;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.08);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --transition: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4,0,0.2,1);
+            --sidebar-width: 260px;
+            --topbar-height: 68px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #F8F9FA;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode { background: #111; filter: invert(0.9) hue-rotate(180deg); }
+        body.dark-mode img, body.dark-mode canvas { filter: invert(1) hue-rotate(180deg); }
+
+        .sidebar {
+            position: fixed; top: 0; left: 0;
+            width: var(--sidebar-width); height: 100vh;
+            background: var(--white);
+            z-index: 1000; display: flex; flex-direction: column;
+            transition: transform var(--transition-slow);
+            overflow-y: auto; overflow-x: hidden;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+            border-right: 1px solid var(--border);
+        }
+        .sidebar-logo {
+            padding: 24px 20px; display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid var(--border); margin-bottom: 8px;
+        }
+        .sidebar-logo .logo-icon {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(244,180,0,0.12);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .sidebar-logo .logo-icon i { font-size: 22px; color: var(--accent); }
+        .sidebar-logo .logo-text { color: var(--text-primary); font-weight: 700; font-size: 0.9rem; line-height: 1.3; }
+        .sidebar-menu { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 2px; }
+        .sidebar-menu a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 16px; color: var(--text-secondary);
+            text-decoration: none; border-radius: var(--radius-sm);
+            font-size: 0.84rem; font-weight: 500;
+            transition: all var(--transition); white-space: nowrap;
+        }
+        .sidebar-menu a i { width: 20px; text-align: center; font-size: 1rem; }
+        .sidebar-menu a:hover { background: var(--accent-light); color: var(--accent-hover); transform: translateX(4px); }
+        .sidebar-menu a.active {
+            background: var(--accent); color: var(--primary);
+            font-weight: 600; box-shadow: 0 4px 12px rgba(244,180,0,0.25);
+        }
+
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .sidebar-footer a.sidebar-footer-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 16px; background: transparent; border: none;
+            color: var(--text-secondary); cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 500;
+            transition: all var(--transition);
+            text-decoration: none; white-space: nowrap;
+        }
+        .sidebar-footer a.sidebar-footer-link i { width: 20px; text-align: center; font-size: 1rem; }
+        .sidebar-footer a.sidebar-footer-link:hover { background: var(--accent-light); color: var(--accent-hover); transform: translateX(4px); }
+        .sidebar-footer button {
+            width: 100%; display: flex; align-items: center; gap: 12px;
+            padding: 11px 16px; background: transparent; border: none;
+            color: var(--text-secondary); cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif; font-size: 0.84rem; font-weight: 500;
+            transition: all var(--transition);
+        }
+        .sidebar-footer button:hover { background: #FEE2E2; color: var(--danger); transform: translateX(4px); }
+
+        .main-content {
+            margin-left: var(--sidebar-width); flex: 1;
+            display: flex; flex-direction: column; min-height: 100vh;
+            background: #F8F9FA; overflow-y: auto; height: 100vh;
+            transition: margin-left var(--transition-slow);
+        }
+
+        .topbar {
+            height: var(--topbar-height); background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 28px; position: sticky; top: 0; z-index: 999;
+            box-shadow: var(--shadow-sm); gap: 16px;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 16px; }
+        .topbar-right { display: flex; align-items: center; gap: 20px; }
+
+        .icon-btn {
+            background: transparent; border: none; cursor: pointer;
+            font-size: 1.2rem; color: var(--text-secondary);
+            padding: 8px; border-radius: 50%;
+            transition: all var(--transition);
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-btn:hover { background: var(--light-gray); color: var(--accent); }
+
+        .user-display {
+            display: flex; align-items: center; gap: 10px;
+            padding: 4px 8px; border-radius: 30px;
+        }
+        .user-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: var(--primary); color: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .user-info { display: flex; flex-direction: column; }
+        .user-info .user-name { font-weight: 600; font-size: 0.82rem; color: var(--text-primary); line-height: 1.2; }
+        .user-info .user-role { font-size: 0.7rem; color: var(--text-muted); }
+
+        .page-content { padding: 28px; flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+        .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); }
+        .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb i { font-size: 0.7rem; }
+
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.2px; }
+        .page-header p { color: var(--text-secondary); font-size: 0.88rem; margin-top: 2px; }
+        .page-header .period-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 18px; background: var(--accent-light);
+            border-radius: 30px; font-size: 0.82rem; font-weight: 500;
+            color: var(--accent-hover); border: 1px solid rgba(244,180,0,0.3);
+        }
+
+        .wizard-wrapper {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 28px 36px 24px;
+            box-shadow: var(--shadow);
+        }
+        .wizard-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .wizard-meta .wm-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+        .wizard-meta .wm-step  { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .wizard-meta .wm-step span { color: var(--accent); font-weight: 700; }
+
+        .wizard-steps {
+            display: flex; align-items: flex-start;
+            gap: 0; width: 100%; position: relative;
+        }
+        .wizard-step-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; position: relative;
+        }
+        .wizard-step-item::before,
+        .wizard-step-item::after {
+            content: ''; position: absolute;
+            top: 20px; height: 3px;
+            z-index: 0; border-radius: 3px;
+            transition: background 0.5s ease;
+        }
+        .wizard-step-item::before { left: 0; width: calc(50% - 22px); background: var(--border); }
+        .wizard-step-item::after  { right: 0; width: calc(50% - 22px); background: var(--border); }
+        .wizard-step-item:first-child::before { display: none; }
+        .wizard-step-item:last-child::after   { display: none; }
+        .wizard-step-item.completed::before,
+        .wizard-step-item.completed::after  { background: var(--success); }
+        .wizard-step-item.active::before    { background: var(--accent); }
+
+        .step-circle {
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem;
+            background: var(--light-gray);
+            border: 2.5px solid var(--border);
+            color: var(--text-muted);
+            position: relative; z-index: 1;
+            transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .wizard-step-item.active .step-circle {
+            background: var(--accent); border-color: var(--accent); color: var(--primary);
+            box-shadow: 0 0 0 6px rgba(244,180,0,0.15), 0 6px 20px rgba(244,180,0,0.35);
+            transform: scale(1.1);
+        }
+        .wizard-step-item.completed .step-circle {
+            background: var(--success); border-color: var(--success); color: white;
+            box-shadow: 0 4px 14px rgba(34,197,94,0.3);
+        }
+        .wizard-step-item.completed .step-circle .s-num   { display: none; }
+        .wizard-step-item.completed .step-circle .s-check { display: flex; }
+        .wizard-step-item .step-circle .s-check { display: none; }
+
+        .step-label {
+            margin-top: 10px; font-size: 0.75rem; font-weight: 500;
+            color: var(--text-muted); text-align: center;
+            transition: color 0.3s ease; white-space: nowrap;
+        }
+        .wizard-step-item.active    .step-label { color: var(--accent); font-weight: 700; }
+        .wizard-step-item.completed .step-label { color: var(--success); font-weight: 600; }
+        .step-sublabel {
+            font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-top: 2px;
+            transition: opacity 0.3s ease;
+        }
+        .wizard-step-item.active .step-sublabel    { color: var(--accent-hover); opacity: 1; }
+        .wizard-step-item.completed .step-sublabel { opacity: 0.7; }
+
+        .wizard-progress-bar {
+            width: 100%; height: 4px; background: var(--border); border-radius: 10px;
+            margin-top: 20px; overflow: hidden;
+        }
+        .wizard-progress-fill {
+            height: 100%; border-radius: 10px;
+            background: linear-gradient(90deg, var(--accent), #F6C000);
+            transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 0 8px rgba(244,180,0,0.4);
+        }
+
+        .form-layout {
+            display: grid; grid-template-columns: 1fr 300px;
+            gap: 24px; align-items: start;
+        }
+        .form-card {
+            background: var(--white); border-radius: var(--radius-md);
+            padding: 28px; box-shadow: var(--shadow);
+        }
+        .form-card .step-form-title {
+            font-size: 1rem; font-weight: 700; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 14px; border-bottom: 1px solid var(--border);
+        }
+        .form-card .step-form-title i { color: var(--accent); }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; padding: 12px 16px;
+            font-family: 'Poppins', sans-serif; font-size: 0.86rem;
+            border: 2px solid var(--border); border-radius: var(--radius-sm);
+            outline: none; transition: all var(--transition);
+            background: var(--light-gray); color: var(--text-primary);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent); background: var(--white);
+            box-shadow: 0 0 0 4px rgba(244,180,0,0.06);
+        }
+        .form-group input.readonly {
+            background: var(--accent-light); font-weight: 700; color: var(--accent-hover);
+            border-color: rgba(244,180,0,0.3); cursor: default;
+        }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .error-border { border-color: var(--danger) !important; }
+        .error-msg { font-size: 0.72rem; color: var(--danger); margin-top: 4px; display: none; }
+
+        .upload-area {
+            border: 2px dashed var(--border); border-radius: var(--radius-md);
+            padding: 32px 20px; text-align: center;
+            transition: all var(--transition); cursor: pointer; background: var(--light-gray);
+        }
+        .upload-area:hover { border-color: var(--accent); background: var(--accent-light); }
+        .upload-area .ua-icon { font-size: 2.8rem; color: var(--accent); margin-bottom: 12px; display: block; }
+        .upload-area .ua-title { font-weight: 600; font-size: 0.9rem; color: var(--text-primary); }
+        .upload-area .ua-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 4px; }
+        .file-preview {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; background: #ECFDF5;
+            border-radius: var(--radius-sm); margin-top: 12px;
+            border: 1px solid #A7F3D0;
+        }
+        .file-preview .fp-name { font-size: 0.83rem; font-weight: 500; flex: 1; }
+        .file-preview .fp-remove { background: none; border: none; cursor: pointer; color: var(--danger); font-size: 1rem; padding: 4px; }
+        .progress-upload { height: 6px; background: var(--border); border-radius: 20px; margin-top: 10px; overflow: hidden; display: none; }
+        .progress-upload-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--accent), #F6C000);
+            border-radius: 20px; transition: width 0.3s ease;
+        }
+
+        .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .review-item { background: var(--light-gray); border-radius: var(--radius-sm); padding: 12px 14px; }
+        .review-item .ri-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+        .review-item .ri-val { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-top: 2px; }
+        .review-item.accent .ri-val { color: var(--accent); font-size: 1rem; }
+
+        .wizard-buttons {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 28px; flex-wrap: wrap; gap: 10px;
+        }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn {
+            padding: 11px 26px; border-radius: 30px;
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            font-size: 0.84rem; cursor: pointer; border: none;
+            transition: all var(--transition);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn:disabled { opacity: 0.4; pointer-events: none; }
+        .btn-ghost { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-dark  { background: var(--primary); color: white; }
+        .btn-dark:hover  { background: #2C2C2C; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-yellow { background: var(--accent); color: var(--primary); }
+        .btn-yellow:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-green  { background: var(--success); color: white; }
+        .btn-green:hover  { background: #16A34A; transform: translateY(-1px); }
+
+        .info-card {
+            background: var(--white); border-radius: var(--radius-md);
+            padding: 22px; box-shadow: var(--shadow);
+            display: flex; flex-direction: column; gap: 14px;
+            position: sticky; top: 88px;
+        }
+        .info-card-title {
+            font-size: 0.95rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+        .info-card-title i { color: var(--accent); }
+        .info-poin-box {
+            background: var(--accent-light); border-radius: var(--radius-sm);
+            padding: 14px; text-align: center;
+            border: 1px solid rgba(244,180,0,0.3);
+        }
+        .info-poin-box .ipb-num  { font-size: 2rem; font-weight: 800; color: var(--accent); line-height: 1; }
+        .info-poin-box .ipb-label { font-size: 0.75rem; color: var(--accent-hover); font-weight: 500; margin-top: 4px; }
+        .workflow-list { display: flex; flex-direction: column; gap: 8px; }
+        .workflow-item {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 0.8rem; color: var(--text-secondary);
+            padding: 8px 10px; background: var(--light-gray); border-radius: var(--radius-sm);
+        }
+        .workflow-item i { color: var(--accent); width: 14px; text-align: center; }
+        .workflow-item.done { background: #ECFDF5; color: #065F46; }
+        .workflow-item.done i { color: var(--success); }
+        .info-time { font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .info-time i { color: var(--accent); }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 20px; font-size: 0.76rem; font-weight: 600;
+        }
+        .status-draft      { background: #FEF3C7; color: #92400E; }
+        .status-ready      { background: #D1FAE5; color: #065F46; }
+        .status-incomplete { background: #FEF3C7; color: #92400E; }
+
+        .success-box { padding: 4px 0 8px; }
+        .sb-top {
+            display: flex; align-items: center; gap: 16px;
+            padding: 18px 20px; background: #F0FDF4;
+            border: 1px solid #A7F3D0; border-radius: var(--radius-md); margin-bottom: 20px;
+        }
+        .sb-check {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--success); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .sb-check i { color: white; font-size: 1.2rem; }
+        .sb-title { font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+        .sb-sub   { font-size: 0.78rem; color: var(--text-secondary); margin-top: 3px; }
+        .sb-sub span { font-weight: 600; color: var(--text-primary); }
+        .sb-body  { display: block; }
+        .sb-panel {
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 16px;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .sbp-label {
+            font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.4px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .sbp-label i { color: var(--accent); }
+        .sb-redirect-note {
+            margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+            font-size: 0.76rem; color: var(--text-muted);
+            display: flex; align-items: center; gap: 7px;
+        }
+        .sb-redirect-note i { color: var(--accent); font-size: 0.72rem; animation: spin 2s linear infinite; }
+        .sb-redirect-note strong { color: var(--accent); font-weight: 700; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .vf-steps { display: flex; flex-direction: column; }
+        .vf-step {
+            display: flex; align-items: flex-start; gap: 10px;
+            position: relative; padding-bottom: 14px;
+        }
+        .vf-step:last-child { padding-bottom: 0; }
+        .vf-step::before {
+            content: ''; position: absolute; left: 13px; top: 28px;
+            width: 2px; height: calc(100% - 14px);
+            background: var(--border); border-radius: 2px;
+        }
+        .vf-step.done::before { background: #A7F3D0; }
+        .vf-step:last-child::before { display: none; }
+        .vf-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; flex-shrink: 0; position: relative; z-index: 1;
+        }
+        .vf-dot.done    { background: #ECFDF5; color: var(--success); border: 2px solid #A7F3D0; }
+        .vf-dot.current { background: var(--accent-light); color: var(--accent-hover); border: 2px solid var(--accent); }
+        .vf-dot.pending { background: var(--light-gray); color: var(--text-muted); border: 2px solid var(--border); }
+        .vf-info { padding-top: 2px; flex: 1; }
+        .vf-row  { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .vf-role { font-weight: 600; font-size: 0.81rem; color: var(--text-primary); }
+        .vf-desc { font-size: 0.71rem; color: var(--text-muted); margin-top: 1px; }
+        .vf-tag  { display: inline-block; padding: 1px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; white-space: nowrap; }
+        .vf-tag.done    { background: #ECFDF5; color: #065F46; }
+        .vf-tag.current { background: var(--accent-light); color: var(--accent-hover); }
+        .vf-tag.pending { background: var(--light-gray); color: var(--text-muted); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55); z-index: 9990;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal-dialog {
+            background: white; border-radius: var(--radius-lg);
+            padding: 32px; width: 90%; max-width: 420px;
+            text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 12px; }
+        .modal-dialog h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .modal-dialog p  { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+        .modal-buttons   { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal { padding: 10px 24px; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; transition: all var(--transition); }
+        .btn-modal-cancel  { background: var(--light-gray); color: var(--text-primary); }
+        .btn-modal-cancel:hover { background: var(--border); }
+        .btn-modal-danger  { background: var(--danger); color: white; }
+        .btn-modal-danger:hover { background: #DC2626; }
+
+        .toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            padding: 14px 18px; border-radius: var(--radius);
+            background: var(--primary); color: white; font-size: 0.84rem; font-weight: 500;
+            box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 10px;
+            min-width: 260px; animation: slideIn 0.3s ease;
+        }
+        .toast.success i { color: var(--success); }
+        .toast.info    i { color: var(--accent); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(60px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .footer {
+            background: var(--white); border-top: 1px solid var(--border);
+            padding: 16px 28px; text-align: center;
+            font-size: 0.74rem; color: var(--text-muted); margin-top: auto;
+        }
+
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-primary); padding: 8px; }
+
+        @media (max-width: 1024px) { .form-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .page-content { padding: 16px; }
+            .topbar { padding: 0 16px; }
+            .user-info { display: none; }
+            .mobile-menu-btn { display: block !important; }
+            .review-grid { grid-template-columns: 1fr; }
+            .wizard-wrapper { padding: 20px 16px 16px; }
+        }
+        @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="logo-text">Sistem Informasi<br>SKP</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="pengajuan.html" class="active"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
+            <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
+            <a href="rekapitulasi.html"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
+            <a href="skpi.html"><i class="fa-solid fa-award"></i> SKPI</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profil.html" class="sidebar-footer-link">
+                <i class="fa-solid fa-user-gear"></i> Profil
+            </a>
+            <button onclick="showLogoutModal()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content" id="mainContent">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <div class="user-display">
+                    <div class="user-avatar" id="topbarAvatar">AF</div>
+                    <div class="user-info">
+                        <span class="user-name" id="topbarName">Mahasiswa</span>
+                        <span class="user-role" id="topbarRole">Mahasiswa</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content">
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>Pengajuan SKP</span>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1>Pengajuan Klaim SKP</h1>
+                    <p>Lengkapi seluruh informasi kegiatan sebelum mengirim pengajuan.</p>
+                </div>
+                <div class="period-badge">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Periode: <strong>2026/2027 Ganjil</strong>
+                </div>
+            </div>
+
+            <!-- WIZARD -->
+            <div class="wizard-wrapper">
+                <div class="wizard-meta">
+                    <span class="wm-title" id="wmTitle">Data Kegiatan</span>
+                    <span class="wm-step">Langkah <span id="wmCurrent">1</span> dari <span id="wmTotal">4</span></span>
+                </div>
+                <div class="wizard-steps" id="wizardSteps">
+                    <div class="wizard-step-item active" data-step="1">
+                        <div class="step-circle"><span class="s-num">1</span><i class="fa-solid fa-check s-check"></i></div>
+                        <div class="step-label">Data Kegiatan</div>
+                        <div class="step-sublabel">Isi info kegiatan</div>
+                    </div>
+                    <div class="wizard-step-item" data-step="2">
+                        <div class="step-circle"><span class="s-num">2</span><i class="fa-solid fa-check s-check"></i></div>
+                        <div class="step-label">Dokumen</div>
+                        <div class="step-sublabel">Upload bukti</div>
+                    </div>
+                    <div class="wizard-step-item" data-step="3">
+                        <div class="step-circle"><span class="s-num">3</span><i class="fa-solid fa-check s-check"></i></div>
+                        <div class="step-label">Review</div>
+                        <div class="step-sublabel">Periksa data</div>
+                    </div>
+                    <div class="wizard-step-item" data-step="4">
+                        <div class="step-circle"><span class="s-num">4</span><i class="fa-solid fa-check s-check"></i></div>
+                        <div class="step-label">Selesai</div>
+                        <div class="step-sublabel">Pengajuan terkirim</div>
+                    </div>
+                </div>
+                <div class="wizard-progress-bar">
+                    <div class="wizard-progress-fill" id="wizardProgressFill" style="width:0%;"></div>
+                </div>
+            </div>
+
+            <!-- FORM LAYOUT -->
+            <div class="form-layout">
+                <!-- LEFT: Form -->
+                <div class="form-card" id="formCard">
+
+                    <!-- STEP 1 -->
+                    <div id="step1">
+                        <div class="step-form-title"><i class="fa-solid fa-pen-to-square"></i> Data Kegiatan</div>
+                        <div class="form-group">
+                            <label>Kategori SKP <span style="color:var(--danger)">*</span></label>
+                            <select id="kategori">
+                                <option value="">— Pilih Kategori —</option>
+                                <!-- Opsi diisi dinamis oleh JS dari AppState.getActiveKategoriSKP(),
+                                     supaya kategori yang ditambah/dinonaktifkan Admin Kemahasiswaan
+                                     lewat Master Data SKP otomatis tercermin di sini (FR-15, AB-14). -->
+                            </select>
+                            <div class="error-msg" id="errKategori">Kategori wajib dipilih.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Judul Kegiatan <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="judul" placeholder="Masukkan judul kegiatan" />
+                            <div class="error-msg" id="errJudul">Judul tidak boleh kosong.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Penyelenggara <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="penyelenggara" placeholder="Nama penyelenggara" />
+                            <div class="error-msg" id="errPenyelenggara">Penyelenggara wajib diisi.</div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Tanggal Mulai <span style="color:var(--danger)">*</span></label>
+                                <input type="date" id="tglMulai" />
+                                <div class="error-msg" id="errTglMulai">Tanggal mulai diperlukan.</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Tanggal Selesai <span style="color:var(--danger)">*</span></label>
+                                <input type="date" id="tglSelesai" />
+                                <div class="error-msg" id="errTglSelesai">Tanggal selesai diperlukan.</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Lokasi <span style="color:var(--danger)">*</span></label>
+                            <input type="text" id="lokasi" placeholder="Tempat pelaksanaan kegiatan" />
+                            <div class="error-msg" id="errLokasi">Lokasi tidak boleh kosong.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tingkat Kegiatan <span style="color:var(--danger)">*</span></label>
+                            <select id="tingkat">
+                                <option value="">— Pilih Tingkat —</option>
+                                <option value="internal">Internal</option>
+                                <option value="regional">Regional</option>
+                                <option value="nasional">Nasional</option>
+                                <option value="internasional">Internasional</option>
+                            </select>
+                            <div class="error-msg" id="errTingkat">Tingkat wajib dipilih.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi Kegiatan</label>
+                            <textarea id="deskripsi" rows="3" placeholder="Deskripsi singkat tentang kegiatan (opsional)"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Estimasi Poin SKP</label>
+                            <input type="text" id="estimasiPoin" class="readonly" readonly value="— Poin" />
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div id="step2" style="display:none;">
+                        <div class="step-form-title"><i class="fa-solid fa-paperclip"></i> Dokumen Pendukung</div>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up ua-icon"></i>
+                            <div class="ua-title">Klik untuk memilih atau seret file ke sini</div>
+                            <div class="ua-sub">PDF, JPG, PNG — Maksimum 5 MB</div>
+                        </div>
+                        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(this.files)" />
+                        <div id="filePreviewContainer"></div>
+                        <div class="progress-upload" id="progressUploadBar">
+                            <div class="progress-upload-fill" id="progressUploadFill"></div>
+                        </div>
+                        <div class="error-msg" id="errFile" style="margin-top:8px;">Dokumen pendukung wajib diunggah.</div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div id="step3" style="display:none;">
+                        <div class="step-form-title"><i class="fa-solid fa-eye"></i> Review Pengajuan</div>
+                        <div class="review-grid" id="reviewContent"></div>
+                        <div style="margin-top:16px;">
+                            <button class="btn btn-ghost" onclick="goToStep(1)">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+                    <div id="step4" style="display:none;">
+                        <div class="success-box">
+                            <div class="sb-top">
+                                <div class="sb-check"><i class="fa-solid fa-check"></i></div>
+                                <div>
+                                    <div class="sb-title">Pengajuan Berhasil Dikirim</div>
+                                    <div class="sb-sub">ID: <span id="finalId">SKP-2026-XXX</span> &nbsp;·&nbsp; Status: <span id="finalStatus"></span></div>
+                                </div>
+                            </div>
+                            <div class="sb-body">
+                                <div class="sb-panel">
+                                    <div class="sbp-label"><i class="fa-solid fa-diagram-project"></i> Alur Validasi</div>
+                                    <div class="vf-steps" id="vfSteps"></div>
+                                    <div class="sb-redirect-note">
+                                        <i class="fa-solid fa-rotate-right"></i>
+                                        Anda akan diarahkan kembali ke dashboard dalam <strong id="countdownNum">20</strong> detik
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="wizard-buttons" id="wizardButtons">
+                        <button class="btn btn-ghost" id="btnPrev" onclick="prevStep()" style="visibility:hidden;">
+                            <i class="fa-solid fa-arrow-left"></i> Sebelumnya
+                        </button>
+                        <div class="btn-group">
+                            <button class="btn btn-ghost" id="btnDraft" onclick="simpanDraft()">
+                                <i class="fa-solid fa-floppy-disk"></i> Simpan Draft
+                            </button>
+                            <button class="btn btn-dark" id="btnNext" onclick="nextStep()">
+                                Selanjutnya <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button class="btn btn-green" id="btnSubmit" style="display:none;" onclick="submitPengajuan()">
+                                <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Info Card -->
+                <div class="info-card" id="infoCard">
+                    <div class="info-card-title">
+                        <i class="fa-solid fa-circle-info"></i> Informasi Pengajuan
+                    </div>
+                    <div class="info-poin-box">
+                        <div class="ipb-num" id="infoPoinNum">0</div>
+                        <div class="ipb-label">Estimasi Poin SKP</div>
+                    </div>
+                    <div class="info-time" id="infoWaktu">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Pilih kategori untuk estimasi waktu</span>
+                    </div>
+                    <div>
+                        <div style="font-size:0.8rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+                            <i class="fa-solid fa-diagram-project" style="color:var(--accent);margin-right:6px;"></i>Alur Validasi
+                        </div>
+                        <div class="workflow-list" id="workflowList">
+                            <div class="workflow-item" style="color:var(--text-muted);">
+                                <i class="fa-solid fa-circle-question"></i>
+                                <span>Pilih kategori untuk melihat alur</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);font-weight:500;margin-bottom:6px;">Status Pengajuan</div>
+                        <span class="status-badge status-draft" id="statusBadge">
+                            <i class="fa-solid fa-pen"></i> Draft
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            © 2026 Politeknik AI Lembaga Pendidikan Indonesia &nbsp;|&nbsp; Prototype Version 1.0
+        </footer>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- LOGOUT MODAL -->
+    <div class="modal-overlay hidden" id="logoutModal">
+        <div class="modal-dialog">
+            <div class="modal-icon"><i class="fa-solid fa-right-from-bracket" style="color:var(--danger);"></i></div>
+            <h4>Konfirmasi Logout</h4>
+            <p>Apakah Anda yakin ingin keluar dari akun ini?</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
+                <button class="btn-modal btn-modal-danger" onclick="confirmLogout()">Ya, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION MODAL -->
+    <div class="modal-overlay hidden" id="notifModal">
+        <div class="modal-dialog">
+            <div class="modal-icon" id="notifIcon"></div>
+            <h4 id="notifTitle"></h4>
+            <p  id="notifMsg"></p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeNotifModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="state.js"></script>
+    <script>
+        // ==================== SESSION ====================
+        const sessionData = JSON.parse(sessionStorage.getItem('skp_user_session'));
+        if (!sessionData || sessionData.roleKey !== 'mahasiswa') window.location.href = 'login.html';
+
+        const mhsEmail    = sessionData?.email    || '';
+        const mhsNama     = sessionData?.fullName || 'Mahasiswa';
+        const mhsAvatar   = sessionData?.avatar   || 'MA';
+        const mhsProdi    = sessionData?.prodi    || '';
+        const mhsNim      = sessionData?.nim      || '-';
+        const mhsAngkatan = sessionData?.angkatan || '-';
+
+        // Topbar
+        document.getElementById('topbarAvatar').textContent = mhsAvatar;
+        document.getElementById('topbarName').textContent   = mhsNama;
+        document.getElementById('topbarRole').textContent   = mhsProdi + ' • Mahasiswa';
+
+        // ==================== GLOBALS ====================
+        let currentStep  = 1;
+        const totalSteps = 4;
+        let uploadedFile = null;
+        const stepTitles = ['Data Kegiatan','Dokumen Pendukung','Review Pengajuan','Selesai'];
+
+        // Catatan: bobot poin dan alur workflow TIDAK lagi disimpan sebagai
+        // konstanta lokal di halaman ini. Keduanya dibaca langsung dari AppState
+        // (Master Aturan SKP & Konfigurasi Workflow), sumber kebenaran tunggal
+        // yang dapat diubah Admin Kemahasiswaan lewat dashboard admin tanpa
+        // perubahan kode program (FR-15, FR-22).
+        const waktuMap = {
+            'prestasi-akademik':'3-5 Hari kerja',
+            'prestasi-organisasi':'2-3 Hari kerja',
+            'prestasi-kompetisi':'5-7 Hari kerja',
+            'seminar':'2-3 Hari kerja',
+            'pelatihan':'2-3 Hari kerja',
+            'pengabdian':'2-3 Hari kerja',
+        };
+
+        // ==================== ISI DROPDOWN KATEGORI (dinamis) ====================
+        function populateKategoriDropdown() {
+            const select = document.getElementById('kategori');
+            const kategoriAktif = AppState.getActiveKategoriSKP();
+            kategoriAktif.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k.kode;
+                opt.textContent = k.nama;
+                select.appendChild(opt);
+            });
+        }
+        populateKategoriDropdown();
+
+        // ==================== WIZARD UI ====================
+        function updateWizardUI(step) {
+            document.querySelectorAll('.wizard-step-item').forEach(el => {
+                const s = parseInt(el.dataset.step);
+                el.classList.remove('active','completed');
+                if (s === step) el.classList.add('active');
+                if (s < step)   el.classList.add('completed');
+            });
+            document.getElementById('wmTitle').textContent   = stepTitles[step-1];
+            document.getElementById('wmCurrent').textContent = step;
+            const pct = Math.round(((step-1)/(totalSteps-1))*100);
+            document.getElementById('wizardProgressFill').style.width = pct + '%';
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById('step'+i).style.display = (i===step)?'block':'none';
+            }
+            const btnPrev   = document.getElementById('btnPrev');
+            const btnNext   = document.getElementById('btnNext');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnDraft  = document.getElementById('btnDraft');
+            const wButtons  = document.getElementById('wizardButtons');
+            btnPrev.style.visibility = step===1 ? 'hidden' : 'visible';
+            if (step === 4) {
+                wButtons.style.display = 'none';
+            } else if (step === 3) {
+                wButtons.style.display = '';
+                btnNext.style.display   = 'none';
+                btnSubmit.style.display = 'inline-flex';
+                btnDraft.style.display  = 'inline-flex';
+                btnPrev.style.visibility= 'visible';
+            } else {
+                wButtons.style.display  = '';
+                btnNext.style.display   = 'inline-flex';
+                btnSubmit.style.display = 'none';
+                btnDraft.style.display  = 'inline-flex';
+            }
+        }
+
+        // ==================== INFO CARD ====================
+        function isFormComplete() {
+            const fields = ['kategori','judul','penyelenggara','tglMulai','tglSelesai','lokasi','tingkat'];
+            return fields.every(id => document.getElementById(id).value.trim() !== '') && uploadedFile !== null;
+        }
+
+        function updateInfoCard() {
+            const kat  = document.getElementById('kategori').value;
+            const poin = getEstimasiPoin();
+            document.getElementById('infoPoinNum').textContent = poin;
+            const waktuEl = document.getElementById('infoWaktu');
+            waktuEl.innerHTML = kat
+                ? `<i class="fa-solid fa-clock"></i><span>Estimasi: <strong>${waktuMap[kat] || '2-3 Hari kerja'}</strong></span>`
+                : `<i class="fa-solid fa-clock"></i><span>Pilih kategori untuk estimasi waktu</span>`;
+            const wfList = document.getElementById('workflowList');
+            const workflowAktif = kat ? AppState.getWorkflowForKategori(kat) : null;
+            if (kat && workflowAktif && workflowAktif.length) {
+                wfList.innerHTML = workflowAktif.map((r,i) =>
+                    `<div class="workflow-item ${i===0?'done':''}">
+                        <i class="fa-solid fa-${i===0?'check-circle':'circle'}"></i>
+                        <span>${r}</span>
+                    </div>`
+                ).join('');
+            } else {
+                wfList.innerHTML = `<div class="workflow-item" style="color:var(--text-muted);">
+                    <i class="fa-solid fa-circle-question"></i><span>Pilih kategori untuk melihat alur</span>
+                </div>`;
+            }
+            const badge = document.getElementById('statusBadge');
+            if (isFormComplete()) {
+                badge.className = 'status-badge status-ready';
+                badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Siap Dikirim';
+            } else {
+                badge.className = 'status-badge status-incomplete';
+                badge.innerHTML = '<i class="fa-solid fa-clock"></i> Data Belum Siap Dikirim';
+            }
+        }
+
+        function getEstimasiPoin() {
+            const kat = document.getElementById('kategori').value;
+            const tk  = document.getElementById('tingkat').value;
+            if (!kat || !tk) return 0;
+            return AppState.getBobotPoin(kat, tk);
+        }
+
+        document.getElementById('kategori').addEventListener('change', () => {
+            document.getElementById('estimasiPoin').value = getEstimasiPoin() + ' Poin';
+            updateInfoCard();
+        });
+        document.getElementById('tingkat').addEventListener('change', () => {
+            document.getElementById('estimasiPoin').value = getEstimasiPoin() + ' Poin';
+            updateInfoCard();
+        });
+        ['judul','penyelenggara','tglMulai','tglSelesai','lokasi'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateInfoCard);
+        });
+
+        // ==================== VALIDATION ====================
+        function validateStep1() {
+            let ok = true;
+            [
+                {id:'kategori',      err:'errKategori'},
+                {id:'judul',         err:'errJudul'},
+                {id:'penyelenggara', err:'errPenyelenggara'},
+                {id:'tglMulai',      err:'errTglMulai'},
+                {id:'tglSelesai',    err:'errTglSelesai'},
+                {id:'lokasi',        err:'errLokasi'},
+                {id:'tingkat',       err:'errTingkat'},
+            ].forEach(f => {
+                const el = document.getElementById(f.id);
+                const e  = document.getElementById(f.err);
+                if (!el.value.trim()) {
+                    el.classList.add('error-border'); e.style.display='block'; ok=false;
+                } else {
+                    el.classList.remove('error-border'); e.style.display='none';
+                }
+            });
+            return ok;
+        }
+
+        function validateStep2() {
+            const e = document.getElementById('errFile');
+            if (!uploadedFile) {
+                e.style.display='block';
+                document.getElementById('uploadArea').style.borderColor='var(--danger)';
+                return false;
+            }
+            e.style.display='none';
+            document.getElementById('uploadArea').style.borderColor='var(--border)';
+            return true;
+        }
+
+        // ==================== NAVIGATION ====================
+        function nextStep() {
+            if (currentStep===1 && !validateStep1()) return;
+            if (currentStep===2 && !validateStep2()) return;
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizardUI(currentStep);
+                if (currentStep===3) generateReview();
+            }
+        }
+        function prevStep() { if (currentStep>1) { currentStep--; updateWizardUI(currentStep); } }
+        function goToStep(s) { currentStep=s; updateWizardUI(s); if(s===3) generateReview(); }
+
+        // ==================== REVIEW ====================
+        function generateReview() {
+            const kat = document.getElementById('kategori');
+            const tk  = document.getElementById('tingkat');
+            const items = [
+                {label:'Kategori',       val: kat.options[kat.selectedIndex].text},
+                {label:'Judul Kegiatan', val: document.getElementById('judul').value},
+                {label:'Penyelenggara',  val: document.getElementById('penyelenggara').value},
+                {label:'Tanggal',        val: document.getElementById('tglMulai').value + ' s/d ' + document.getElementById('tglSelesai').value},
+                {label:'Lokasi',         val: document.getElementById('lokasi').value},
+                {label:'Tingkat',        val: tk.options[tk.selectedIndex].text},
+                {label:'Estimasi Poin',  val: getEstimasiPoin() + ' Poin', accent:true},
+                {label:'Dokumen',        val: uploadedFile ? uploadedFile.name : 'Tidak ada'},
+            ];
+            document.getElementById('reviewContent').innerHTML = items.map(i =>
+                `<div class="review-item ${i.accent?'accent':''}">
+                    <div class="ri-label">${i.label}</div>
+                    <div class="ri-val">${i.val}</div>
+                </div>`
+            ).join('');
+        }
+
+        // ==================== FILE UPLOAD ====================
+        function handleFileSelect(files) {
+            if (!files.length) return;
+            const file = files[0];
+            if (file.size > 5*1024*1024) { showNotifModal('Gagal','Ukuran file maksimum 5 MB.','fa-circle-xmark','var(--danger)'); return; }
+            uploadedFile = file;
+            document.getElementById('filePreviewContainer').innerHTML = `
+                <div class="file-preview">
+                    <i class="fa-solid fa-file-lines" style="color:var(--accent);font-size:1.2rem;"></i>
+                    <span class="fp-name">${file.name}</span>
+                    <i class="fa-solid fa-circle-check" style="color:var(--success);"></i>
+                    <button class="fp-remove" onclick="removeFile()" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
+                </div>`;
+            const bar  = document.getElementById('progressUploadBar');
+            const fill = document.getElementById('progressUploadFill');
+            bar.style.display='block'; fill.style.width='0%';
+            let w=0, iv=setInterval(()=>{ w+=10; fill.style.width=w+'%'; if(w>=100){clearInterval(iv);setTimeout(()=>bar.style.display='none',500);} },120);
+            updateInfoCard();
+        }
+        function removeFile() {
+            uploadedFile=null;
+            document.getElementById('filePreviewContainer').innerHTML='';
+            document.getElementById('fileInput').value='';
+            updateInfoCard();
+        }
+
+        // Drag & drop
+        const ua = document.getElementById('uploadArea');
+        ua.addEventListener('dragover', e=>{ e.preventDefault(); ua.style.borderColor='var(--accent)'; });
+        ua.addEventListener('dragleave',()=>{ ua.style.borderColor='var(--border)'; });
+        ua.addEventListener('drop', e=>{ e.preventDefault(); ua.style.borderColor='var(--border)'; if(e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files); });
+
+        // ==================== DRAFT ====================
+        function simpanDraft() {
+            const d = getFormData();
+            if (!d.kategori) {
+                AppState.showToast('Isi minimal kategori dan judul.', 'error');
+                return;
+            }
+            const editId = sessionStorage.getItem('skp_edit_draft_id');
+            if (editId) {
+                // Sedang mengedit draft yang sudah ada → perbarui, jangan buat duplikat baru
+                AppState.updateDraft(editId, { ...d, status: 'Draft' });
+                AppState.showToast('Draft berhasil diperbarui.', 'success');
+            } else {
+                const draft = {
+                    ...d,
+                    status: 'Draft',
+                    tanggalDibuat: new Date().toISOString(),
+                    terakhirDiubah: new Date().toISOString(),
+                    id: 'DRF-' + Date.now()
+                };
+                AppState.addDraft(draft);
+                AppState.showToast('Draft berhasil disimpan.', 'success');
+            }
+            sessionStorage.removeItem('skp_edit_draft_id');
+        }
+
+        // ==================== SUBMIT ====================
+        function submitPengajuan() {
+            if (!validateStep1() || !validateStep2()) return;
+            const d = getFormData();
+
+            const pengajuanInput = {
+                ...d,
+                status: 'Sedang Diverifikasi',
+                tanggal: new Date().toISOString().slice(0,10),
+                validator: '-',
+                poin: d.estimasiPoin || 0,
+                validasiMulai: Date.now()
+            };
+            // addPengajuan mengembalikan objek pengajuan LENGKAP, termasuk
+            // 'workflow' yang sudah dibentuk dari konfigurasi yang sesungguhnya
+            // sedang berlaku (hasil pengaturan Admin Kemahasiswaan) — ini yang
+            // dipakai untuk tampilan, bukan tabel konstanta lokal.
+            const pengajuan = AppState.addPengajuan(pengajuanInput);
+
+            const editId = sessionStorage.getItem('skp_edit_draft_id');
+            if (editId) {
+                AppState.removeDraft(editId, true); // silent: sudah tercatat sebagai "Pengajuan dikirim"
+                sessionStorage.removeItem('skp_edit_draft_id');
+            }
+
+            AppState.showToast('Pengajuan berhasil dikirim.', 'success');
+            // Tampilkan step 4
+            document.getElementById('finalStatus').textContent = 'Sedang Diverifikasi';
+            document.getElementById('finalId').textContent = pengajuan.id;
+            currentStep = 4;
+            updateWizardUI(4);
+
+            // Workflow display — diambil dari pengajuan.workflow (array objek
+            // {role, status, date}) yang benar-benar tersimpan di data, bukan
+            // ditebak ulang dari kategori.
+            const wf = (pengajuan.workflow || []).map(w => w.role);
+            const roleDesc = {
+                'Mahasiswa': 'Pengajuan dibuat & dokumen diunggah',
+                'Kaprodi': 'Verifikasi relevansi akademik',
+                'Admin Kemahasiswaan': 'Verifikasi dokumen & penginputan poin',
+                'Wakil Direktur': 'Persetujuan akhir tingkat institusi'
+            };
+            document.getElementById('vfSteps').innerHTML = wf.map((role, i) => {
+                const state = i===0 ? 'done' : (i===1 ? 'current' : 'pending');
+                const tagLabel = i===0 ? 'Selesai' : (i===1 ? 'Sedang Diproses' : 'Menunggu');
+                const icon = i===0 ? 'check' : (i===1 ? 'clock' : 'circle');
+                return `<div class="vf-step ${state}">
+                    <div class="vf-dot ${state}"><i class="fa-solid fa-${icon}"></i></div>
+                    <div class="vf-info">
+                        <div class="vf-row">
+                            <div class="vf-role">${role}</div>
+                            <span class="vf-tag ${state}">${tagLabel}</span>
+                        </div>
+                        <div class="vf-desc">${roleDesc[role]||''}</div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Countdown redirect
+            const TOTAL = 20;
+            let sisa = TOTAL;
+            const numEl = document.getElementById('countdownNum');
+            numEl.textContent = sisa;
+            const tick = setInterval(()=>{
+                sisa--;
+                numEl.textContent = sisa;
+                if (sisa <= 0) { clearInterval(tick); window.location.href='dashboard-mahasiswa.html'; }
+            }, 1000);
+        }
+
+        function getFormData() {
+            const kat=document.getElementById('kategori');
+            const tk=document.getElementById('tingkat');
+            return {
+                kategori:kat.value,
+                kategoriText:kat.options[kat.selectedIndex].text,
+                judul:document.getElementById('judul').value,
+                penyelenggara:document.getElementById('penyelenggara').value,
+                tglMulai:document.getElementById('tglMulai').value,
+                tglSelesai:document.getElementById('tglSelesai').value,
+                lokasi:document.getElementById('lokasi').value,
+                tingkat:tk.value,
+                tingkatText:tk.options[tk.selectedIndex].text,
+                estimasiPoin:getEstimasiPoin(),
+                deskripsi:document.getElementById('deskripsi').value,
+                file:uploadedFile?uploadedFile.name:null
+            };
+        }
+
+        // ==================== NOTIFICATION MODAL ====================
+        function showNotifModal(title,msg,icon,color) {
+            document.getElementById('notifIcon').innerHTML=`<i class="fa-solid ${icon}" style="font-size:3rem;color:${color};"></i>`;
+            document.getElementById('notifTitle').textContent=title;
+            document.getElementById('notifMsg').textContent=msg;
+            document.getElementById('notifModal').classList.remove('hidden');
+        }
+        function closeNotifModal() { document.getElementById('notifModal').classList.add('hidden'); }
+
+        // ==================== LOAD DRAFT ====================
+        (function loadDraftIfExist() {
+            const editId = sessionStorage.getItem('skp_edit_draft_id');
+            if (editId) {
+                const draft = AppState.getDraftById(editId);
+                if (draft) {
+                    document.getElementById('kategori').value = draft.kategori || '';
+                    document.getElementById('judul').value = draft.judul || '';
+                    document.getElementById('penyelenggara').value = draft.penyelenggara || '';
+                    document.getElementById('tglMulai').value = draft.tglMulai || '';
+                    document.getElementById('tglSelesai').value = draft.tglSelesai || '';
+                    document.getElementById('lokasi').value = draft.lokasi || '';
+                    document.getElementById('tingkat').value = draft.tingkat || '';
+                    document.getElementById('deskripsi').value = draft.deskripsi || '';
+                    if (draft.file) {
+                        uploadedFile = { name: draft.file };
+                        document.getElementById('filePreviewContainer').innerHTML = `
+                            <div class="file-preview">
+                                <i class="fa-solid fa-file-lines" style="color:var(--accent);font-size:1.2rem;"></i>
+                                <span class="fp-name">${draft.file}</span>
+                                <i class="fa-solid fa-circle-check" style="color:var(--success);"></i>
+                                <button class="fp-remove" onclick="removeFile()" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
+                            </div>`;
+                    }
+                    document.getElementById('kategori').dispatchEvent(new Event('change'));
+                    document.getElementById('tingkat').dispatchEvent(new Event('change'));
+                    sessionStorage.removeItem('skp_edit_draft_id');
+                }
+            }
+        })();
+
+        // ==================== LOGOUT ====================
+        function showLogoutModal()  { document.getElementById('logoutModal').classList.remove('hidden'); }
+        function closeLogoutModal() { document.getElementById('logoutModal').classList.add('hidden'); }
+        function confirmLogout()    { sessionStorage.clear(); window.location.href='login.html'; }
+        document.getElementById('logoutModal').addEventListener('click',function(e){ if(e.target===this) closeLogoutModal(); });
+
+        // ==================== SIDEBAR ====================
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        // ==================== DARK MODE ====================
+        document.getElementById('darkModeToggle').addEventListener('click',function(){
+            const icon=this.querySelector('i');
+            document.body.classList.toggle('dark-mode');
+            icon.classList.toggle('fa-moon'); icon.classList.toggle('fa-sun');
+        });
+
+        // ==================== INIT ====================
+        updateWizardUI(1);
+        updateInfoCard();
+        console.log('📝 Halaman Pengajuan SKP siap.');
+    </script>
+</body>
+</html>
