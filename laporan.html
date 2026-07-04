@@ -265,39 +265,6 @@
             align-items: center;
             gap: 16px;
             flex: 1;
-            max-width: 400px;
-        }
-
-        .topbar-left .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 30px;
-            padding: 8px 16px;
-            gap: 8px;
-            width: 100%;
-            transition: all var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .topbar-left .search-box:focus-within {
-            border-color: var(--accent);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
-        }
-
-        .topbar-left .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            width: 100%;
-            color: var(--text-primary);
-        }
-
-        .topbar-left .search-box i {
-            color: var(--text-muted);
         }
 
         .topbar-right {
@@ -326,17 +293,6 @@
         .topbar-right .icon-btn:hover {
             background: var(--light-gray);
             color: var(--accent);
-        }
-
-        .topbar-right .icon-btn .badge-dot {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 9px;
-            height: 9px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 2px solid var(--white);
         }
 
         .topbar-right .user-display {
@@ -426,7 +382,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD RINGKASAN / KPI (6 kartu) ==================== */
+        /* ==================== CARD RINGKASAN / KPI (4 kartu) — seragam dengan halaman lain ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -465,10 +421,8 @@
 
         .summary-card .card-icon.blue { background: #EFF6FF; color: var(--info); }
         .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
-        .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
-        .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
-        .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
         .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
+        .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
 
         .summary-card .card-info .card-value {
             font-size: 1.5rem;
@@ -571,32 +525,8 @@
         .badge-success  { background: #D1FAE5; color: #065F46; }
         .badge-danger   { background: #FEE2E2; color: #991B1B; }
         .badge-info     { background: #DBEAFE; color: #1E40AF; }
-        .badge-pending  { background: #FEF3C7; color: #92400E; }
-        .badge-priority-high   { background: #FEE2E2; color: #991B1B; }
-        .badge-priority-medium { background: #FEF3C7; color: #92400E; }
-        .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
-        .btn-detail {
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: var(--white);
-            color: var(--accent);
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.74rem;
-            font-weight: 500;
-            transition: all var(--transition);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-detail:hover {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        /* ==================== EMPTY STATE (antrean validasi) ==================== */
+        /* ==================== EMPTY STATE ==================== */
         .empty-state-box {
             display: flex;
             flex-direction: column;
@@ -630,141 +560,6 @@
             color: var(--text-muted);
             max-width: 320px;
         }
-
-        /* ==================== QUICK ACTION ==================== */
-        .quick-action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-        .quick-action-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border-radius: var(--radius);
-            border: 2px solid var(--border);
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all var(--transition);
-            background: var(--light-gray);
-        }
-        .quick-action-item:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-        .quick-action-item .qa-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-sm);
-            background: var(--primary);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .quick-action-item .qa-text .qa-title {
-            font-weight: 600;
-            font-size: 0.86rem;
-        }
-        .quick-action-item .qa-text .qa-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 1px;
-        }
-
-        /* ==================== NOTIFICATION LIST ==================== */
-        .notification-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .notification-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .notification-list::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 10px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .notification-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: var(--radius-sm);
-            background: var(--light-gray);
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-        }
-
-        .notification-item:hover { background: var(--accent-light); }
-        .notification-item i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
-
-        .notification-item .notif-time {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* ==================== ACTIVITY LIST ==================== */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-        }
-
-        .activity-item:last-child { border-bottom: none; }
-        .activity-item i { color: var(--accent); width: 16px; text-align: center; }
-        .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
-
-        /* ==================== STATUS PERIODE (kecil) ==================== */
-        .periode-status-box {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
-        }
-        .periode-status-box .ps-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: var(--success);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .periode-status-box.belum-konfigurasi .ps-icon { background: var(--text-muted); }
-        .periode-status-box .ps-title { font-weight: 700; font-size: 0.9rem; }
-        .periode-status-box .ps-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ==================== FOOTER ==================== */
         .footer {
@@ -957,15 +752,13 @@
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
+                <!-- Search box dihapus -->
             </div>
             <div class="topbar-right">
                 <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="icon-btn" title="Notifikasi">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge-dot" id="notifDot" style="display:none;"></span>
-                </button>
+                <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
@@ -1022,13 +815,13 @@
                 </div>
             </div>
 
-            <!-- Ringkasan Statistik -->
+            <!-- Ringkasan Statistik (4 card, label tanpa "(sesuai filter)") -->
             <div class="summary-cards">
                 <div class="summary-card">
                     <div class="card-icon blue"><i class="fa-solid fa-file-lines"></i></div>
                     <div class="card-info">
                         <div class="card-value" id="lapTotalPengajuan">0</div>
-                        <div class="card-label">Total Pengajuan (sesuai filter)</div>
+                        <div class="card-label">Total Pengajuan</div>
                     </div>
                 </div>
                 <div class="summary-card">

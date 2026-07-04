@@ -14,7 +14,7 @@
     // ============================================================
     const DUMMY_ACCOUNTS = {
         'mahasiswa1@plai.ac.id': {
-            fullName: 'Ahmad Fauzi Rahman',
+            fullName: 'Gergorius Vernando Susanto',
             role: 'Mahasiswa',
             roleKey: 'mahasiswa',
             password: '12345',
@@ -24,7 +24,7 @@
             prodi: 'Teknik Informatika'
         },
         'mahasiswa2@plai.ac.id': {
-            fullName: 'Dewi Sartika Putri',
+            fullName: 'Siti Aisyah Al Humaira',
             role: 'Mahasiswa',
             roleKey: 'mahasiswa',
             password: '12345',
@@ -34,7 +34,7 @@
             prodi: 'Sistem Informasi'
         },
         'adminmhs@plai.ac.id': {
-            fullName: 'Dra. Siti Nurhaliza, M.Pd.',
+            fullName: 'Habib Gili Ajiwinata, M.Pd.',
             role: 'Admin Kemahasiswaan',
             roleKey: 'admin-kemahasiswaan',
             password: '12345',
@@ -44,7 +44,7 @@
             prodi: 'Bagian Kemahasiswaan'
         },
         'kaprodi@plai.ac.id': {
-            fullName: 'Dr. Budi Santoso, S.Kom., M.Kom.',
+            fullName: 'Dr. Musthofa Ridlwan, S.Kom., M.Kom.',
             role: 'Kaprodi',
             roleKey: 'kaprodi',
             password: '12345',
@@ -54,7 +54,7 @@
             prodi: 'Teknik Informatika'
         },
         'wadir@plai.ac.id': {
-            fullName: 'Prof. Dr. Ir. Haryono, M.Sc.',
+            fullName: 'Prof. Dr. Ir. M. Raihan Rivansyah, M.Sc.',
             role: 'Wakil Direktur',
             roleKey: 'wakil-direktur',
             password: '12345',
@@ -64,7 +64,7 @@
             prodi: 'Bidang Akademik'
         },
         'direktur@plai.ac.id': {
-            fullName: 'Prof. Dr. Ir. Rachmat Wijaya, M.Eng.',
+            fullName: 'Prof. Dr. Ir. Naja Nurdin, M.Eng.',
             role: 'Direktur',
             roleKey: 'direktur',
             password: '12345',
@@ -74,7 +74,7 @@
             prodi: 'Politeknik AI LPI'
         },
         'lsi@plai.ac.id': {
-            fullName: 'Rina Anggraeni, S.Pd., M.T.',
+            fullName: 'Karolina Ida Dangku, S.Pd., M.T.',
             role: 'Tim LSI',
             roleKey: 'tim-lsi',
             password: '12345',

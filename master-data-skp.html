@@ -265,39 +265,6 @@
             align-items: center;
             gap: 16px;
             flex: 1;
-            max-width: 400px;
-        }
-
-        .topbar-left .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 30px;
-            padding: 8px 16px;
-            gap: 8px;
-            width: 100%;
-            transition: all var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .topbar-left .search-box:focus-within {
-            border-color: var(--accent);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
-        }
-
-        .topbar-left .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            width: 100%;
-            color: var(--text-primary);
-        }
-
-        .topbar-left .search-box i {
-            color: var(--text-muted);
         }
 
         .topbar-right {
@@ -326,17 +293,6 @@
         .topbar-right .icon-btn:hover {
             background: var(--light-gray);
             color: var(--accent);
-        }
-
-        .topbar-right .icon-btn .badge-dot {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 9px;
-            height: 9px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 2px solid var(--white);
         }
 
         .topbar-right .user-display {
@@ -1109,15 +1065,13 @@
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
+                <!-- Search box dihapus -->
             </div>
             <div class="topbar-right">
                 <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="icon-btn" title="Notifikasi">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge-dot" id="notifDot" style="display:none;"></span>
-                </button>
+                <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
@@ -1156,15 +1110,12 @@
             </div>
 
             <!-- ============================================================
-                 TAB 1: MASTER ATURAN SKP (FR-15)
+                 TAB 1: MASTER ATURAN SKP
                  ============================================================ -->
             <div class="tab-panel active" id="tabSKP">
                 <div class="card">
                     <h3><i class="fa-solid fa-circle-info"></i> Tentang Master Aturan SKP</h3>
-                    <div class="alert-box info">
-                        <i class="fa-solid fa-circle-info" style="margin-top:2px;"></i>
-                        <span>Perubahan bobot poin atau penonaktifan kategori HANYA berlaku untuk pengajuan baru. Data pengajuan yang sudah ada tidak akan berubah (AB-13). Kategori yang dinonaktifkan tidak akan muncul di formulir pengajuan mahasiswa, namun data historisnya tetap tersimpan utuh (AB-14).</span>
-                    </div>
+                    <!-- Alert box info dihapus -->
                     <button class="btn btn-accent" onclick="openTambahKategoriModal()">
                         <i class="fa-solid fa-plus"></i> Tambah Kategori Baru
                     </button>
@@ -1177,15 +1128,12 @@
             </div>
 
             <!-- ============================================================
-                 TAB 2: PERIODE AKADEMIK (FR-25)
+                 TAB 2: PERIODE AKADEMIK
                  ============================================================ -->
             <div class="tab-panel" id="tabPeriode">
                 <div class="card">
                     <h3><i class="fa-solid fa-circle-info"></i> Tentang Periode Akademik</h3>
-                    <div class="alert-box info">
-                        <i class="fa-solid fa-circle-info" style="margin-top:2px;"></i>
-                        <span>Hanya satu periode akademik yang boleh berstatus Aktif dalam satu waktu (AB-15). Tutup periode yang sedang aktif terlebih dahulu sebelum mengaktifkan periode baru.</span>
-                    </div>
+                    <!-- Alert box info dihapus -->
                     <button class="btn btn-accent" onclick="openTambahPeriodeModal()">
                         <i class="fa-solid fa-plus"></i> Tambah Periode Baru
                     </button>
@@ -1198,15 +1146,12 @@
             </div>
 
             <!-- ============================================================
-                 TAB 3: KONFIGURASI WORKFLOW (FR-22)
+                 TAB 3: KONFIGURASI WORKFLOW
                  ============================================================ -->
             <div class="tab-panel" id="tabWorkflow">
                 <div class="card">
                     <h3><i class="fa-solid fa-circle-info"></i> Tentang Konfigurasi Workflow</h3>
-                    <div class="alert-box info">
-                        <i class="fa-solid fa-circle-info" style="margin-top:2px;"></i>
-                        <span>Atur urutan validator untuk setiap kategori SKP. Perubahan hanya berlaku untuk pengajuan baru (AB-17) — pengajuan yang sedang berjalan akan tetap mengikuti alur lama hingga selesai.</span>
-                    </div>
+                    <!-- Alert box info dihapus -->
                 </div>
 
                 <div class="card">

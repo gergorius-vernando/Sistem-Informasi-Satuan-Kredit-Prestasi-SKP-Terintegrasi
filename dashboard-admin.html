@@ -265,39 +265,6 @@
             align-items: center;
             gap: 16px;
             flex: 1;
-            max-width: 400px;
-        }
-
-        .topbar-left .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 30px;
-            padding: 8px 16px;
-            gap: 8px;
-            width: 100%;
-            transition: all var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .topbar-left .search-box:focus-within {
-            border-color: var(--accent);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
-        }
-
-        .topbar-left .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            width: 100%;
-            color: var(--text-primary);
-        }
-
-        .topbar-left .search-box i {
-            color: var(--text-muted);
         }
 
         .topbar-right {
@@ -326,17 +293,6 @@
         .topbar-right .icon-btn:hover {
             background: var(--light-gray);
             color: var(--accent);
-        }
-
-        .topbar-right .icon-btn .badge-dot {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 9px;
-            height: 9px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 2px solid var(--white);
         }
 
         .topbar-right .user-display {
@@ -426,7 +382,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD RINGKASAN / KPI (6 kartu) ==================== */
+        /* ==================== CARD RINGKASAN / KPI (5 kartu) ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -463,9 +419,8 @@
             flex-shrink: 0;
         }
 
-        .summary-card .card-icon.blue { background: #EFF6FF; color: var(--info); }
-        .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
         .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
+        .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
         .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
         .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
         .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
@@ -487,12 +442,6 @@
         .grid-2col {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .grid-3col {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
             gap: 18px;
         }
 
@@ -596,7 +545,7 @@
             color: var(--primary);
         }
 
-        /* ==================== EMPTY STATE (antrean validasi) ==================== */
+        /* ==================== EMPTY STATE ==================== */
         .empty-state-box {
             display: flex;
             flex-direction: column;
@@ -629,51 +578,6 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             max-width: 320px;
-        }
-
-        /* ==================== QUICK ACTION ==================== */
-        .quick-action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-        .quick-action-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border-radius: var(--radius);
-            border: 2px solid var(--border);
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all var(--transition);
-            background: var(--light-gray);
-        }
-        .quick-action-item:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-        .quick-action-item .qa-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-sm);
-            background: var(--primary);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .quick-action-item .qa-text .qa-title {
-            font-weight: 600;
-            font-size: 0.86rem;
-        }
-        .quick-action-item .qa-text .qa-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 1px;
         }
 
         /* ==================== NOTIFICATION LIST ==================== */
@@ -741,7 +645,7 @@
         .activity-item i { color: var(--accent); width: 16px; text-align: center; }
         .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
 
-        /* ==================== STATUS PERIODE (kecil) ==================== */
+        /* ==================== STATUS PERIODE ==================== */
         .periode-status-box {
             display: flex;
             align-items: center;
@@ -838,18 +742,6 @@
         .btn-modal-danger { background: var(--danger); color: white; }
         .btn-modal-danger:hover { background: #DC2626; }
 
-        /* ==================== BUTTON GENERIK ==================== */
-        .btn {
-            padding: 12px 24px; border-radius: 30px;
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.84rem;
-            cursor: pointer; border: none; transition: all var(--transition);
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-accent { background: var(--accent); color: var(--primary); }
-        .btn-accent:hover { background: var(--accent-hover); }
-
         .toast-container {
             position: fixed; top: 24px; right: 24px; z-index: 9999;
             display: flex; flex-direction: column; gap: 10px;
@@ -878,7 +770,6 @@
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 1024px) {
             .grid-2col { grid-template-columns: 1fr; }
-            .grid-3col { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -887,7 +778,6 @@
             .main-content { margin-left: 0; }
             .page-content { padding: 16px; }
             .summary-cards { grid-template-columns: 1fr 1fr; }
-            .grid-3col { grid-template-columns: 1fr; }
             .dashboard-header { flex-direction: column; align-items: flex-start; }
             .topbar { padding: 0 16px; }
             .topbar-right .user-info { display: none; }
@@ -957,19 +847,13 @@
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="globalSearch" placeholder="Cari NIM, nama, atau ID pengajuan...">
-                </div>
+                <!-- Search box dihapus -->
             </div>
             <div class="topbar-right">
                 <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="icon-btn" title="Notifikasi">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge-dot" id="notifDot" style="display:none;"></span>
-                </button>
+                <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
@@ -994,7 +878,7 @@
                 </div>
             </div>
 
-            <!-- KPI Cards (6) -->
+            <!-- KPI Cards (5) -->
             <div class="summary-cards">
                 <div class="summary-card" onclick="window.location.href='validasi-admin.html'">
                     <div class="card-icon orange"><i class="fa-solid fa-inbox"></i></div>
@@ -1025,13 +909,6 @@
                     </div>
                 </div>
                 <div class="summary-card">
-                    <div class="card-icon blue"><i class="fa-solid fa-file-lines"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="kpiTotalPengajuan">0</div>
-                        <div class="card-label">Total Pengajuan</div>
-                    </div>
-                </div>
-                <div class="summary-card">
                     <div class="card-icon gold"><i class="fa-solid fa-user-graduate"></i></div>
                     <div class="card-info">
                         <div class="card-value" id="kpiMahasiswaAktif">0</div>
@@ -1040,33 +917,7 @@
                 </div>
             </div>
 
-            <!-- Quick Action -->
-            <div class="card">
-                <h3><i class="fa-solid fa-bolt"></i> Aksi Cepat</h3>
-                <div class="quick-action-grid">
-                    <a href="validasi-admin.html" class="quick-action-item">
-                        <div class="qa-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                        <div class="qa-text">
-                            <div class="qa-title">Validasi Pengajuan</div>
-                            <div class="qa-desc">Proses antrean menunggu validasi</div>
-                        </div>
-                    </a>
-                    <a href="master-data-skp.html" class="quick-action-item">
-                        <div class="qa-icon"><i class="fa-solid fa-layer-group"></i></div>
-                        <div class="qa-text">
-                            <div class="qa-title">Master Sistem</div>
-                            <div class="qa-desc">Kategori, poin, periode &amp; workflow</div>
-                        </div>
-                    </a>
-                    <a href="laporan.html" class="quick-action-item">
-                        <div class="qa-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                        <div class="qa-text">
-                            <div class="qa-title">Laporan</div>
-                            <div class="qa-desc">Rekap &amp; ekspor data institusi</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            <!-- Aksi Cepat dihapus -->
 
             <!-- Antrean Validasi (Prioritas) -->
             <div class="card">
@@ -1076,7 +927,7 @@
                 </div>
             </div>
 
-            <!-- Grafik & Ringkasan Validasi -->
+            <!-- Grafik & Ringkasan Validasi (tetap seperti semula) -->
             <div class="grid-2col">
                 <div class="card">
                     <h3><i class="fa-solid fa-chart-column"></i> Statistik Pengajuan SKP</h3>
@@ -1145,11 +996,6 @@
             window.location.href = 'login.html';
         }
 
-        // ============================================================
-        // ROLE AUTHENTICATION (lihat juga guard di atas)
-        // Halaman ini hanya boleh diakses oleh currentUser.role = "admin"
-        // (roleKey 'admin-kemahasiswaan'), sesuai batasan pada prompt.
-        // ============================================================
         document.getElementById('topbarAvatar').textContent = session.avatar || 'SN';
         document.getElementById('topbarName').textContent = session.fullName || 'Admin Kemahasiswaan';
         document.getElementById('topbarRole').textContent = session.role || 'Admin Kemahasiswaan';
@@ -1163,7 +1009,7 @@
         let chartRingkasanInstance = null;
 
         // ============================================================
-        // LOAD DASHBOARD (orkestrasi seluruh render)
+        // LOAD DASHBOARD
         // ============================================================
         function loadDashboard() {
             AppState.checkAndUpdateValidasi();
@@ -1172,32 +1018,19 @@
             loadKPI(state);
             loadQueue(state);
             loadChart(state);
-            loadTimeline(state); // alias: aktivitas terbaru
+            loadTimeline(state);
             loadNotification(state);
-            loadMasterSystem(state); // alias: status periode
+            loadMasterSystem(state);
         }
 
-        // ============================================================
-        // LOAD KPI
-        // Validator role 'Admin Kemahasiswaan' yang dipakai untuk
-        // memfilter antrean miliknya sendiri sesuai FR-05 (setiap
-        // validator hanya melihat pengajuan yang relevan dgn perannya).
-        // ============================================================
         const VALIDATOR_ROLE = 'Admin Kemahasiswaan';
 
         function isPendingForMe(p) {
-            // Cocok dengan status 'Sedang Diverifikasi' (tahap pertama, auto-timer
-            // mahasiswa) ATAU 'Pending Admin Kemahasiswaan' (hasil tahap sebelumnya),
-            // tapi HANYA jika node workflow yang aktif memang giliran Admin Kemahasiswaan.
             const wf = p.workflow || [];
             const activeNode = wf.find(w => w.status === 'active');
             const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
             if (isFinal) return false;
             if (activeNode) return activeNode.role === VALIDATOR_ROLE;
-            // Fallback: tahap pertama workflow (index 0 selesai = Mahasiswa, berarti
-            // index 1 yang seharusnya aktif) kebetulan adalah Admin Kemahasiswaan,
-            // namun status masih 'Sedang Diverifikasi' (auto-timer belum menandai
-            // node 'active' secara eksplisit pada data lama).
             return wf[1] && wf[1].role === VALIDATOR_ROLE && p.status === 'Sedang Diverifikasi';
         }
 
@@ -1213,7 +1046,6 @@
 
             const direvisi = allPengajuan.filter(p => p.status === 'Revisi').length;
             const ditolak = allPengajuan.filter(p => p.status === 'Ditolak').length;
-            const totalPengajuan = allPengajuan.length;
 
             const accounts = AppState.getAllAccounts();
             const mahasiswaAktif = Object.values(accounts).filter(a => a.roleKey === 'mahasiswa').length;
@@ -1222,13 +1054,9 @@
             animateCounter('kpiDisetujuiHariIni', disetujuiHariIni);
             animateCounter('kpiDirevisi', direvisi);
             animateCounter('kpiDitolak', ditolak);
-            animateCounter('kpiTotalPengajuan', totalPengajuan);
             animateCounter('kpiMahasiswaAktif', mahasiswaAktif);
         }
 
-        // ============================================================
-        // COUNTER ANIMATION
-        // ============================================================
         function animateCounter(elId, target) {
             const el = document.getElementById(elId);
             if (!el) return;
@@ -1244,10 +1072,6 @@
             requestAnimationFrame(tick);
         }
 
-        // ============================================================
-        // LOAD QUEUE — Antrean Validasi (bagian terpenting)
-        // Filter otomatis: validatorSaatIni = "Admin Kemahasiswaan", urutkan terbaru.
-        // ============================================================
         function loadQueue(state) {
             const wrapper = document.getElementById('antreanWrapper');
             const allPengajuan = state.pengajuan || [];
@@ -1273,7 +1097,6 @@
                 const prodi = acc.prodi || '-';
                 const nim = acc.nim || '-';
 
-                // Prioritas sederhana: berdasarkan lama menunggu sejak tanggal pengajuan.
                 const hariMenunggu = Math.floor((Date.now() - new Date(p.tanggal).getTime()) / 86400000);
                 let prioritas = 'Rendah', prioritasClass = 'badge-priority-low';
                 if (hariMenunggu >= 3) { prioritas = 'Tinggi'; prioritasClass = 'badge-priority-high'; }
@@ -1314,13 +1137,11 @@
             `;
         }
 
-        // ============================================================
-        // LOAD CHART — Statistik Pengajuan SKP (bar) + Ringkasan Validasi (doughnut)
-        // ============================================================
+        // Grafik TETAP seperti semula (dua grafik)
         function loadChart(state) {
             const allPengajuan = state.pengajuan || [];
 
-            // --- Grafik batang: jumlah pengajuan per bulan x status ---
+            // Bar chart
             const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
             const dataPerBulan = { Pending: Array(12).fill(0), Disetujui: Array(12).fill(0), Ditolak: Array(12).fill(0), Direvisi: Array(12).fill(0) };
 
@@ -1361,7 +1182,7 @@
                 }
             });
 
-            // --- Doughnut: ringkasan validasi keseluruhan ---
+            // Doughnut chart
             const cPending = allPengajuan.filter(p => !['Disetujui','Ditolak'].includes(p.status) && p.status !== 'Revisi').length;
             const cDisetujui = allPengajuan.filter(p => p.status === 'Disetujui').length;
             const cDitolak = allPengajuan.filter(p => p.status === 'Ditolak').length;
@@ -1392,11 +1213,6 @@
             });
         }
 
-        // ============================================================
-        // LOAD TIMELINE — Aktivitas Terbaru (timeline vertikal dari state.aktivitas)
-        // Sebagai Admin, tampilkan SEMUA aktivitas sistem (bukan difilter per-email
-        // seperti di dashboard mahasiswa), karena Admin perlu visibilitas penuh.
-        // ============================================================
         function loadTimeline(state) {
             const activityList = document.getElementById('activityList');
             const logs = (state.aktivitas || []).slice(0, 10);
@@ -1442,9 +1258,6 @@
             }).join('');
         }
 
-        // ============================================================
-        // LOAD NOTIFICATION — Notifikasi Sistem (card kecil)
-        // ============================================================
         function loadNotification(state) {
             const notifList = document.getElementById('notificationList');
             const allPengajuan = state.pengajuan || [];
@@ -1476,13 +1289,8 @@
                     </div>
                 </div>
             `).join('') || '<div class="notification-item">Tidak ada notifikasi baru.</div>';
-
-            document.getElementById('notifDot').style.display = notifs.length > 0 ? 'block' : 'none';
         }
 
-        // ============================================================
-        // LOAD MASTER SYSTEM — Status Periode Akademik (card kecil)
-        // ============================================================
         function loadMasterSystem(state) {
             const wrapper = document.getElementById('periodeStatusWrapper');
             const periodeAktif = AppState.getPeriodeAktif();
@@ -1510,16 +1318,6 @@
                 </div>
             `;
         }
-
-        // ============================================================
-        // SEARCH (global, sederhana — redirect ke Validasi SKP dengan query)
-        // ============================================================
-        document.getElementById('globalSearch').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && this.value.trim()) {
-                sessionStorage.setItem('skp_admin_search_query', this.value.trim());
-                window.location.href = 'validasi-admin.html';
-            }
-        });
 
         // ============================================================
         // DARK MODE
@@ -1555,7 +1353,7 @@
         });
 
         // ============================================================
-        // INIT + auto-refresh ringan (mengikuti validasi otomatis timer mahasiswa)
+        // INIT + auto-refresh
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadDashboard();

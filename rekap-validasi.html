@@ -265,39 +265,6 @@
             align-items: center;
             gap: 16px;
             flex: 1;
-            max-width: 400px;
-        }
-
-        .topbar-left .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 30px;
-            padding: 8px 16px;
-            gap: 8px;
-            width: 100%;
-            transition: all var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .topbar-left .search-box:focus-within {
-            border-color: var(--accent);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
-        }
-
-        .topbar-left .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            width: 100%;
-            color: var(--text-primary);
-        }
-
-        .topbar-left .search-box i {
-            color: var(--text-muted);
         }
 
         .topbar-right {
@@ -326,17 +293,6 @@
         .topbar-right .icon-btn:hover {
             background: var(--light-gray);
             color: var(--accent);
-        }
-
-        .topbar-right .icon-btn .badge-dot {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 9px;
-            height: 9px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 2px solid var(--white);
         }
 
         .topbar-right .user-display {
@@ -463,12 +419,9 @@
             flex-shrink: 0;
         }
 
-        .summary-card .card-icon.blue { background: #EFF6FF; color: var(--info); }
         .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
-        .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
-        .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
         .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
-        .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
+        .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
 
         .summary-card .card-info .card-value {
             font-size: 1.5rem;
@@ -515,16 +468,92 @@
 
         .card h3 i { color: var(--accent); }
 
-        /* ==================== CHART CONTAINER ==================== */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 260px;
-            overflow: hidden;
+        /* ==================== FILTER & PENCARIAN (diperbaiki) ==================== */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 14px;
+            align-items: end;
         }
 
-        .chart-container canvas {
-            display: block;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        .search-box-modern {
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 30px;
+            padding: 0 16px;
+            border: 2px solid transparent;
+            transition: all var(--transition);
+        }
+
+        .search-box-modern i {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-right: 10px;
+            transition: color var(--transition);
+        }
+
+        .search-box-modern input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            padding: 12px 0;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        .search-box-modern input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .search-box-modern:focus-within {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
+        }
+
+        .search-box-modern:focus-within i {
+            color: var(--accent);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            background: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all var(--transition);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent);
+            background-color: var(--white);
+            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
         }
 
         /* ==================== TABLE ==================== */
@@ -596,7 +625,7 @@
             color: var(--primary);
         }
 
-        /* ==================== EMPTY STATE (antrean validasi) ==================== */
+        /* ==================== EMPTY STATE ==================== */
         .empty-state-box {
             display: flex;
             flex-direction: column;
@@ -630,141 +659,6 @@
             color: var(--text-muted);
             max-width: 320px;
         }
-
-        /* ==================== QUICK ACTION ==================== */
-        .quick-action-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-        .quick-action-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border-radius: var(--radius);
-            border: 2px solid var(--border);
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all var(--transition);
-            background: var(--light-gray);
-        }
-        .quick-action-item:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-        .quick-action-item .qa-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-sm);
-            background: var(--primary);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .quick-action-item .qa-text .qa-title {
-            font-weight: 600;
-            font-size: 0.86rem;
-        }
-        .quick-action-item .qa-text .qa-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 1px;
-        }
-
-        /* ==================== NOTIFICATION LIST ==================== */
-        .notification-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .notification-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .notification-list::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 10px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        .notification-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: var(--radius-sm);
-            background: var(--light-gray);
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            transition: all var(--transition);
-        }
-
-        .notification-item:hover { background: var(--accent-light); }
-        .notification-item i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
-
-        .notification-item .notif-time {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* ==================== ACTIVITY LIST ==================== */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-        }
-
-        .activity-item:last-child { border-bottom: none; }
-        .activity-item i { color: var(--accent); width: 16px; text-align: center; }
-        .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
-
-        /* ==================== STATUS PERIODE (kecil) ==================== */
-        .periode-status-box {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
-        }
-        .periode-status-box .ps-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: var(--success);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .periode-status-box.belum-konfigurasi .ps-icon { background: var(--text-muted); }
-        .periode-status-box .ps-title { font-weight: 700; font-size: 0.9rem; }
-        .periode-status-box .ps-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ==================== FOOTER ==================== */
         .footer {
@@ -879,6 +773,9 @@
         @media (max-width: 1024px) {
             .grid-2col { grid-template-columns: 1fr; }
             .grid-3col { grid-template-columns: 1fr 1fr; }
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -892,6 +789,9 @@
             .topbar { padding: 0 16px; }
             .topbar-right .user-info { display: none; }
             .mobile-menu-btn { display: block !important; }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -957,15 +857,13 @@
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
+                <!-- Search box dihapus -->
             </div>
             <div class="topbar-right">
                 <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="icon-btn" title="Notifikasi">
-                    <i class="fa-solid fa-bell"></i>
-                    <span class="badge-dot" id="notifDot" style="display:none;"></span>
-                </button>
+                <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
@@ -1015,26 +913,26 @@
                 </div>
             </div>
 
-            <!-- Filter & Pencarian (FR-13) -->
+            <!-- Filter & Pencarian (FR-13) dengan desain baru -->
             <div class="card">
                 <h3><i class="fa-solid fa-filter"></i> Pencarian &amp; Filter</h3>
-                <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:14px;" id="filterGrid">
+                <div class="filter-grid" id="filterGrid">
                     <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Cari NIM / Nama / ID Pengajuan</label>
-                        <div class="search-box" style="background:var(--light-gray);">
+                        <label for="searchInput"><i class="fa-regular fa-user"></i> Cari NIM / Nama / ID Pengajuan</label>
+                        <div class="search-box-modern">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="searchInput" placeholder="Ketik NIM, nama mahasiswa, atau ID...">
+                            <input type="text" id="searchInput" placeholder="Ketik NIM, nama mahasiswa, atau ID pengajuan...">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Kategori</label>
-                        <select id="filterKategori" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                        <label for="filterKategori"><i class="fa-regular fa-layer-group"></i> Kategori</label>
+                        <select id="filterKategori" class="filter-select">
                             <option value="">Semua Kategori</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Status Keputusan</label>
-                        <select id="filterStatus" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                        <label for="filterStatus"><i class="fa-regular fa-clock"></i> Status Keputusan</label>
+                        <select id="filterStatus" class="filter-select">
                             <option value="semua">Semua Status</option>
                             <option value="Disetujui">Disetujui</option>
                             <option value="Ditolak">Ditolak</option>
@@ -1042,8 +940,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Urutkan</label>
-                        <select id="sortOrder" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                        <label for="sortOrder"><i class="fa-regular fa-arrow-up-wide-short"></i> Urutkan</label>
+                        <select id="sortOrder" class="filter-select">
                             <option value="terbaru">Terbaru Diproses</option>
                             <option value="terlama">Terlama Diproses</option>
                             <option value="poin-tinggi">Poin Tertinggi</option>
