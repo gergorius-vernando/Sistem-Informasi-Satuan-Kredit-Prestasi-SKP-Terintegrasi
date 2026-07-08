@@ -193,28 +193,35 @@
         .detail-row .label { color: var(--text-muted); font-weight: 500; }
         .detail-row .value { color: var(--text-primary); font-weight: 600; text-align: right; }
 
-        .workflow-container { display: flex; align-items: center; justify-content: center; gap: 0; margin: 20px 0; flex-wrap: wrap; }
+        .workflow-container { display: flex; align-items: flex-start; justify-content: center; gap: 0; margin: 24px 0 8px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; }
         .workflow-node {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            position: relative;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            position: relative; min-width: 96px;
         }
         .workflow-node .circle {
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 56px; height: 56px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 700;
+            font-size: 1.3rem; font-weight: 700;
             border: 3px solid var(--border);
             background: var(--light-gray);
             color: var(--text-muted);
             transition: all var(--transition);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
-        .workflow-node .circle.completed { background: var(--success); border-color: var(--success); color: white; }
-        .workflow-node .circle.active { background: var(--accent); border-color: var(--accent); color: var(--primary); }
-        .workflow-node .label { font-size: 0.72rem; color: var(--text-muted); text-align: center; }
+        .workflow-node .circle.completed { background: linear-gradient(135deg,#22C55E,#16A34A); border-color:#16A34A; color: white; box-shadow: 0 4px 12px rgba(34,197,94,0.3); }
+        .workflow-node .circle.active { background: linear-gradient(135deg,#F4B400,#D99E00); border-color: #D99E00; color: #1A1A1A; box-shadow: 0 4px 14px rgba(244,180,0,0.4); }
+        .workflow-node .circle.revisi { background: linear-gradient(135deg,#F59E0B,#D97706); border-color:#D97706; color: white; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+        .workflow-node .label { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); text-align: center; line-height: 1.25; }
+        .workflow-node .node-status { font-size: 0.68rem; font-weight: 500; padding: 2px 10px; border-radius: 20px; }
+        .workflow-node .node-status.completed { background:#DCFCE7; color:#166534; }
+        .workflow-node .node-status.active { background:#FEF3C7; color:#92400E; }
+        .workflow-node .node-status.revisi { background:#FEF3C7; color:#92400E; }
+        .workflow-node .node-status.pending { background:var(--light-gray); color:var(--text-muted); }
         .workflow-connector {
-            width: 40px; height: 3px; background: var(--border);
-            margin: 0 8px; margin-bottom: 20px;
+            flex: 1; min-width: 32px; height: 4px; background: var(--border); border-radius: 4px;
+            margin: 0 4px; margin-top: 26px;
         }
-        .workflow-connector.completed { background: var(--success); }
+        .workflow-connector.completed { background: linear-gradient(90deg,#22C55E,#16A34A); }
 
         .progress-bar-container {
             width: 100%; height: 8px; background: var(--light-gray);
@@ -283,6 +290,65 @@
         .btn-accent:hover { background: var(--accent-hover); }
         .action-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
 
+        /* ===== Panel Keputusan Validasi (khusus validator/admin) ===== */
+        .validation-panel {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        .validation-panel-head {
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #1A1A1A, #2C2C2C);
+            color: #fff;
+        }
+        .validation-panel-head i { color: var(--accent); font-size: 1.1rem; }
+        .validation-panel-head h3 { font-size: 1rem; font-weight: 700; margin: 0; }
+        .validation-panel-head .sub { font-size: 0.76rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+        .validation-panel-body { padding: 20px; background: var(--surface, #fff); }
+        .validation-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        @media (max-width: 640px) { .validation-actions { grid-template-columns: 1fr; } }
+
+        .btn-validasi {
+            display: flex; flex-direction: row; align-items: center; justify-content: center;
+            gap: 10px; text-align: center; width: 100%;
+            padding: 18px 20px;
+            border: none; border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.98rem;
+            color: #fff; cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+        }
+        .btn-validasi .bv-icon {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.22); font-size: 1.05rem; flex-shrink: 0;
+        }
+        .btn-validasi:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .btn-validasi:active { transform: translateY(0); }
+        .btn-validasi.setujui { background: linear-gradient(135deg, #22C55E, #16A34A); box-shadow: 0 6px 16px rgba(34,197,94,0.3); }
+        .btn-validasi.revisi  { background: linear-gradient(135deg, #F59E0B, #D97706); box-shadow: 0 6px 16px rgba(245,158,11,0.3); }
+        .btn-validasi.tolak   { background: linear-gradient(135deg, #EF4444, #DC2626); box-shadow: 0 6px 16px rgba(239,68,68,0.3); }
+
+        .validation-panel-foot {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            padding: 14px 20px; border-top: 1px dashed var(--border); background: #FAFAFA;
+        }
+        .btn-catatan {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 18px; border-radius: 30px;
+            border: 1.5px solid var(--border); background: #fff; color: var(--text-secondary);
+            font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 0.82rem; cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-catatan:hover { border-color: var(--accent); color: var(--accent-hover); background: var(--accent-light); }
+        .validation-hint { font-size: 0.76rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+
         .toast-container {
             position: fixed; top: 24px; right: 24px; z-index: 9999;
             display: flex; flex-direction: column; gap: 10px;
@@ -319,8 +385,14 @@
             border: 2px solid var(--border); font-family: 'Poppins', sans-serif; resize: vertical;
         }
         .modal-buttons { display: flex; gap: 10px; justify-content: center; }
-        .btn-modal { padding: 10px 24px; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-modal { padding: 10px 24px; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; font-size: 0.85rem; transition: filter var(--transition); }
+        .btn-modal:hover { filter: brightness(1.05); }
         .btn-modal-cancel { background: var(--light-gray); }
+        .modal-dialog .modal-icon { font-size: 3rem; margin-bottom: 12px; }
+        .modal-dialog p { font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+        .btn-modal.confirm-setujui { background: #22C55E; color: #fff; }
+        .btn-modal.confirm-revisi  { background: #F59E0B; color: #fff; }
+        .btn-modal.confirm-tolak   { background: #EF4444; color: #fff; }
 
         .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-primary); padding: 8px; }
 
@@ -349,20 +421,13 @@
             <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
-        <nav class="sidebar-menu">
-            <a href="dashboard-mahasiswa.html" id="menuDashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-            <a href="pengajuan.html" id="menuPengajuan"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
-            <a href="draft.html" id="menuDraft"><i class="fa-solid fa-file-pen"></i> Draft</a>
-            <a href="rekapitulasi.html" id="menuRekapitulasi"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
-            <a href="skpi.html" id="menuSKPI"><i class="fa-solid fa-award"></i> SKPI</a>
+        <nav class="sidebar-menu" id="sidebarMenu">
+            <!-- Menu diisi dinamis oleh JS sesuai peran pengguna (mahasiswa/admin/dll)
+                 supaya detail pengajuan yang dibuka admin menampilkan menu admin,
+                 bukan menu mahasiswa. -->
         </nav>
-        <div class="sidebar-footer">
-            <a href="profil.html" class="sidebar-footer-link">
-                <i class="fa-solid fa-user-gear"></i> Profil
-            </a>
-            <button onclick="handleLogout()">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>
+        <div class="sidebar-footer" id="sidebarFooter">
+            <!-- Footer (Profil + Logout) juga diisi dinamis sesuai peran. -->
         </div>
     </aside>
 
@@ -472,6 +537,19 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Keputusan Validasi -->
+    <div class="modal-overlay hidden" id="konfirmasiValidasiModal">
+        <div class="modal-dialog">
+            <div class="modal-icon" id="kvIcon"></div>
+            <h4 id="kvTitle"></h4>
+            <p id="kvMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeKonfirmasiValidasi()">Batal</button>
+                <button class="btn-modal" id="kvConfirmBtn" onclick="prosesValidasi()">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -491,28 +569,52 @@
             document.getElementById('topbarName').textContent = userName;
             document.getElementById('topbarRole').textContent = (session.prodi || '') + ' • ' + session.role;
 
-            // Set dashboard link sesuai role
-            const dashboardMap = {
-                'mahasiswa': 'dashboard-mahasiswa.html',
-                'admin-kemahasiswaan': 'dashboard-admin.html',
-                'kaprodi': 'dashboard-kaprodi.html',
-                'wakil-direktur': 'dashboard-wadir.html',
-                'direktur': 'dashboard-direktur.html',
-                'tim-lsi': 'dashboard-timlsi.html'
+            // ==================== SIDEBAR DINAMIS PER PERAN ====================
+            // Sidebar dibangun sesuai peran: mahasiswa melihat menu mahasiswa,
+            // admin melihat menu admin, dst. Ini memperbaiki bug lama di mana
+            // detail pengajuan yang dibuka admin tetap menampilkan menu mahasiswa.
+            const sidebarConfig = {
+                'mahasiswa': {
+                    menu: [
+                        { href: 'dashboard-mahasiswa.html', icon: 'fa-gauge-high', label: 'Dashboard' },
+                        { href: 'pengajuan.html', icon: 'fa-file-circle-plus', label: 'Klaim SKP' },
+                        { href: 'draft.html', icon: 'fa-file-pen', label: 'Draft' },
+                        { href: 'rekapitulasi.html', icon: 'fa-chart-pie', label: 'Rekapitulasi' },
+                        { href: 'skpi.html', icon: 'fa-award', label: 'SKPI' }
+                    ],
+                    profil: 'profil.html'
+                },
+                'admin-kemahasiswaan': {
+                    menu: [
+                        { href: 'dashboard-admin.html', icon: 'fa-gauge-high', label: 'Dashboard' },
+                        { href: 'validasi-admin.html', icon: 'fa-clipboard-check', label: 'Validasi SKP' },
+                        { href: 'master-data-skp.html', icon: 'fa-layer-group', label: 'Master Sistem' },
+                        { href: 'rekap-validasi.html', icon: 'fa-clock-rotate-left', label: 'Riwayat Validasi' },
+                        { href: 'laporan.html', icon: 'fa-chart-pie', label: 'Laporan' }
+                    ],
+                    profil: 'profil-admin.html'
+                }
             };
-            const dashboardUrl = dashboardMap[userRole] || 'dashboard-mahasiswa.html';
-            document.getElementById('breadcrumbDashboard').href = dashboardUrl;
-            document.getElementById('menuDashboard').href = dashboardUrl;
+            const cfg = sidebarConfig[userRole] || sidebarConfig['mahasiswa'];
 
-            // Sembunyikan menu yang tidak relevan untuk mahasiswa (jika role mahasiswa)
-            if (userRole === 'mahasiswa') {
-                // Tidak perlu sembunyikan karena sidebar sudah hanya 5 menu
-                // Tapi kita pastikan link SKPI benar
-                document.getElementById('menuSKPI').href = 'skpi.html';
-            } else {
-                // Untuk role lain, tampilkan semua menu? Biarkan saja karena kita sudah punya 5 menu utama.
-                // Tapi kita bisa sesuaikan jika diperlukan.
-            }
+            document.getElementById('sidebarMenu').innerHTML = cfg.menu.map(m =>
+                `<a href="${m.href}"><i class="fa-solid ${m.icon}"></i> ${m.label}</a>`
+            ).join('');
+
+            document.getElementById('sidebarFooter').innerHTML = `
+                <a href="${cfg.profil}" class="sidebar-footer-link">
+                    <i class="fa-solid fa-user-gear"></i> Profil
+                </a>
+                <button onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            `;
+
+            // Breadcrumb "Dashboard" mengikuti dashboard peran terkait
+            const dashboardUrl = cfg.menu[0].href;
+            const bc = document.getElementById('breadcrumbDashboard');
+            if (bc) bc.href = dashboardUrl;
+
 
             // ==================== GET DATA PENGAJUAN ====================
             const urlParams = new URLSearchParams(window.location.search);
@@ -609,17 +711,16 @@
 
                 let html = '';
                 workflow.forEach((node, idx) => {
-                    let circleClass = '';
-                    if (node.status === 'completed') circleClass = 'completed';
-                    else if (node.status === 'active') circleClass = 'active';
-                    let icon = '';
-                    if (node.status === 'completed') icon = 'fa-check';
-                    else if (node.status === 'active') icon = 'fa-spinner fa-spin';
-                    else icon = 'fa-circle';
+                    let circleClass = '', icon = '', statusText = '', statusClass = '';
+                    if (node.status === 'completed') { circleClass = 'completed'; icon = 'fa-check'; statusText = 'Selesai'; statusClass = 'completed'; }
+                    else if (node.status === 'active') { circleClass = 'active'; icon = 'fa-spinner fa-spin'; statusText = 'Sedang Diproses'; statusClass = 'active'; }
+                    else if (node.status === 'revisi') { circleClass = 'revisi'; icon = 'fa-rotate'; statusText = 'Perlu Revisi'; statusClass = 'revisi'; }
+                    else { icon = 'fa-clock'; statusText = 'Menunggu'; statusClass = 'pending'; }
                     html += `
                         <div class="workflow-node">
                             <div class="circle ${circleClass}"><i class="fa-solid ${icon}"></i></div>
                             <div class="label">${node.role}</div>
+                            <span class="node-status ${statusClass}">${statusText}</span>
                         </div>`;
                     if (idx < workflow.length - 1) {
                         const connectorClass = node.status === 'completed' ? 'completed' : '';
@@ -706,7 +807,11 @@
                     if (pengajuan.status === 'Draft') {
                         html += `<button class="btn btn-warning" onclick="alert('Fitur edit draft')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>`;
                     }
-                } else if (['kaprodi', 'admin-kemahasiswaan', 'wakil-direktur'].includes(userRole)) {
+                    bar.innerHTML = html;
+                    return;
+                }
+
+                if (['kaprodi', 'admin-kemahasiswaan', 'wakil-direktur'].includes(userRole)) {
                     const validatorRoles = {
                         'kaprodi': 'Kaprodi',
                         'admin-kemahasiswaan': 'Admin Kemahasiswaan',
@@ -715,24 +820,53 @@
                     const currentValidator = validatorRoles[userRole];
 
                     // Giliran ditentukan dari workflow (siapa yang sedang 'active'),
-                    // bukan hanya dari teks status. Ini membuat tombol validasi tetap
-                    // muncul untuk pengajuan baru (status 'Sedang Diverifikasi') maupun
-                    // pengajuan yang sudah ditindaklanjuti validator sebelumnya
-                    // (status 'Pending <Role>'), selama belum berstatus final.
+                    // bukan hanya dari teks status.
                     const isFinalStatus = ['Disetujui', 'Ditolak', 'Revisi', 'Selesai'].includes(pengajuan.status);
                     const workflow = pengajuan.workflow || [];
                     const activeNode = workflow.find(w => w.status === 'active');
                     const isMyTurn = !isFinalStatus && activeNode && activeNode.role === currentValidator;
 
                     if (isMyTurn) {
-                        html += `<button class="btn btn-success" onclick="validasi('Setujui')"><i class="fa-solid fa-check"></i> Setujui</button>`;
-                        html += `<button class="btn btn-warning" onclick="validasi('Revisi')"><i class="fa-solid fa-rotate"></i> Revisi</button>`;
-                        html += `<button class="btn btn-danger" onclick="validasi('Tolak')"><i class="fa-solid fa-xmark"></i> Tolak</button>`;
+                        // Panel keputusan validasi dengan tombol solid berwarna + ikon.
+                        bar.innerHTML = `
+                            <div class="validation-panel">
+                                <div class="validation-panel-head">
+                                    <i class="fa-solid fa-gavel"></i>
+                                    <div>
+                                        <h3>Keputusan Validasi</h3>
+                                        <div class="sub">Anda bertindak sebagai <strong>${currentValidator}</strong> untuk pengajuan ini</div>
+                                    </div>
+                                </div>
+                                <div class="validation-panel-body">
+                                    <div class="validation-actions">
+                                        <button class="btn-validasi setujui" onclick="validasi('Setujui')">
+                                            <span class="bv-icon"><i class="fa-solid fa-check"></i></span>
+                                            Setujui
+                                        </button>
+                                        <button class="btn-validasi revisi" onclick="validasi('Revisi')">
+                                            <span class="bv-icon"><i class="fa-solid fa-rotate"></i></span>
+                                            Revisi
+                                        </button>
+                                        <button class="btn-validasi tolak" onclick="validasi('Tolak')">
+                                            <span class="bv-icon"><i class="fa-solid fa-xmark"></i></span>
+                                            Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="validation-panel-foot">
+                                    <span class="validation-hint"><i class="fa-solid fa-circle-info"></i> Keputusan akan tercatat pada riwayat validasi.</span>
+                                    <button class="btn-catatan" onclick="openCatatanModal()"><i class="fa-solid fa-comment-medical"></i> Tambah Catatan</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Bukan giliran validator ini (atau sudah final): cukup tombol catatan + kembali.
+                        bar.innerHTML = `
+                            <button class="btn btn-outline" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Kembali</button>
+                            <button class="btn-catatan" onclick="openCatatanModal()"><i class="fa-solid fa-comment-medical"></i> Tambah Catatan</button>
+                        `;
                     }
-                    html += `<button class="btn btn-accent" onclick="openCatatanModal()"><i class="fa-solid fa-comment-medical"></i> Tambah Catatan</button>`;
                 }
-
-                bar.innerHTML = html;
             }
 
             // ==================== VALIDATION ACTIONS ====================
@@ -742,21 +876,62 @@
                 'wakil-direktur': 'Wakil Direktur'
             };
 
+            let pendingAction = null; // aksi yang menunggu konfirmasi
+
             window.validasi = function(action) {
                 const currentRole = roleNameMap[userRole];
                 if (!currentRole) return;
+                pendingAction = action;
+
+                // Konfigurasi tampilan modal konfirmasi sesuai jenis aksi.
+                const cfg = {
+                    'Setujui': {
+                        icon: '<i class="fa-solid fa-circle-check" style="color:#22C55E;"></i>',
+                        title: 'Setujui Pengajuan Ini?',
+                        msg: 'Pengajuan akan diteruskan ke tahap berikutnya, atau disahkan beserta penambahan poin bila ini tahap akhir. Tindakan ini akan tercatat pada riwayat validasi.',
+                        btnClass: 'confirm-setujui', btnText: 'Ya, Setujui'
+                    },
+                    'Revisi': {
+                        icon: '<i class="fa-solid fa-rotate" style="color:#F59E0B;"></i>',
+                        title: 'Minta Revisi Pengajuan?',
+                        msg: 'Pengajuan akan dikembalikan kepada mahasiswa untuk diperbaiki. Sebaiknya sertakan catatan agar mahasiswa tahu bagian yang perlu diperbaiki.',
+                        btnClass: 'confirm-revisi', btnText: 'Ya, Minta Revisi'
+                    },
+                    'Tolak': {
+                        icon: '<i class="fa-solid fa-circle-xmark" style="color:#EF4444;"></i>',
+                        title: 'Tolak Pengajuan Ini?',
+                        msg: 'Pengajuan akan ditolak dan tidak mendapatkan poin. Tindakan ini bersifat final dan akan tercatat pada riwayat validasi.',
+                        btnClass: 'confirm-tolak', btnText: 'Ya, Tolak'
+                    }
+                }[action];
+                if (!cfg) return;
+
+                document.getElementById('kvIcon').innerHTML = cfg.icon;
+                document.getElementById('kvTitle').textContent = cfg.title;
+                document.getElementById('kvMessage').textContent = cfg.msg;
+                const btn = document.getElementById('kvConfirmBtn');
+                btn.className = 'btn-modal ' + cfg.btnClass;
+                btn.textContent = cfg.btnText;
+                document.getElementById('konfirmasiValidasiModal').classList.remove('hidden');
+            };
+
+            window.closeKonfirmasiValidasi = function() {
+                document.getElementById('konfirmasiValidasiModal').classList.add('hidden');
+                pendingAction = null;
+            };
+
+            window.prosesValidasi = function() {
+                if (!pendingAction) return;
+                const currentRole = roleNameMap[userRole];
+                const action = pendingAction;
+                document.getElementById('konfirmasiValidasiModal').classList.add('hidden');
+                pendingAction = null;
 
                 // Seluruh logika next-step workflow, poin, riwayat, timeline, dan log
-                // aktivitas ditangani terpusat oleh AppState.validasiPengajuan (state.js)
-                // agar konsisten dengan jalur validasi otomatis di dashboard mahasiswa.
+                // aktivitas ditangani terpusat oleh AppState.validasiPengajuan (state.js).
                 const updated = AppState.validasiPengajuan(pengajuanId, action, currentRole, userName, null);
-                if (!updated) {
-                    showToast('Gagal memperbarui pengajuan.', 'error');
-                    return;
-                }
-
+                if (!updated) return;
                 pengajuan = updated;
-                showToast(`Pengajuan berhasil di${action.toLowerCase()}.`, 'success');
                 renderAll();
             };
 
@@ -772,12 +947,8 @@
                 const text = document.getElementById('catatanText').value.trim();
                 if (!text) return;
                 const updated = AppState.tambahCatatan(pengajuanId, userName, text);
-                if (!updated) {
-                    showToast('Gagal menambahkan catatan.', 'error');
-                    return;
-                }
+                if (!updated) return;
                 pengajuan = updated;
-                showToast('Catatan berhasil ditambahkan.', 'success');
                 closeCatatanModal();
                 renderAll();
             };

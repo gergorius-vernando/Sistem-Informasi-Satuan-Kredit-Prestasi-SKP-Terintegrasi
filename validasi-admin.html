@@ -592,24 +592,34 @@
         .badge-priority-medium { background: #FEF3C7; color: #92400E; }
         .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
+        /* Kolom Aksi dibuat menempel (sticky) di kiri, selalu terlihat
+           walau tabel di-scroll horizontal — tombol Lihat Detail langsung kejangkau. */
+        /* Kolom Aksi diletakkan di kanan (rata kanan), mengikuti lebar tabel. */
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+
         .btn-detail {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: var(--white);
-            color: var(--accent);
+            border: none;
+            background: var(--accent);
+            color: var(--primary);
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.74rem;
-            font-weight: 500;
+            font-size: 0.76rem;
+            font-weight: 600;
             transition: all var(--transition);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(244,180,0,0.25);
         }
 
         .btn-detail:hover {
-            background: var(--accent);
-            color: var(--primary);
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(244,180,0,0.35);
         }
 
         /* ==================== EMPTY STATE ==================== */
@@ -823,7 +833,7 @@
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil.html" class="sidebar-footer-link">
+            <a href="profil-admin.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -881,10 +891,10 @@
                     </div>
                 </div>
                 <div class="summary-card">
-                    <div class="card-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="card-icon blue"><i class="fa-solid fa-hourglass-half"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="kpiPrioritasTinggi">0</div>
-                        <div class="card-label">Prioritas Tinggi (≥3 hari)</div>
+                        <div class="card-value" id="kpiMenungguBaru">0</div>
+                        <div class="card-label">Menunggu Diverifikasi</div>
                     </div>
                 </div>
                 <div class="summary-card">
@@ -924,8 +934,8 @@
                     <div class="form-group">
                         <label for="sortOrder"><i class="fa-regular fa-arrow-up-wide-short"></i> Urutkan</label>
                         <select id="sortOrder" class="filter-select">
+                            <option value="terbaru" selected>Pengajuan Terbaru</option>
                             <option value="terlama">Menunggu Terlama</option>
-                            <option value="terbaru">Pengajuan Terbaru</option>
                             <option value="poin-tinggi">Estimasi Poin Tertinggi</option>
                         </select>
                     </div>
@@ -1023,7 +1033,6 @@
         // LOAD ANTREAN (dengan search, filter, sort, pagination)
         // ============================================================
         function loadAntrean() {
-            AppState.checkAndUpdateValidasi();
             const state = AppState.getState();
             const accounts = AppState.getAllAccounts();
             const allPengajuan = state.pengajuan || [];
@@ -1031,13 +1040,10 @@
             let antrean = allPengajuan.filter(isPendingForMe);
 
             // --- KPI ringkas ---
-            const prioritasTinggi = antrean.filter(p => {
-                const hari = Math.floor((Date.now() - new Date(p.tanggal).getTime()) / 86400000);
-                return hari >= 3;
-            }).length;
+            const menungguBaru = antrean.filter(p => p.status === 'Sedang Diverifikasi').length;
             const revisiMenunggu = antrean.filter(p => p.status === 'Revisi').length;
             document.getElementById('kpiTotalAntrean').textContent = antrean.length;
-            document.getElementById('kpiPrioritasTinggi').textContent = prioritasTinggi;
+            document.getElementById('kpiMenungguBaru').textContent = menungguBaru;
             document.getElementById('kpiRevisiMenunggu').textContent = revisiMenunggu;
 
             // --- Search (NIM / nama / ID pengajuan) — FR-13 ---
@@ -1067,13 +1073,20 @@
             }
 
             // --- Sort ---
+            // Tie-breaker: bila tanggal sama, pengajuan dengan ID "lebih baru"
+            // (timestamp lebih besar, mis. SKP-1783...) diletakkan lebih dulu.
+            const idWeight = (p) => {
+                const m = String(p.id || '').match(/(\d{6,})/);
+                return m ? Number(m[1]) : 0;
+            };
             const sortOrder = document.getElementById('sortOrder').value;
             if (sortOrder === 'terlama') {
-                antrean.sort((a, b) => (a.tanggal || '').localeCompare(b.tanggal || ''));
-            } else if (sortOrder === 'terbaru') {
-                antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+                antrean.sort((a, b) => (a.tanggal || '').localeCompare(b.tanggal || '') || (idWeight(a) - idWeight(b)));
             } else if (sortOrder === 'poin-tinggi') {
                 antrean.sort((a, b) => (b.poin || b.estimasiPoin || 0) - (a.poin || a.estimasiPoin || 0));
+            } else {
+                // default: terbaru di atas
+                antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a)));
             }
 
             // --- Pagination ---
@@ -1106,24 +1119,20 @@
                 const prodi = acc.prodi || '-';
                 const nim = acc.nim || '-';
 
-                const hariMenunggu = Math.floor((Date.now() - new Date(p.tanggal).getTime()) / 86400000);
-                let prioritas = 'Rendah', prioritasClass = 'badge-priority-low';
-                if (hariMenunggu >= 3) { prioritas = 'Tinggi'; prioritasClass = 'badge-priority-high'; }
-                else if (hariMenunggu >= 1) { prioritas = 'Sedang'; prioritasClass = 'badge-priority-medium'; }
-
                 const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
                 const poin = p.poin || p.estimasiPoin || 0;
 
                 return `<tr>
                     <td><strong>${p.id}</strong></td>
-                    <td>${namaMhs}<br><span style="font-size:0.7rem;color:var(--text-muted);">${nim}</span></td>
-                    <td>${prodi}</td>
+                    <td>
+                        ${namaMhs}
+                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${nim} &middot; ${prodi}</span>
+                    </td>
                     <td>${p.kategoriText || p.kategori}</td>
                     <td>${poin} poin</td>
                     <td>${p.tanggal || '-'}</td>
                     <td><span class="badge ${statusBadge}">${p.status}</span></td>
-                    <td><span class="badge ${prioritasClass}">${prioritas}</span></td>
-                    <td><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail">Lihat Detail</a></td>
+                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
                 </tr>`;
             }).join('');
 
@@ -1134,13 +1143,11 @@
                             <tr>
                                 <th>ID Pengajuan</th>
                                 <th>Mahasiswa</th>
-                                <th>Program Studi</th>
                                 <th>Kategori</th>
                                 <th>Estimasi Poin</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
-                                <th>Prioritas</th>
-                                <th>Aksi</th>
+                                <th class="col-aksi-kanan">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -1207,15 +1214,22 @@
         });
 
         // ============================================================
-        // INIT + auto-refresh ringan
+        // INIT
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadAntrean();
-            setInterval(() => {
-                const updated = AppState.checkAndUpdateValidasi();
-                if (updated) loadAntrean();
-            }, 2000);
         });
+
+        // Refresh otomatis saat tab ini difokuskan kembali, supaya pengajuan
+        // baru dari tab mahasiswa langsung terlihat tanpa reload manual.
+        window.addEventListener('focus', loadAntrean);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadAntrean(); });
+        // Sinkronisasi lintas-tab: langsung refresh antrean saat tab lain
+        // (mis. tab mahasiswa) menambah/mengubah pengajuan di localStorage.
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadAntrean();
+        });
+        // Polling dihapus: pembaruan lewat event 'storage'/'focus' atau refresh manual.
     </script>
 </body>
 </html>

@@ -1,13 +1,14 @@
 // state.js - State Management untuk Sistem Informasi SKP
 // SATU SUMBER DATA untuk seluruh sistem (mahasiswa, draft, pengajuan, validasi, aktivitas).
-// Semua data disimpan dalam satu object state di sessionStorage (skp_app_state).
+// Semua data disimpan dalam satu object state di localStorage (skp_app_state), supaya
+// data yang sama terlihat di semua tab/role dan tidak ikut terhapus saat logout
+// (logout hanya membersihkan sessionStorage, yaitu sesi login per-tab).
 // Akun pengguna (dummyAccounts) juga didefinisikan di sini agar semua halaman
 // (login, dashboard, detail-pengajuan, dll) bisa melakukan lookup nama/NIM/prodi dari email yang sama.
 
 (function() {
     const STATE_KEY = 'skp_app_state';
     const TARGET_POIN = 100;
-    const DURATION_VALIDASI = 30000; // 30 detik
 
     // ============================================================
     // AKUN PENGGUNA (sumber tunggal — dipakai login.html & lookup identitas)
@@ -19,9 +20,9 @@
             roleKey: 'mahasiswa',
             password: '12345',
             dashboardUrl: 'dashboard-mahasiswa.html',
-            avatar: 'AF',
+            avatar: 'GV',
             nim: '2024001',
-            prodi: 'Teknik Informatika'
+            prodi: 'Sains Data Terapan'
         },
         'mahasiswa2@plai.ac.id': {
             fullName: 'Siti Aisyah Al Humaira',
@@ -29,9 +30,9 @@
             roleKey: 'mahasiswa',
             password: '12345',
             dashboardUrl: 'dashboard-mahasiswa.html',
-            avatar: 'DP',
+            avatar: 'SA',
             nim: '2024002',
-            prodi: 'Sistem Informasi'
+            prodi: 'Sains Data Terapan'
         },
         'adminmhs@plai.ac.id': {
             fullName: 'Habib Gili Ajiwinata, M.Pd.',
@@ -41,7 +42,7 @@
             dashboardUrl: 'dashboard-admin.html',
             avatar: 'SN',
             nip: '198501012010011001',
-            prodi: 'Bagian Kemahasiswaan'
+            prodi: 'Bidang Kemahasiswaan'
         },
         'kaprodi@plai.ac.id': {
             fullName: 'Dr. Musthofa Ridlwan, S.Kom., M.Kom.',
@@ -49,9 +50,9 @@
             roleKey: 'kaprodi',
             password: '12345',
             dashboardUrl: 'dashboard-kaprodi.html',
-            avatar: 'BS',
+            avatar: 'MR',
             nip: '198001012008011001',
-            prodi: 'Teknik Informatika'
+            prodi: 'Sains Data Terapan'
         },
         'wadir@plai.ac.id': {
             fullName: 'Prof. Dr. Ir. M. Raihan Rivansyah, M.Sc.',
@@ -59,7 +60,7 @@
             roleKey: 'wakil-direktur',
             password: '12345',
             dashboardUrl: 'dashboard-wadir.html',
-            avatar: 'HY',
+            avatar: 'MR',
             nip: '197501012005011001',
             prodi: 'Bidang Akademik'
         },
@@ -69,7 +70,7 @@
             roleKey: 'direktur',
             password: '12345',
             dashboardUrl: 'dashboard-direktur.html',
-            avatar: 'RW',
+            avatar: 'NJ',
             nip: '197001012000011001',
             prodi: 'Politeknik AI LPI'
         },
@@ -79,7 +80,7 @@
             roleKey: 'tim-lsi',
             password: '12345',
             dashboardUrl: 'dashboard-timlsi.html',
-            avatar: 'RA',
+            avatar: 'KI',
             nip: '199001012015011001',
             prodi: 'Lembaga Sertifikasi Internal'
         }
@@ -260,42 +261,89 @@
         { id: 'SKP-2023-002', email: 'mahasiswa1@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Organisasi', judul: 'Ketua BEM', penyelenggara: 'BEM Kampus', lokasi: 'Kampus', tglMulai: '2023-06-01', tglSelesai: '2023-06-15', tingkatText: 'Internal', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2023-06-15', validator: 'Admin Kemahasiswaan', deskripsi: 'Menjabat sebagai Ketua BEM periode berjalan.', file: 'sk-ketua-bem.pdf' },
         { id: 'SKP-2023-003', email: 'mahasiswa1@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Kompetisi', judul: 'Juara 2 Hackathon', penyelenggara: 'Kemendikbud', lokasi: 'Jakarta', tglMulai: '2023-07-18', tglSelesai: '2023-07-20', tingkatText: 'Nasional', poin: 25, estimasiPoin: 25, status: 'Ditolak', tanggal: '2023-07-20', validator: 'Wakil Direktur', deskripsi: 'Meraih juara 2 pada kompetisi hackathon nasional.', file: 'sertifikat-hackathon.pdf' },
         { id: 'SKP-2023-004', email: 'mahasiswa1@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Nasional', penyelenggara: 'APTIKOM', lokasi: 'Bandung', tglMulai: '2023-08-05', tglSelesai: '2023-08-05', tingkatText: 'Nasional', poin: 10, estimasiPoin: 10, status: 'Disetujui', tanggal: '2023-08-05', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar nasional teknologi.', file: 'sertifikat-seminar.pdf' },
+        { id: 'SKP-2023-007', email: 'mahasiswa1@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Workshop Pemrograman Dasar', penyelenggara: 'UKM Coding', lokasi: 'Kampus', tglMulai: '2023-09-12', tglSelesai: '2023-09-12', tingkatText: 'Internal', poin: 5, estimasiPoin: 5, status: 'Disetujui', tanggal: '2023-09-12', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta workshop pemrograman dasar tingkat internal.', file: 'sertifikat-workshop.pdf' },
         { id: 'SKP-2023-005', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan AI', penyelenggara: 'LPPM', lokasi: 'Kampus', tglMulai: '2023-08-28', tglSelesai: '2023-09-01', tingkatText: 'Internal', poin: 12, estimasiPoin: 12, status: 'Revisi', tanggal: '2023-09-01', validator: 'Kaprodi', deskripsi: 'Pelatihan implementasi kecerdasan buatan.', file: 'sertifikat-pelatihan-ai.pdf' },
-        { id: 'SKP-2023-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Desa', penyelenggara: 'LPPM', lokasi: 'Desa Binaan', tglMulai: '2023-10-08', tglSelesai: '2023-10-12', tingkatText: 'Regional', poin: 18, estimasiPoin: 18, status: 'Disetujui', tanggal: '2023-10-12', validator: 'Admin Kemahasiswaan', deskripsi: 'Program pengabdian masyarakat di desa binaan.', file: 'sertifikat-pengabdian.pdf' }
+
+        // ============================================================
+        // Pengajuan BERJALAN (belum final) — sengaja ditambahkan supaya
+        // antrean Admin Kemahasiswaan (dashboard-admin.html & validasi-admin.html)
+        // tidak kosong di awal dan bisa langsung disimulasikan validasinya.
+        // ============================================================
+        { id: 'SKP-2026-101', email: 'mahasiswa1@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Koordinator Divisi Acara Himpunan Mahasiswa', penyelenggara: 'Himpunan Mahasiswa Sains Data', lokasi: 'Kampus', tglMulai: '2026-06-20', tglSelesai: '2026-06-22', tingkatText: 'Internal', poin: 8, estimasiPoin: 8, status: 'Sedang Diverifikasi', tanggal: '2026-07-02', validator: '-', deskripsi: 'Bertanggung jawab mengoordinasikan divisi acara pada kegiatan himpunan mahasiswa.', file: 'sk-koordinator-acara.pdf' },
+        { id: 'SKP-2026-105', email: 'mahasiswa1@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Bakti Sosial Desa Binaan Semester Ganjil', penyelenggara: 'LPPM', lokasi: 'Desa Binaan Sleman', tglMulai: '2026-06-25', tglSelesai: '2026-06-27', tingkatText: 'Regional', poin: 12, estimasiPoin: 12, status: 'Sedang Diverifikasi', tanggal: '2026-07-03', validator: '-', deskripsi: 'Partisipasi dalam program bakti sosial dan edukasi digital di desa binaan.', file: 'dokumentasi-baksos.pdf' },
+        { id: 'SKP-2026-103', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Machine Learning Terapan', penyelenggara: 'Pusat Pengembangan Karir', lokasi: 'Kampus', tglMulai: '2026-06-15', tglSelesai: '2026-06-18', tingkatText: 'Internal', poin: 6, estimasiPoin: 6, status: 'Sedang Diverifikasi', tanggal: '2026-06-30', validator: '-', deskripsi: 'Pelatihan penerapan machine learning untuk studi kasus industri.', file: 'sertifikat-pelatihan-ml.pdf' },
+        {
+            id: 'SKP-2026-102', email: 'mahasiswa1@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Asisten Riset Dosen Bidang Data Mining', penyelenggara: 'LPPM', lokasi: 'Kampus', tglMulai: '2026-05-01', tglSelesai: '2026-06-30', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Pending Admin Kemahasiswaan', tanggal: '2026-07-05', validator: 'Kaprodi', deskripsi: 'Menjadi asisten riset dosen dalam proyek penelitian data mining.', file: 'surat-tugas-asisten-riset.pdf',
+            // Contoh pengajuan yang sudah melewati tahap Kaprodi dan kini menunggu
+            // giliran Admin Kemahasiswaan — mendemonstrasikan workflow multi-aktor.
+            workflow: [
+                { role: 'Mahasiswa', status: 'completed', date: '2026-07-01T08:00:00.000Z' },
+                { role: 'Kaprodi', status: 'completed', date: '2026-07-04T10:00:00.000Z' },
+                { role: 'Admin Kemahasiswaan', status: 'active', date: null }
+            ],
+            timeline: [
+                { title: 'Pengajuan dibuat', date: '2026-07-01T08:00:00.000Z' },
+                { title: 'Disetujui oleh Kaprodi, diteruskan ke Admin Kemahasiswaan', date: '2026-07-04T10:00:00.000Z' }
+            ],
+            riwayat: [
+                { tanggal: '2026-07-01T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' },
+                { tanggal: '2026-07-04T10:00:00.000Z', status: 'Pending Admin Kemahasiswaan', validator: 'Kaprodi', keterangan: 'Setujui oleh Kaprodi' }
+            ],
+            catatan: [
+                { author: 'Kaprodi', text: 'Relevan secara akademik dan dokumen lengkap. Diteruskan ke Admin Kemahasiswaan untuk verifikasi akhir.', date: '2026-07-04T10:00:00.000Z' }
+            ]
+        },
+        {
+            id: 'SKP-2026-104', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Peserta Seminar Nasional Teknologi Hijau', penyelenggara: 'HIMTI', lokasi: 'Yogyakarta', tglMulai: '2026-06-28', tglSelesai: '2026-06-28', tingkatText: 'Nasional', poin: 10, estimasiPoin: 10, status: 'Revisi', tanggal: '2026-07-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Mengikuti seminar nasional bertema teknologi hijau dan keberlanjutan.', file: 'sertifikat-seminar-blur.jpg',
+            // Workflow eksplisit (bukan auto "semua selesai") supaya jelas tahap
+            // mana yang meminta revisi — konsisten dengan perilaku validasiPengajuan.
+            workflow: [
+                { role: 'Mahasiswa', status: 'completed', date: '2026-07-01T08:00:00.000Z' },
+                { role: 'Admin Kemahasiswaan', status: 'revisi', date: '2026-07-01T14:00:00.000Z' }
+            ],
+            catatan: [
+                { author: 'Admin Kemahasiswaan', text: 'Sertifikat yang diunggah masih buram. Mohon unggah ulang hasil pindai yang lebih jelas.', date: '2026-07-01T14:00:00.000Z' }
+            ]
+        }
     ];
 
     // Lengkapi data dummy dengan workflow/timeline/riwayat/catatan/dokumen
     // supaya detail-pengajuan.html punya data nyata tanpa perlu dummy lokal sendiri.
+    //
+    // Catatan: jika sebuah entri dummy SUDAH menyertakan workflow/timeline/riwayat
+    // sendiri (dipakai untuk pengajuan yang sengaja diseed dalam kondisi "sedang
+    // berjalan di tengah workflow", mis. sudah lolos Kaprodi dan kini menunggu
+    // Admin Kemahasiswaan), nilai tersebut dipakai apa adanya dan TIDAK ditimpa
+    // oleh logika default di bawah — supaya kondisi antrean bisa disimulasikan
+    // secara akurat untuk keperluan demo validasi (bukan hanya status final).
     function enrichDummyPengajuan(list) {
         return list.map(p => {
-            const wf = buildWorkflow(p.kategori).map(node => {
-                // Untuk data dummy yang sudah final, tandai workflow sesuai status akhir
-                if (p.status === 'Disetujui' || p.status === 'Ditolak' || p.status === 'Revisi') {
-                    return { ...node, status: 'completed', date: p.tanggal };
-                }
-                return node;
-            });
+            let wf = p.workflow || buildWorkflow(p.kategori);
+            if (!p.workflow && (p.status === 'Disetujui' || p.status === 'Ditolak' || p.status === 'Revisi')) {
+                // Untuk data dummy final tanpa workflow custom, tandai semua tahap selesai.
+                wf = wf.map(node => ({ ...node, status: 'completed', date: p.tanggal }));
+            }
             return {
                 ...p,
-                validasiMulai: null,
                 workflow: wf,
-                timeline: [
+                timeline: p.timeline || [
                     { title: 'Pengajuan dibuat', date: p.tanggal + 'T08:00:00.000Z' },
                     { title: `${p.status === 'Disetujui' ? 'Disetujui' : p.status === 'Ditolak' ? 'Ditolak' : p.status === 'Revisi' ? 'Diminta revisi' : 'Diverifikasi'} oleh ${p.validator}`, date: p.tanggal + 'T15:00:00.000Z' }
                 ],
-                riwayat: [
+                riwayat: p.riwayat || [
                     { tanggal: p.tanggal + 'T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' },
                     { tanggal: p.tanggal + 'T15:00:00.000Z', status: p.status, validator: p.validator, keterangan: `${p.status} oleh ${p.validator}` }
                 ],
-                catatan: [],
-                dokumen: p.file ? [p.file] : []
+                catatan: p.catatan || [],
+                dokumen: p.dokumen || (p.file ? [p.file] : [])
             };
         });
     }
 
     function getDefaultState() {
         return {
-            totalPoin: 50,
+            // Catatan: tidak ada lagi 'totalPoin' global. Poin dihitung per
+            // mahasiswa via getTotalPoin(email) dari pengajuan Disetujui miliknya.
             targetPoin: TARGET_POIN,
             drafts: getDefaultDrafts(),
             pengajuan: enrichDummyPengajuan(JSON.parse(JSON.stringify(DUMMY_PENGAJUAN))),
@@ -443,6 +491,44 @@
                 status: 'Siap Dikirim',
                 tanggalDibuat: new Date(now.getTime() - 259200000).toISOString(),
                 terakhirDiubah: new Date(now.getTime() - 100000000).toISOString()
+            },
+            {
+                id: 'DRF-2026-005',
+                email: 'mahasiswa1@plai.ac.id',
+                kategori: 'pelatihan',
+                kategoriText: 'Pelatihan',
+                judul: 'Pelatihan UI/UX Design',
+                penyelenggara: 'Skilvul',
+                tglMulai: '2026-05-10',
+                tglSelesai: '2026-05-14',
+                lokasi: 'Online',
+                tingkat: 'nasional',
+                tingkatText: 'Nasional',
+                estimasiPoin: 12,
+                deskripsi: 'Pelatihan intensif UI/UX design untuk mahasiswa.',
+                file: 'sertifikat-uiux.pdf',
+                status: 'Siap Dikirim',
+                tanggalDibuat: new Date(now.getTime() - 259200000).toISOString(),
+                terakhirDiubah: new Date(now.getTime() - 216000000).toISOString()
+            },
+            {
+                id: 'DRF-2026-006',
+                email: 'mahasiswa1@plai.ac.id',
+                kategori: 'prestasi-kompetisi',
+                kategoriText: 'Prestasi Kompetisi',
+                judul: 'Lomba Business Case Competition',
+                penyelenggara: '',
+                tglMulai: '2026-05-20',
+                tglSelesai: '',
+                lokasi: 'Surabaya',
+                tingkat: 'regional',
+                tingkatText: 'Regional',
+                estimasiPoin: 18,
+                deskripsi: '',
+                file: '',
+                status: 'Belum Lengkap',
+                tanggalDibuat: new Date(now.getTime() - 43200000).toISOString(),
+                terakhirDiubah: new Date(now.getTime() - 43200000).toISOString()
             }
         ];
     }
@@ -466,12 +552,22 @@
 
     function getState() {
         try {
-            const raw = sessionStorage.getItem(STATE_KEY);
+            // PENTING: state aplikasi (pengajuan, draft, poin, dst) memakai
+            // localStorage, BUKAN sessionStorage. Sesi login (skp_user_session)
+            // tetap di sessionStorage supaya tiap tab browser bisa login sebagai
+            // peran berbeda secara bersamaan (mis. tab 1 = mahasiswa, tab 2 =
+            // admin, untuk keperluan demo). Tapi DATA-nya harus localStorage
+            // supaya: (1) tidak ikut terhapus saat logout (yang memanggil
+            // sessionStorage.clear()), dan (2) pengajuan yang baru dibuat
+            // mahasiswa di satu tab langsung terlihat saat admin membuka/
+            // refresh tab lain — inilah yang membuat alur "mahasiswa
+            // mengajukan -> admin memvalidasi -> poin bertambah" bisa
+            // didemonstrasikan lintas tab/role sesuai workflow di SRS.
+            const raw = localStorage.getItem(STATE_KEY);
             if (raw) {
                 const state = JSON.parse(raw);
                 if (!state.pengajuan) state.pengajuan = enrichDummyPengajuan(JSON.parse(JSON.stringify(DUMMY_PENGAJUAN)));
                 if (!state.drafts) state.drafts = getDefaultDrafts();
-                if (state.totalPoin === undefined) state.totalPoin = 50;
                 if (state.targetPoin === undefined) state.targetPoin = TARGET_POIN;
                 if (!state.preferences) state.preferences = { darkMode: false, emailNotif: true, systemNotif: true, animasi: true };
                 if (!state.notifikasi) state.notifikasi = [];
@@ -492,7 +588,7 @@
     }
 
     function setState(state) {
-        sessionStorage.setItem(STATE_KEY, JSON.stringify(state));
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
     }
 
     function getCurrentSession() {
@@ -574,11 +670,16 @@
     }
 
     // ------------------- Pengajuan -------------------
+    // Pengajuan baru SELALU berstatus 'Sedang Diverifikasi' dan menunggu
+    // keputusan MANUSIA (validator pertama sesuai workflow kategori terkait —
+    // lihat buildWorkflow/getWorkflowForKategori). Tidak ada lagi persetujuan
+    // otomatis berbasis timer; poin SKP hanya bertambah setelah validator
+    // benar-benar menyetujui lewat AppState.validasiPengajuan (dipanggil dari
+    // detail-pengajuan.html).
     function addPengajuan(pengajuan) {
         const state = getState();
         if (!pengajuan.id) pengajuan.id = 'SKP-' + Date.now();
         pengajuan.status = 'Sedang Diverifikasi';
-        pengajuan.validasiMulai = Date.now();
         pengajuan.tanggal = pengajuan.tanggal || new Date().toISOString().slice(0, 10);
         pengajuan.validator = '-';
         if (!pengajuan.poin) pengajuan.poin = pengajuan.estimasiPoin || 0;
@@ -623,6 +724,19 @@
     function getPengajuanById(id) {
         const state = getState();
         return state.pengajuan.find(p => p.id === id) || null;
+    }
+
+    // Total poin SKP untuk SATU mahasiswa tertentu (berdasarkan email).
+    // Poin dihitung dari pengajuan miliknya yang sudah berstatus 'Disetujui'.
+    // Ini menggantikan variabel state.totalPoin global yang keliru — dengan
+    // pendekatan ini, tiap mahasiswa punya total sendiri yang akurat dan
+    // otomatis bertambah hanya ketika pengajuan miliknya divalidasi.
+    function getTotalPoin(email) {
+        const state = getState();
+        if (!email) return 0;
+        return state.pengajuan
+            .filter(p => p.email === email && p.status === 'Disetujui')
+            .reduce((sum, p) => sum + (p.poin || p.estimasiPoin || 0), 0);
     }
 
     // Update pengajuan tertentu (dipakai detail-pengajuan.html untuk aksi Setujui/Revisi/Tolak/Catatan)
@@ -673,13 +787,20 @@
             });
         } else if (action === 'Revisi') {
             newStatus = 'Revisi';
+            // Tandai tahap validator ini sebagai 'revisi' (bukan lagi 'active')
+            // supaya pengajuan ini TIDAK lagi muncul di antrean validator yang
+            // sama (giliran kini kembali ke Mahasiswa untuk memperbaiki), tanpa
+            // menandainya 'completed' yang bisa menyiratkan seolah sudah lolos.
+            const wfRevisi = pengajuan.workflow || [];
+            pengajuan.workflow = wfRevisi.map(w =>
+                w.role === validatorRole ? { ...w, status: 'revisi', date: now } : w
+            );
         } else if (action === 'Tolak') {
             newStatus = 'Ditolak';
         }
 
         pengajuan.status = newStatus;
         pengajuan.validator = validatorName;
-        pengajuan.validasiMulai = null; // hentikan auto-validasi timer karena sudah ditangani manual
         pengajuan.timeline = pengajuan.timeline || [];
         pengajuan.timeline.push({ title: `${action} oleh ${validatorRole}`, date: now });
         pengajuan.riwayat = pengajuan.riwayat || [];
@@ -689,10 +810,12 @@
             pengajuan.catatan.push({ author: validatorName, text: catatanText, date: now });
         }
 
-        if (poinDitambahkan > 0) {
-            state.totalPoin += poinDitambahkan;
-        }
-
+        // Catatan: tidak perlu lagi menambah state.totalPoin global. Poin tiap
+        // mahasiswa dihitung dinamis oleh getTotalPoin(email) dari pengajuan
+        // berstatus 'Disetujui' miliknya. Karena status pengajuan ini baru saja
+        // diubah menjadi 'Disetujui' di atas, poin mahasiswa otomatis ikut
+        // terhitung benar tanpa penjumlahan manual (yang dulu keliru karena
+        // dibagikan ke semua mahasiswa).
         state.pengajuan[idx] = pengajuan;
 
         state.notifikasi.push({
@@ -989,71 +1112,6 @@
         return { success: true, periode: target };
     }
 
-    // ------------------- Validasi Otomatis (timer mahasiswa) -------------------
-    function checkAndUpdateValidasi() {
-        const state = getState();
-        let updated = false;
-        let poinDitambahkan = 0;
-        const now = Date.now();
-
-        state.pengajuan.forEach(p => {
-            if (p.status === 'Sedang Diverifikasi' && p.validasiMulai) {
-                const elapsed = now - p.validasiMulai;
-                if (elapsed >= DURATION_VALIDASI) {
-                    p.status = 'Disetujui';
-                    p.validator = 'Sistem (Auto)';
-                    poinDitambahkan += p.poin || p.estimasiPoin || 0;
-                    updated = true;
-
-                    // activity log
-                    pushAktivitas(state, 'validasi', 'Pengajuan disetujui',
-                        `Pengajuan "${p.judul || p.kategori || p.id}" telah disetujui. +${p.poin || p.estimasiPoin || 0} poin ditambahkan.`,
-                        'fa-circle-check', 'success', p.email);
-
-                    // riwayat & timeline ikut diperbarui agar detail-pengajuan.html konsisten
-                    p.timeline = p.timeline || [];
-                    p.timeline.push({ title: 'Disetujui oleh Sistem (Auto)', date: new Date().toISOString() });
-                    p.riwayat = p.riwayat || [];
-                    p.riwayat.push({ tanggal: new Date().toISOString(), status: 'Disetujui', validator: 'Sistem (Auto)', keterangan: 'Disetujui otomatis oleh sistem' });
-
-                    // Audit Trail formal — ditandai jelas sebagai simulasi prototype,
-                    // bukan perilaku produksi (di produksi, persetujuan selalu memerlukan
-                    // keputusan manusia sesuai workflow yang dikonfigurasi).
-                    pushAuditTrail(state, {
-                        aktor: 'Sistem (Auto)',
-                        aktorRole: 'sistem',
-                        aksi: 'Validasi: Setujui (otomatis — simulasi prototype)',
-                        entitas: 'Pengajuan', entitasId: p.id,
-                        dataSebelum: 'status: Sedang Diverifikasi',
-                        dataSesudah: `status: Disetujui, +${p.poin || p.estimasiPoin || 0} poin`,
-                        keterangan: 'Persetujuan otomatis demi kebutuhan demonstrasi prototype (timer 30 detik). Pada implementasi produksi, tahap ini memerlukan keputusan validator manusia.'
-                    });
-
-                    // Notifikasi
-                    state.notifikasi.push({
-                        pesan: `Pengajuan "${p.judul || p.kategori}" telah disetujui. +${p.poin || p.estimasiPoin} poin ditambahkan.`,
-                        waktu: new Date().toISOString(),
-                        dibaca: false
-                    });
-                }
-            }
-        });
-
-        if (updated) {
-            state.totalPoin += poinDitambahkan;
-            setState(state);
-        }
-        return updated;
-    }
-
-    function getSisaWaktuValidasi(pengajuanId) {
-        const state = getState();
-        const p = state.pengajuan.find(item => item.id === pengajuanId);
-        if (!p || p.status !== 'Sedang Diverifikasi' || !p.validasiMulai) return null;
-        const elapsed = Date.now() - p.validasiMulai;
-        return Math.max(0, DURATION_VALIDASI - elapsed);
-    }
-
     // ------------------- Toast -------------------
     function showToast(message, type = 'success') {
         let container = document.getElementById('toastContainer');
@@ -1077,7 +1135,7 @@
 
     // ------------------- Reset -------------------
     function resetState() {
-        sessionStorage.removeItem(STATE_KEY);
+        localStorage.removeItem(STATE_KEY);
         initState();
     }
 
@@ -1121,19 +1179,16 @@
         // pengajuan
         addPengajuan,
         getPengajuanById,
+        getTotalPoin,
         updatePengajuan,
         validasiPengajuan,
         tambahCatatan,
-        // validasi otomatis
-        checkAndUpdateValidasi,
-        getSisaWaktuValidasi,
         // aktivitas
         addAktivitas,
         // util
         showToast,
         resetState,
         DUMMY_PENGAJUAN,
-        TARGET_POIN,
-        DURATION_VALIDASI
+        TARGET_POIN
     };
 })();

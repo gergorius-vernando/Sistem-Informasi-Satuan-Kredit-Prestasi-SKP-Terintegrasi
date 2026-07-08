@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan — Sistem Informasi SKP</title>
+    <title>Dashboard Kaprodi — Sistem Informasi SKP</title>
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -15,7 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
-        /* ==================== DESIGN SYSTEM — IDENTIK DENGAN DASHBOARD MAHASISWA ==================== */
+        /* ==================== DESIGN SYSTEM — IDENTIK DENGAN DASHBOARD MAHASISWA & ADMIN ==================== */
         :root {
             --primary: #1A1A1A;
             --accent: #F4B400;
@@ -382,7 +382,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD RINGKASAN / KPI (4 kartu) — seragam dengan halaman lain ==================== */
+        /* ==================== CARD RINGKASAN / KPI (4 kartu) ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -421,7 +421,7 @@
 
         .summary-card .card-icon.blue { background: #EFF6FF; color: var(--info); }
         .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
-        .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
+        .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
         .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
 
         .summary-card .card-info .card-value {
@@ -444,12 +444,6 @@
             gap: 18px;
         }
 
-        .grid-3col {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 18px;
-        }
-
         /* ==================== CARDS ==================== */
         .card {
             background: var(--white);
@@ -468,6 +462,13 @@
         }
 
         .card h3 i { color: var(--accent); }
+
+        .chart-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
 
         /* ==================== CHART CONTAINER ==================== */
         .chart-container {
@@ -525,6 +526,30 @@
         .badge-success  { background: #D1FAE5; color: #065F46; }
         .badge-danger   { background: #FEE2E2; color: #991B1B; }
         .badge-info     { background: #DBEAFE; color: #1E40AF; }
+        .badge-pending  { background: #FEF3C7; color: #92400E; }
+        .badge-priority-high   { background: #FEE2E2; color: #991B1B; }
+        .badge-priority-medium { background: #FEF3C7; color: #92400E; }
+        .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
+
+        .btn-detail {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+            background: var(--white);
+            color: var(--accent);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.74rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-detail:hover {
+            background: var(--accent);
+            color: var(--primary);
+        }
 
         /* ==================== EMPTY STATE ==================== */
         .empty-state-box {
@@ -560,6 +585,96 @@
             color: var(--text-muted);
             max-width: 320px;
         }
+
+        /* ==================== NOTIFICATION LIST ==================== */
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notification-list::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--light-gray);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .notification-item:hover { background: var(--accent-light); }
+        .notification-item i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+
+        .notification-item .notif-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ==================== ACTIVITY LIST ==================== */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item i { color: var(--accent); width: 16px; text-align: center; }
+        .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
+
+        /* ==================== STATUS PERIODE ==================== */
+        .periode-status-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--light-gray);
+            border-radius: var(--radius);
+        }
+        .periode-status-box .ps-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .periode-status-box.belum-konfigurasi .ps-icon { background: var(--text-muted); }
+        .periode-status-box .ps-title { font-weight: 700; font-size: 0.9rem; }
+        .periode-status-box .ps-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ==================== FOOTER ==================== */
         .footer {
@@ -633,18 +748,6 @@
         .btn-modal-danger { background: var(--danger); color: white; }
         .btn-modal-danger:hover { background: #DC2626; }
 
-        /* ==================== BUTTON GENERIK ==================== */
-        .btn {
-            padding: 12px 24px; border-radius: 30px;
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.84rem;
-            cursor: pointer; border: none; transition: all var(--transition);
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-accent { background: var(--accent); color: var(--primary); }
-        .btn-accent:hover { background: var(--accent-hover); }
-
         .toast-container {
             position: fixed; top: 24px; right: 24px; z-index: 9999;
             display: flex; flex-direction: column; gap: 10px;
@@ -673,7 +776,6 @@
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 1024px) {
             .grid-2col { grid-template-columns: 1fr; }
-            .grid-3col { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -682,7 +784,6 @@
             .main-content { margin-left: 0; }
             .page-content { padding: 16px; }
             .summary-cards { grid-template-columns: 1fr 1fr; }
-            .grid-3col { grid-template-columns: 1fr; }
             .dashboard-header { flex-direction: column; align-items: flex-start; }
             .topbar { padding: 0 16px; }
             .topbar-right .user-info { display: none; }
@@ -718,24 +819,18 @@
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
         <nav class="sidebar-menu">
-            <a href="dashboard-admin.html">
+            <a href="dashboard-kaprodi.html" class="active">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
-            <a href="validasi-admin.html">
+            <a href="validasi-kaprodi.html">
                 <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
             </a>
-            <a href="master-data-skp.html">
-                <i class="fa-solid fa-layer-group"></i> Master Sistem
-            </a>
-            <a href="rekap-validasi.html">
-                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
-            </a>
-            <a href="laporan.html" class="active">
-                <i class="fa-solid fa-chart-pie"></i> Laporan
+            <a href="rekap-kaprodi.html">
+                <i class="fa-solid fa-chart-pie"></i> Rekapitulasi
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil-admin.html" class="sidebar-footer-link">
+            <a href="profil-kaprodi.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -752,18 +847,16 @@
                 <button class="mobile-menu-btn" onclick="toggleSidebar()">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <!-- Search box dihapus -->
             </div>
             <div class="topbar-right">
                 <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
-                    <div class="user-avatar" id="topbarAvatar">SN</div>
+                    <div class="user-avatar" id="topbarAvatar">MR</div>
                     <div class="user-info">
-                        <span class="user-name" id="topbarName">Admin Kemahasiswaan</span>
-                        <span class="user-role" id="topbarRole">Admin Kemahasiswaan</span>
+                        <span class="user-name" id="topbarName">Kaprodi</span>
+                        <span class="user-role" id="topbarRole">Kaprodi</span>
                     </div>
                 </div>
             </div>
@@ -774,8 +867,8 @@
             <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="welcome-section">
-                    <h1>Laporan</h1>
-                    <p class="welcome-subtitle">Rekapitulasi dan ekspor data pengajuan SKP tingkat institusi.</p>
+                    <h1>Selamat Datang, <span id="welcomeName">Kaprodi</span></h1>
+                    <p class="welcome-subtitle" id="prodiDisplay">Program Studi: Sains Data Terapan</p>
                 </div>
                 <div class="period-badge">
                     <i class="fa-solid fa-calendar-check"></i>
@@ -783,90 +876,79 @@
                 </div>
             </div>
 
-            <!-- Filter Laporan -->
-            <div class="card">
-                <h3><i class="fa-solid fa-filter"></i> Filter Laporan</h3>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:14px; align-items:end;">
-                    <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Program Studi</label>
-                        <select id="filterProdi" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
-                            <option value="">Semua Program Studi</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Kategori SKP</label>
-                        <select id="filterKategoriLaporan" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
-                            <option value="">Semua Kategori</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Status</label>
-                        <select id="filterStatusLaporan" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
-                            <option value="">Semua Status</option>
-                            <option value="Disetujui">Disetujui</option>
-                            <option value="Ditolak">Ditolak</option>
-                            <option value="Revisi">Revisi</option>
-                            <option value="Sedang Diverifikasi">Sedang Diverifikasi</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-accent" onclick="exportCSV()" style="height:42px;">
-                        <i class="fa-solid fa-file-csv"></i> Ekspor CSV
-                    </button>
-                </div>
-            </div>
-
-            <!-- Ringkasan Statistik (4 card, label tanpa "(sesuai filter)") -->
+            <!-- KPI Cards (4) -->
             <div class="summary-cards">
                 <div class="summary-card">
-                    <div class="card-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="card-icon blue"><i class="fa-solid fa-user-graduate"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="lapTotalPengajuan">0</div>
+                        <div class="card-value" id="kpiTotalMahasiswa">0</div>
+                        <div class="card-label">Total Mahasiswa</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon orange"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiTotalPengajuan">0</div>
                         <div class="card-label">Total Pengajuan</div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon green"><i class="fa-solid fa-star"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="lapTotalPoin">0</div>
-                        <div class="card-label">Total Poin Tersalurkan</div>
+                        <div class="card-value" id="kpiRataPoin">0</div>
+                        <div class="card-label">Rata-rata Poin</div>
                     </div>
                 </div>
                 <div class="summary-card">
-                    <div class="card-icon gold"><i class="fa-solid fa-percent"></i></div>
+                    <div class="card-icon purple"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="lapTingkatPersetujuan">0%</div>
-                        <div class="card-label">Tingkat Persetujuan</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-icon purple"><i class="fa-solid fa-clock"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="lapRataRataHari">0</div>
-                        <div class="card-label">Rata-rata Hari Proses</div>
+                        <div class="card-value" id="kpiBelumTarget">0</div>
+                        <div class="card-label">Mahasiswa Belum Target</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Grafik -->
+            <!-- Antrean Validasi (prioritas) -->
+            <div class="card">
+                <h3><i class="fa-solid fa-list-check"></i> Pengajuan Menunggu Validasi Anda</h3>
+                <div id="antreanWrapper">
+                    <!-- diisi JS -->
+                </div>
+            </div>
+
+            <!-- Grafik & Ringkasan -->
             <div class="grid-2col">
                 <div class="card">
-                    <h3><i class="fa-solid fa-chart-pie"></i> Distribusi per Kategori</h3>
+                    <h3><i class="fa-solid fa-chart-column"></i> Statistik Pengajuan per Kategori</h3>
+                    <p class="chart-subtitle">Sebaran pengajuan mahasiswa program studi Anda</p>
                     <div class="chart-container">
-                        <canvas id="chartKategori"></canvas>
+                        <canvas id="chartStatistik"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3><i class="fa-solid fa-chart-column"></i> Distribusi per Program Studi</h3>
+                    <h3><i class="fa-solid fa-chart-pie"></i> Status Pengajuan</h3>
                     <div class="chart-container">
-                        <canvas id="chartProdi"></canvas>
+                        <canvas id="chartRingkasan"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Tabel Ringkasan -->
+            <!-- Aktivitas Terbaru & Notifikasi Sistem -->
+            <div class="grid-2col">
+                <div class="card">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Aktivitas Terbaru</h3>
+                    <div class="activity-list" id="activityList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-bell"></i> Notifikasi Sistem</h3>
+                    <div class="notification-list" id="notificationList"></div>
+                </div>
+            </div>
+
+            <!-- Status Periode -->
             <div class="card">
-                <h3><i class="fa-solid fa-table"></i> Rincian Data (sesuai filter)</h3>
-                <div id="laporanTableWrapper">
+                <h3><i class="fa-solid fa-calendar-days"></i> Status Periode Akademik</h3>
+                <div id="periodeStatusWrapper">
                     <!-- diisi JS -->
                 </div>
             </div>
@@ -897,279 +979,140 @@
     <script src="state.js"></script>
     <script>
         // ============================================================
-        // INITIALIZATION & ROLE AUTHENTICATION
+        // INITIALIZATION
         // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        if (!session || session.roleKey !== 'admin-kemahasiswaan') {
+        if (!session || session.roleKey !== 'kaprodi') {
             window.location.href = 'login.html';
         }
 
-        document.getElementById('topbarAvatar').textContent = session.avatar || 'SN';
-        document.getElementById('topbarName').textContent = session.fullName || 'Admin Kemahasiswaan';
-        document.getElementById('topbarRole').textContent = session.role || 'Admin Kemahasiswaan';
+        document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
+        document.getElementById('topbarName').textContent = session.fullName || 'Kaprodi';
+        document.getElementById('topbarRole').textContent = session.role || 'Kaprodi';
+        document.getElementById('welcomeName').textContent = session.fullName || 'Kaprodi';
+        document.getElementById('prodiDisplay').textContent = 'Program Studi: ' + (session.prodi || 'Sains Data Terapan');
 
         const today = new Date();
         document.getElementById('currentDateBadge').textContent =
             today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        let chartKategoriInstance = null;
-        let chartProdiInstance = null;
-        let filteredDataCache = []; // dipakai juga oleh exportCSV agar konsisten dengan tabel yang terlihat
+        let chartStatistikInstance = null;
+        let chartRingkasanInstance = null;
 
         // ============================================================
-        // ISI FILTER (Program Studi & Kategori) — diturunkan dari data akun & Master SKP
+        // LOAD DASHBOARD
         // ============================================================
-        function populateFilters() {
-            const accounts = AppState.getAllAccounts();
-            const prodiSet = new Set(Object.values(accounts).filter(a => a.roleKey === 'mahasiswa').map(a => a.prodi).filter(Boolean));
-            const selProdi = document.getElementById('filterProdi');
-            prodiSet.forEach(prodi => {
-                const opt = document.createElement('option');
-                opt.value = prodi;
-                opt.textContent = prodi;
-                selProdi.appendChild(opt);
-            });
-
-            const selKategori = document.getElementById('filterKategoriLaporan');
-            AppState.getMasterSKP().forEach(k => {
-                const opt = document.createElement('option');
-                opt.value = k.kode;
-                opt.textContent = k.nama;
-                selKategori.appendChild(opt);
-            });
-        }
-        populateFilters();
-
-        // ============================================================
-        // LOAD LAPORAN (orkestrasi: statistik, grafik, tabel)
-        // ============================================================
-        function loadLaporan() {
+        function loadDashboard() {
             const state = AppState.getState();
             const accounts = AppState.getAllAccounts();
-            let data = state.pengajuan || [];
+            const prodi = session.prodi || 'Sains Data Terapan';
 
-            // --- Terapkan filter ---
-            const prodiFilter = document.getElementById('filterProdi').value;
-            const kategoriFilter = document.getElementById('filterKategoriLaporan').value;
-            const statusFilter = document.getElementById('filterStatusLaporan').value;
+            // Filter mahasiswa berdasarkan prodi Kaprodi
+            const mahasiswaProdi = Object.values(accounts).filter(a => a.roleKey === 'mahasiswa' && a.prodi === prodi);
+            const emailsProdi = mahasiswaProdi.map(a => a.email);
 
-            if (prodiFilter) {
-                data = data.filter(p => (accounts[p.email] || {}).prodi === prodiFilter);
-            }
-            if (kategoriFilter) {
-                data = data.filter(p => p.kategori === kategoriFilter);
-            }
-            if (statusFilter) {
-                data = data.filter(p => p.status === statusFilter);
-            }
+            // Pengajuan milik mahasiswa prodi
+            const pengajuanProdi = state.pengajuan.filter(p => emailsProdi.includes(p.email));
 
-            filteredDataCache = data;
+            // KPI
+            const totalMahasiswa = mahasiswaProdi.length;
+            const totalPengajuan = pengajuanProdi.length;
+            const totalPoin = pengajuanProdi.filter(p => p.status === 'Disetujui').reduce((sum, p) => sum + (p.poin || p.estimasiPoin || 0), 0);
+            const rataPoin = totalMahasiswa > 0 ? Math.round(totalPoin / totalMahasiswa) : 0;
 
-            renderStatistik(data);
-            renderChartKategori(data);
-            renderChartProdi(data, accounts);
-            renderTabelLaporan(data, accounts);
+            // Mahasiswa belum memenuhi target
+            const targetPoin = state.targetPoin || 100;
+            const belumTarget = mahasiswaProdi.filter(m => {
+                const poinMhs = pengajuanProdi.filter(p => p.email === m.email && p.status === 'Disetujui')
+                    .reduce((s, p) => s + (p.poin || p.estimasiPoin || 0), 0);
+                return poinMhs < targetPoin;
+            }).length;
+
+            animateCounter('kpiTotalMahasiswa', totalMahasiswa);
+            animateCounter('kpiTotalPengajuan', totalPengajuan);
+            animateCounter('kpiRataPoin', rataPoin);
+            animateCounter('kpiBelumTarget', belumTarget);
+
+            // Antrean validasi untuk Kaprodi
+            loadQueue(state, accounts, emailsProdi);
+
+            // Chart
+            loadChart(pengajuanProdi);
+
+            // Aktivitas & Notifikasi
+            loadActivities(state, accounts, emailsProdi);
+            loadNotifications(state, accounts, emailsProdi);
+
+            // Periode
+            loadPeriode(state);
         }
 
-        // ============================================================
-        // RINGKASAN STATISTIK
-        // ============================================================
-        function renderStatistik(data) {
-            const total = data.length;
-            const totalPoin = data.filter(p => p.status === 'Disetujui').reduce((sum, p) => sum + (p.poin || p.estimasiPoin || 0), 0);
-            const disetujui = data.filter(p => p.status === 'Disetujui').length;
-            const ditolak = data.filter(p => p.status === 'Ditolak').length;
-            const totalDiputuskan = disetujui + ditolak;
-            const tingkatPersetujuan = totalDiputuskan > 0 ? Math.round((disetujui / totalDiputuskan) * 100) : 0;
-
-            // Rata-rata hari proses: dari tanggal pengajuan dibuat sampai entri riwayat status final
-            const selesai = data.filter(p => ['Disetujui', 'Ditolak'].includes(p.status));
-            let totalHari = 0;
-            selesai.forEach(p => {
-                const riwayat = p.riwayat || [];
-                const finalEntry = riwayat[riwayat.length - 1];
-                if (finalEntry && p.tanggal) {
-                    const mulai = new Date(p.tanggal).getTime();
-                    const selesaiTime = new Date(finalEntry.tanggal).getTime();
-                    const hari = Math.max(0, Math.round((selesaiTime - mulai) / 86400000));
-                    totalHari += hari;
-                }
-            });
-            const rataRataHari = selesai.length > 0 ? Math.round(totalHari / selesai.length) : 0;
-
-            document.getElementById('lapTotalPengajuan').textContent = total;
-            document.getElementById('lapTotalPoin').textContent = totalPoin;
-            document.getElementById('lapTingkatPersetujuan').textContent = tingkatPersetujuan + '%';
-            document.getElementById('lapRataRataHari').textContent = rataRataHari;
-        }
-
-        // ============================================================
-        // GRAFIK: DISTRIBUSI PER KATEGORI (doughnut)
-        // ============================================================
-        function renderChartKategori(data) {
-            const counts = {};
-            data.forEach(p => {
-                const label = p.kategoriText || p.kategori || 'Lainnya';
-                counts[label] = (counts[label] || 0) + 1;
-            });
-            const labels = Object.keys(counts);
-            const values = Object.values(counts);
-            const palette = ['#F4B400', '#3B82F6', '#22C55E', '#EF4444', '#8B5CF6', '#F59E0B', '#06B6D4', '#EC4899'];
-
-            const ctx = document.getElementById('chartKategori').getContext('2d');
-            if (chartKategoriInstance) chartKategoriInstance.destroy();
-
-            if (labels.length === 0) {
-                chartKategoriInstance = null;
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                return;
+        function animateCounter(elId, target) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const current = parseInt(el.textContent, 10);
+            if (current === target) return;
+            const duration = 600;
+            const start = isNaN(current) ? 0 : current;
+            const startTime = performance.now();
+            function tick(now) {
+                const progress = Math.min(1, (now - startTime) / duration);
+                const value = Math.round(start + (target - start) * progress);
+                el.textContent = value;
+                if (progress < 1) requestAnimationFrame(tick);
             }
-
-            chartKategoriInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels,
-                    datasets: [{ data: values, backgroundColor: palette.slice(0, labels.length), borderColor: '#FFFFFF', borderWidth: 3 }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
-                        tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
-                    }
-                }
-            });
+            requestAnimationFrame(tick);
         }
 
-        // ============================================================
-        // GRAFIK: DISTRIBUSI PER PROGRAM STUDI (bar)
-        // ============================================================
-        function renderChartProdi(data, accounts) {
-            const counts = {};
-            data.forEach(p => {
-                const prodi = (accounts[p.email] || {}).prodi || 'Tidak diketahui';
-                counts[prodi] = (counts[prodi] || 0) + 1;
-            });
-            // Urutkan dari terbanyak agar mudah dibaca (prodi teratas = paling banyak).
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-            const labels = sorted.map(e => e[0]);
-            const values = sorted.map(e => e[1]);
-
-            const ctx = document.getElementById('chartProdi').getContext('2d');
-            if (chartProdiInstance) chartProdiInstance.destroy();
-
-            if (labels.length === 0) {
-                chartProdiInstance = null;
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                return;
-            }
-
-            // Palet warna berbeda per bar supaya tiap prodi mudah dibedakan.
-            const palette = ['#F4B400', '#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#14B8A6', '#F97316', '#EC4899'];
-            const barColors = labels.map((_, i) => palette[i % palette.length]);
-            const maxVal = Math.max(...values);
-
-            // Plugin ringan: tampilkan angka jumlah di ujung tiap bar.
-            const valueLabelPlugin = {
-                id: 'prodiValueLabel',
-                afterDatasetsDraw(chart) {
-                    const { ctx } = chart;
-                    const meta = chart.getDatasetMeta(0);
-                    ctx.save();
-                    ctx.font = '600 11px Poppins';
-                    ctx.fillStyle = '#374151';
-                    ctx.textBaseline = 'middle';
-                    meta.data.forEach((bar, i) => {
-                        const val = values[i];
-                        ctx.textAlign = 'left';
-                        ctx.fillText(val, bar.x + 8, bar.y);
-                    });
-                    ctx.restore();
-                }
-            };
-
-            chartProdiInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Jumlah Pengajuan',
-                        data: values,
-                        backgroundColor: barColors,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                        maxBarThickness: 34
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    layout: { padding: { right: 24 } },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1A1A1A',
-                            titleFont: { family: 'Poppins', size: 13 },
-                            bodyFont: { family: 'Poppins', size: 12 },
-                            padding: 12, cornerRadius: 8,
-                            callbacks: { label: (c) => ` ${c.parsed.x} pengajuan` }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            suggestedMax: maxVal + 1,
-                            ticks: { stepSize: 1, font: { family: 'Poppins', size: 11 }, color: '#9CA3AF' },
-                            grid: { color: '#F1F1F1' },
-                            border: { display: false }
-                        },
-                        y: {
-                            ticks: { font: { family: 'Poppins', size: 11, weight: '500' }, color: '#374151', crossAlign: 'far' },
-                            grid: { display: false },
-                            border: { display: false }
-                        }
-                    }
-                },
-                plugins: [valueLabelPlugin]
-            });
+        function isPendingForKaprodi(p) {
+            const wf = p.workflow || [];
+            const activeNode = wf.find(w => w.status === 'active');
+            const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
+            if (isFinal) return false;
+            if (activeNode) return activeNode.role === 'Kaprodi';
+            return wf[1] && wf[1].role === 'Kaprodi' && p.status === 'Sedang Diverifikasi';
         }
 
-        // ============================================================
-        // TABEL RINGKASAN
-        // ============================================================
-        function renderTabelLaporan(data, accounts) {
-            const wrapper = document.getElementById('laporanTableWrapper');
+        function loadQueue(state, accounts, emailsProdi) {
+            const wrapper = document.getElementById('antreanWrapper');
+            let antrean = state.pengajuan.filter(p => emailsProdi.includes(p.email) && isPendingForKaprodi(p));
+            antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
 
-            if (data.length === 0) {
+            if (antrean.length === 0) {
                 wrapper.innerHTML = `
                     <div class="empty-state-box">
-                        <div class="empty-icon-wrap"><i class="fa-solid fa-table"></i></div>
-                        <div class="empty-title">Tidak ada data yang cocok dengan filter saat ini.</div>
+                        <div class="empty-icon-wrap"><i class="fa-solid fa-inbox"></i></div>
+                        <div class="empty-title">Tidak ada pengajuan yang perlu divalidasi.</div>
+                        <div class="empty-desc">Antrean validasi untuk program studi Anda sedang kosong.</div>
                     </div>
                 `;
                 return;
             }
 
-            // Batasi tampilan tabel ke 50 baris pertama agar halaman tetap ringan;
-            // ekspor CSV tetap menyertakan SELURUH data hasil filter.
-            const rows = data.slice(0, 50).map(p => {
+            const rows = antrean.map(p => {
                 const acc = accounts[p.email] || {};
-                const statusBadge = p.status === 'Disetujui' ? 'badge-success' : (p.status === 'Ditolak' ? 'badge-danger' : (p.status === 'Revisi' ? 'badge-warning' : 'badge-info'));
+                const namaMhs = acc.fullName || p.email || '-';
+                const prodi = acc.prodi || '-';
+                const nim = acc.nim || '-';
+
+                const hariMenunggu = Math.floor((Date.now() - new Date(p.tanggal).getTime()) / 86400000);
+                let prioritas = 'Rendah', prioritasClass = 'badge-priority-low';
+                if (hariMenunggu >= 3) { prioritas = 'Tinggi'; prioritasClass = 'badge-priority-high'; }
+                else if (hariMenunggu >= 1) { prioritas = 'Sedang'; prioritasClass = 'badge-priority-medium'; }
+
+                const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
+
                 return `<tr>
                     <td><strong>${p.id}</strong></td>
-                    <td>${acc.fullName || p.email || '-'}</td>
-                    <td>${acc.prodi || '-'}</td>
+                    <td>${namaMhs}<br><span style="font-size:0.7rem;color:var(--text-muted);">${nim}</span></td>
+                    <td>${prodi}</td>
                     <td>${p.kategoriText || p.kategori}</td>
-                    <td>${p.poin || p.estimasiPoin || 0}</td>
                     <td>${p.tanggal || '-'}</td>
                     <td><span class="badge ${statusBadge}">${p.status}</span></td>
+                    <td><span class="badge ${prioritasClass}">${prioritas}</span></td>
+                    <td><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail">Lihat Detail</a></td>
                 </tr>`;
             }).join('');
-
-            const catatanLebih = data.length > 50 ? `<p style="font-size:0.76rem; color:var(--text-muted); margin-top:10px;">Menampilkan 50 dari ${data.length} baris. Gunakan tombol "Ekspor CSV" untuk mengunduh seluruh data.</p>` : '';
 
             wrapper.innerHTML = `
                 <div class="table-wrapper">
@@ -1180,77 +1123,205 @@
                                 <th>Mahasiswa</th>
                                 <th>Program Studi</th>
                                 <th>Kategori</th>
-                                <th>Poin</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
+                                <th>Prioritas</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
-                ${catatanLebih}
             `;
         }
 
-        // ============================================================
-        // EKSPOR CSV (fungsional nyata: Blob + trigger download)
-        // ============================================================
-        window.exportCSV = function() {
-            if (filteredDataCache.length === 0) {
-                AppState.showToast('Tidak ada data untuk diekspor.', 'error');
-                return;
-            }
-            const accounts = AppState.getAllAccounts();
-            const header = ['ID Pengajuan', 'Nama Mahasiswa', 'NIM', 'Program Studi', 'Kategori', 'Tingkat', 'Poin', 'Tanggal Pengajuan', 'Status', 'Validator Terakhir'];
-
-            function escapeCsv(value) {
-                const str = String(value === undefined || value === null ? '' : value);
-                if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-                    return '"' + str.replace(/"/g, '""') + '"';
-                }
-                return str;
-            }
-
-            const rows = filteredDataCache.map(p => {
-                const acc = accounts[p.email] || {};
-                return [
-                    p.id,
-                    acc.fullName || p.email || '-',
-                    acc.nim || '-',
-                    acc.prodi || '-',
-                    p.kategoriText || p.kategori || '-',
-                    p.tingkatText || p.tingkat || '-',
-                    p.poin || p.estimasiPoin || 0,
-                    p.tanggal || '-',
-                    p.status,
-                    p.validator || '-'
-                ].map(escapeCsv).join(',');
+        function loadChart(pengajuanProdi) {
+            // Statistik per kategori (bar chart)
+            const kategoriMap = {};
+            pengajuanProdi.forEach(p => {
+                const key = p.kategoriText || p.kategori || 'Lainnya';
+                if (!kategoriMap[key]) kategoriMap[key] = { total: 0, disetujui: 0, pending: 0, ditolak: 0, revisi: 0 };
+                kategoriMap[key].total++;
+                if (p.status === 'Disetujui') kategoriMap[key].disetujui++;
+                else if (p.status === 'Ditolak') kategoriMap[key].ditolak++;
+                else if (p.status === 'Revisi') kategoriMap[key].revisi++;
+                else kategoriMap[key].pending++;
             });
 
-            const csvContent = [header.map(escapeCsv).join(','), ...rows].join('\n');
-            // Tambahkan BOM agar karakter non-ASCII (mis. nama dengan gelar) terbaca
-            // benar saat dibuka di Excel.
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            const tanggalFile = new Date().toISOString().slice(0, 10);
-            link.href = url;
-            link.download = `laporan-skp-${tanggalFile}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            const labels = Object.keys(kategoriMap);
+            const dataDisetujui = labels.map(k => kategoriMap[k].disetujui);
+            const dataPending = labels.map(k => kategoriMap[k].pending);
+            const dataDitolak = labels.map(k => kategoriMap[k].ditolak);
+            const dataRevisi = labels.map(k => kategoriMap[k].revisi);
 
-            AppState.showToast(`${filteredDataCache.length} baris data berhasil diekspor.`, 'success');
-            AppState.addAktivitas('sistem', 'Laporan diekspor', `${session.fullName} mengekspor laporan (${filteredDataCache.length} baris) ke CSV.`, 'fa-file-csv', 'info', null);
-        };
+            if (chartStatistikInstance) {
+                chartStatistikInstance.data.labels = labels;
+                chartStatistikInstance.data.datasets[0].data = dataDisetujui;
+                chartStatistikInstance.data.datasets[1].data = dataPending;
+                chartStatistikInstance.data.datasets[2].data = dataDitolak;
+                chartStatistikInstance.data.datasets[3].data = dataRevisi;
+                chartStatistikInstance.update('none');
+            } else {
+                const ctxBar = document.getElementById('chartStatistik').getContext('2d');
+                chartStatistikInstance = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Disetujui', data: dataDisetujui, backgroundColor: '#22C55E' },
+                            { label: 'Pending', data: dataPending, backgroundColor: '#F59E0B' },
+                            { label: 'Ditolak', data: dataDitolak, backgroundColor: '#EF4444' },
+                            { label: 'Revisi', data: dataRevisi, backgroundColor: '#8B5CF6' }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+                        },
+                        scales: {
+                            x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' }, grid: { color: '#E5E7EB' } },
+                            y: { stacked: true, ticks: { font: { family: 'Poppins', size: 10.5 }, color: '#6B7280' }, grid: { display: false } }
+                        }
+                    }
+                });
+            }
 
-        // ============================================================
-        // EVENT LISTENERS — filter memicu render ulang
-        // ============================================================
-        document.getElementById('filterProdi').addEventListener('change', loadLaporan);
-        document.getElementById('filterKategoriLaporan').addEventListener('change', loadLaporan);
-        document.getElementById('filterStatusLaporan').addEventListener('change', loadLaporan);
+            // Doughnut chart
+            const cPending = pengajuanProdi.filter(p => !['Disetujui','Ditolak','Revisi'].includes(p.status)).length;
+            const cDisetujui = pengajuanProdi.filter(p => p.status === 'Disetujui').length;
+            const cDitolak = pengajuanProdi.filter(p => p.status === 'Ditolak').length;
+            const cRevisi = pengajuanProdi.filter(p => p.status === 'Revisi').length;
+
+            if (chartRingkasanInstance) {
+                chartRingkasanInstance.data.datasets[0].data = [cPending, cDisetujui, cDitolak, cRevisi];
+                chartRingkasanInstance.update('none');
+            } else {
+                const ctxDoughnut = document.getElementById('chartRingkasan').getContext('2d');
+                chartRingkasanInstance = new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pending', 'Disetujui', 'Ditolak', 'Revisi'],
+                        datasets: [{
+                            data: [cPending, cDisetujui, cDitolak, cRevisi],
+                            backgroundColor: ['#F59E0B', '#22C55E', '#EF4444', '#8B5CF6'],
+                            borderColor: '#FFFFFF',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+                        }
+                    }
+                });
+            }
+        }
+
+        function loadActivities(state, accounts, emailsProdi) {
+            const activityList = document.getElementById('activityList');
+            const logs = (state.aktivitas || [])
+                .filter(a => a.email === null || emailsProdi.includes(a.email))
+                .slice(0, 10);
+
+            if (logs.length === 0) {
+                activityList.innerHTML = `
+                    <div class="empty-state-box" style="padding:24px 8px;">
+                        <div class="empty-icon-wrap" style="width:48px;height:48px;"><i class="fa-solid fa-list-check" style="font-size:1.2rem;"></i></div>
+                        <div class="empty-title" style="font-size:0.84rem;">Belum ada aktivitas</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const warnaColor = { success: 'var(--success)', info: 'var(--info)', warning: 'var(--warning)', danger: 'var(--danger)' };
+
+            activityList.innerHTML = logs.map(log => {
+                const waktuDate = new Date(log.waktu);
+                const diffMs = Date.now() - waktuDate.getTime();
+                const diffMin = Math.floor(diffMs / 60000);
+                const diffJam = Math.floor(diffMs / 3600000);
+                let waktuLabel;
+                if (diffMin < 1) waktuLabel = 'Baru saja';
+                else if (diffMin < 60) waktuLabel = `${diffMin} mnt lalu`;
+                else if (diffJam < 24) waktuLabel = `${diffJam} jam lalu`;
+                else waktuLabel = waktuDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+
+                const iconClass = log.ikon ? `fa-solid ${log.ikon}` : 'fa-solid fa-circle-dot';
+                const color = warnaColor[log.warna] || 'var(--info)';
+
+                return `
+                    <div class="activity-item">
+                        <i class="${iconClass}" style="color:${color}; width:16px; text-align:center; flex-shrink:0;"></i>
+                        <div style="flex:1; display:flex; flex-direction:column; gap:1px; min-width:0;">
+                            <span style="font-size:0.82rem; font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${log.judul}</span>
+                            <span style="font-size:0.72rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${log.detail}</span>
+                        </div>
+                        <span class="activity-date">${waktuLabel}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadNotifications(state, accounts, emailsProdi) {
+            const notifList = document.getElementById('notificationList');
+            const periodeAktif = AppState.getPeriodeAktif();
+
+            const notifs = [];
+            if (periodeAktif) {
+                notifs.push({ icon: 'fa-calendar-check', text: `Periode Akademik Aktif: ${periodeAktif.nama}.` });
+            } else {
+                notifs.push({ icon: 'fa-calendar-xmark', text: 'Belum ada periode akademik yang aktif.' });
+            }
+
+            const pengajuanProdi = state.pengajuan.filter(p => emailsProdi.includes(p.email));
+            const pendingCount = pengajuanProdi.filter(isPendingForKaprodi).length;
+            if (pendingCount > 0) notifs.push({ icon: 'fa-inbox', text: `${pendingCount} pengajuan menunggu validasi Anda.` });
+
+            notifList.innerHTML = notifs.map(n => `
+                <div class="notification-item">
+                    <i class="fa-solid ${n.icon}"></i>
+                    <div style="flex:1;">
+                        <span>${n.text}</span>
+                    </div>
+                </div>
+            `).join('') || '<div class="notification-item">Tidak ada notifikasi baru.</div>';
+        }
+
+        function loadPeriode(state) {
+            const wrapper = document.getElementById('periodeStatusWrapper');
+            const periodeAktif = AppState.getPeriodeAktif();
+
+            if (!periodeAktif) {
+                wrapper.innerHTML = `
+                    <div class="periode-status-box belum-konfigurasi">
+                        <div class="ps-icon"><i class="fa-solid fa-circle-question"></i></div>
+                        <div>
+                            <div class="ps-title">Belum dikonfigurasi.</div>
+                            <div class="ps-sub">Belum ada periode akademik yang aktif.</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            wrapper.innerHTML = `
+                <div class="periode-status-box">
+                    <div class="ps-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div>
+                        <div class="ps-title">Semester Aktif: ${periodeAktif.nama}</div>
+                        <div class="ps-sub">Status: <strong style="color:var(--success);">Aktif</strong> &nbsp;•&nbsp; ${periodeAktif.tanggalMulai} s/d ${periodeAktif.tanggalSelesai}</div>
+                    </div>
+                </div>
+            `;
+        }
 
         // ============================================================
         // DARK MODE
@@ -1289,7 +1360,13 @@
         // INIT
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            loadLaporan();
+            loadDashboard();
+        });
+
+        window.addEventListener('focus', loadDashboard);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadDashboard(); });
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadDashboard();
         });
     </script>
 </body>

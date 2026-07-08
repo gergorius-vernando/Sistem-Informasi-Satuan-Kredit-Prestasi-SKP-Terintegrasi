@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pengajuan SKP — Sistem Informasi SKP</title>
+    <title>Klaim SKP — Sistem Informasi SKP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -482,6 +482,14 @@
         .btn-modal-cancel:hover { background: var(--border); }
         .btn-modal-danger  { background: var(--danger); color: white; }
         .btn-modal-danger:hover { background: #DC2626; }
+        .btn-modal-primary { background: var(--accent); color: var(--primary); }
+        .btn-modal-primary:hover { background: var(--accent-hover); }
+        .modal-icon.success-pop i { animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes successPop {
+            0%   { transform: scale(0); opacity: 0; }
+            60%  { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
 
         .toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast {
@@ -530,7 +538,7 @@
         </div>
         <nav class="sidebar-menu">
             <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-            <a href="pengajuan.html" class="active"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
+            <a href="pengajuan.html" class="active"><i class="fa-solid fa-file-circle-plus"></i> Klaim SKP</a>
             <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
             <a href="rekapitulasi.html"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
             <a href="skpi.html"><i class="fa-solid fa-award"></i> SKPI</a>
@@ -572,18 +580,18 @@
             <div class="breadcrumb">
                 <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-house"></i> Dashboard</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>Pengajuan SKP</span>
+                <span>Klaim SKP</span>
             </div>
 
             <!-- Page Header -->
             <div class="page-header">
                 <div>
-                    <h1>Pengajuan Klaim SKP</h1>
+                    <h1>Klaim SKP</h1>
                     <p>Lengkapi seluruh informasi kegiatan sebelum mengirim pengajuan.</p>
                 </div>
                 <div class="period-badge">
                     <i class="fa-solid fa-calendar-check"></i>
-                    Periode: <strong>2026/2027 Ganjil</strong>
+                    Periode Akademik Aktif: <strong>2026/2027 Ganjil</strong>
                 </div>
             </div>
 
@@ -728,8 +736,8 @@
                                     <div class="sbp-label"><i class="fa-solid fa-diagram-project"></i> Alur Validasi</div>
                                     <div class="vf-steps" id="vfSteps"></div>
                                     <div class="sb-redirect-note">
-                                        <i class="fa-solid fa-rotate-right"></i>
-                                        Anda akan diarahkan kembali ke dashboard dalam <strong id="countdownNum">20</strong> detik
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        Pantau perkembangan validasi klaim Anda melalui dashboard.
                                     </div>
                                 </div>
                             </div>
@@ -818,6 +826,19 @@
             <p  id="notifMsg"></p>
             <div class="modal-buttons">
                 <button class="btn-modal btn-modal-cancel" onclick="closeNotifModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL: pop-up setelah klaim berhasil dikirim -->
+    <div class="modal-overlay hidden" id="successModal">
+        <div class="modal-dialog">
+            <div class="modal-icon success-pop"><i class="fa-solid fa-circle-check" style="color:var(--success);"></i></div>
+            <h4>Pengajuan Berhasil Dikirim!</h4>
+            <p>Klaim SKP Anda telah berhasil dikirim dan kini menunggu proses validasi. Anda dapat memantau perkembangannya melalui Timeline Validasi di dashboard.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeSuccessModal()">Tetap di Halaman Ini</button>
+                <button class="btn-modal btn-modal-primary" onclick="window.location.href='dashboard-mahasiswa.html'">Ke Dashboard</button>
             </div>
         </div>
     </div>
@@ -1105,8 +1126,7 @@
                 status: 'Sedang Diverifikasi',
                 tanggal: new Date().toISOString().slice(0,10),
                 validator: '-',
-                poin: d.estimasiPoin || 0,
-                validasiMulai: Date.now()
+                poin: d.estimasiPoin || 0
             };
             // addPengajuan mengembalikan objek pengajuan LENGKAP, termasuk
             // 'workflow' yang sudah dibentuk dari konfigurasi yang sesungguhnya
@@ -1120,8 +1140,7 @@
                 sessionStorage.removeItem('skp_edit_draft_id');
             }
 
-            AppState.showToast('Pengajuan berhasil dikirim.', 'success');
-            // Tampilkan step 4
+            // Tampilkan step 4 (ringkasan) sebagai latar
             document.getElementById('finalStatus').textContent = 'Sedang Diverifikasi';
             document.getElementById('finalId').textContent = pengajuan.id;
             currentStep = 4;
@@ -1153,16 +1172,13 @@
                 </div>`;
             }).join('');
 
-            // Countdown redirect
-            const TOTAL = 20;
-            let sisa = TOTAL;
-            const numEl = document.getElementById('countdownNum');
-            numEl.textContent = sisa;
-            const tick = setInterval(()=>{
-                sisa--;
-                numEl.textContent = sisa;
-                if (sisa <= 0) { clearInterval(tick); window.location.href='dashboard-mahasiswa.html'; }
-            }, 1000);
+            // Tampilkan pop-up sukses (menggantikan toast + countdown otomatis).
+            // Pengguna memilih sendiri: tetap di halaman ringkasan atau ke dashboard.
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
         }
 
         function getFormData() {

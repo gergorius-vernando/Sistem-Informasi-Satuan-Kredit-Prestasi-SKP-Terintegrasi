@@ -379,6 +379,31 @@
 
         .btn-login.loading { pointer-events: none; opacity: 0.8; }
         .btn-login.loading .btn-text { opacity: 0; }
+
+        .btn-demo-baru {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-demo-baru:hover {
+            border-color: var(--accent);
+            color: var(--accent-hover);
+            background: var(--accent-light);
+        }
+        .btn-demo-baru i { font-size: 0.9rem; }
         .btn-login .spinner {
             display: none;
             width: 20px; height: 20px;
@@ -560,6 +585,19 @@
         </div>
     </div>
 
+    <!-- ==================== MULAI DEMO BARU MODAL ==================== -->
+    <div class="modal-overlay hidden" id="demoBaruModal">
+        <div class="modal-dialog">
+            <div class="modal-icon"><i class="fa-solid fa-rotate-right" style="color:var(--accent);"></i></div>
+            <h4>Mulai Demo Baru?</h4>
+            <p>Sesi demo akan dimulai ulang dari kondisi data awal. Semua pengajuan dan poin yang dibuat selama demo sebelumnya akan dikembalikan ke keadaan semula.</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button class="btn-modal btn-modal-close" onclick="closeModal('demoBaruModal')">Batal</button>
+                <button class="btn-modal btn-modal-confirm" onclick="mulaiDemoBaru()">Ya, Mulai Baru</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== GENERAL MESSAGE MODAL ==================== -->
     <div class="modal-overlay hidden" id="messageModal">
         <div class="modal-dialog">
@@ -654,6 +692,11 @@
                 </button>
             </form>
 
+            <!-- Tombol memulai sesi demo dari kondisi data awal yang bersih -->
+            <button type="button" class="btn-demo-baru" id="btnDemoBaru" onclick="openModal('demoBaruModal')">
+                <i class="fa-solid fa-rotate-right"></i> Mulai Demo Baru
+            </button>
+
             <div style="text-align:center; margin-top:20px; font-size:0.75rem; color:var(--text-muted);">
                 Prototype Version 1.0
             </div>
@@ -702,6 +745,30 @@
         }
         function closeModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // ==================== MULAI DEMO BARU ====================
+        // Mengembalikan seluruh state aplikasi ke kondisi data awal (dummy),
+        // sehingga demo bisa dijalankan berulang dari nol.
+        //
+        // Yang dibersihkan:
+        //  - 'skp_app_state'   : seluruh data aplikasi (pengajuan, draft, poin, dll).
+        //  - 'skp_mhs2_seeded' : penanda bahwa data khusus mahasiswa2 (Siti, 118
+        //                        poin) sudah pernah dibuat. WAJIB ikut dihapus,
+        //                        supaya saat Siti login lagi datanya ter-seed
+        //                        ulang; kalau tidak, poin Siti akan jadi 0.
+        //
+        // Sesi login (skp_user_session) dibiarkan / dibersihkan lewat reload —
+        // halaman login memang tidak dalam keadaan login, jadi aman.
+        function mulaiDemoBaru() {
+            localStorage.removeItem('skp_app_state');
+            localStorage.removeItem('skp_mhs2_seeded');
+            // Bangun ulang data awal segera, lalu muat ulang halaman login bersih.
+            if (window.AppState && typeof AppState.initState === 'function') {
+                AppState.initState();
+            }
+            closeModal('demoBaruModal');
+            window.location.reload();
         }
 
         // Generic message popup
@@ -760,18 +827,27 @@
 
             setTimeout(() => {
                 // Inisialisasi state aplikasi HANYA jika belum ada (supaya draft/aktivitas
-                // yang sudah dibuat sebelumnya di sesi browser ini tidak ikut terhapus
-                // setiap kali ada yang login).
-                if (!sessionStorage.getItem('skp_app_state')) {
+                // yang sudah dibuat sebelumnya tidak ikut terhapus setiap kali ada yang
+                // login). State aplikasi disimpan di localStorage (lihat catatan di
+                // AppState.getState di state.js) supaya bertahan lintas tab dan tidak
+                // ikut terhapus saat ada yang logout di tab lain.
+                if (!localStorage.getItem('skp_app_state')) {
                     AppState.initState();
                 }
 
                 // ============================================================
                 // SETUP KHUSUS UNTUK MAHASISWA2 (total poin >= 100)
-                // Hanya dijalankan sekali — ditandai lewat flag di sessionStorage
+                // Hanya dijalankan sekali — ditandai lewat flag di localStorage
+                // (bukan sessionStorage) supaya konsisten dengan state aplikasi
+                // yang sekarang dibagi lintas tab, dan tidak ter-seed dobel kalau
+                // mahasiswa2 login lagi dari tab/browser session yang berbeda.
+                // Pengecekan ID juga ditambahkan sebagai pengaman ganda.
                 // ============================================================
-                if (email === 'mahasiswa2@plai.ac.id' && !sessionStorage.getItem('skp_mhs2_seeded')) {
-                    const state = AppState.getState();
+                const sudahDiseed = localStorage.getItem('skp_mhs2_seeded');
+                const stateCek = AppState.getState();
+                const sudahAdaDatanya = stateCek.pengajuan.some(p => p.id === 'SKP-2024-001');
+                if (email === 'mahasiswa2@plai.ac.id' && !sudahDiseed && !sudahAdaDatanya) {
+                    const state = stateCek;
                     // Tambahkan data pengajuan yang sudah disetujui (total poin 118)
                     const approvedPengajuan = [
                         { id: 'SKP-2024-001', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal', poin: 25, status: 'Disetujui', tanggal: '2024-01-10', validator: 'Kaprodi', estimasiPoin: 25 },
@@ -782,7 +858,6 @@
                         { id: 'SKP-2024-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Masyarakat', poin: 15, status: 'Disetujui', tanggal: '2024-06-01', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 }
                     ].map(p => ({
                         ...p,
-                        validasiMulai: null,
                         workflow: AppState.buildWorkflow(p.kategori).map(w => ({ ...w, status: 'completed', date: p.tanggal })),
                         timeline: [
                             { title: 'Pengajuan dibuat', date: p.tanggal + 'T08:00:00.000Z' },
@@ -795,11 +870,13 @@
                         catatan: [],
                         dokumen: []
                     }));
-                    // Gabungkan dengan data dummy yang sudah ada (state.pengajuan)
+                    // Gabungkan dengan data dummy yang sudah ada (state.pengajuan).
+                    // Tidak perlu set totalPoin manual — getTotalPoin(email)
+                    // menghitungnya otomatis dari 6 pengajuan Disetujui di atas
+                    // (25+15+30+15+18+15 = 118, sudah melewati target 100).
                     state.pengajuan = state.pengajuan.concat(approvedPengajuan);
-                    state.totalPoin = 118; // 25+15+30+15+18+15 = 118
                     AppState.setState(state);
-                    sessionStorage.setItem('skp_mhs2_seeded', 'true');
+                    localStorage.setItem('skp_mhs2_seeded', 'true');
                 }
                 // ============================================================
 

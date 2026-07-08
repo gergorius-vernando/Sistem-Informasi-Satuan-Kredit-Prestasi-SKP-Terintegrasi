@@ -738,24 +738,21 @@
             margin-top: 2px;
         }
 
-        .timeline-countdown {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-top: 4px;
+        .timeline-active-banner {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: var(--accent-hover);
+            background: var(--accent-light);
+            border: 1px solid rgba(244, 180, 0, 0.25);
+            padding: 9px 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
         }
 
-        .timeline-countdown i {
-            font-size: 0.85rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .timeline-active-banner i { font-size: 0.85rem; }
 
         .empty-timeline {
             color: var(--text-muted);
@@ -773,6 +770,22 @@
         .empty-timeline i {
             font-size: 2.8rem;
             color: var(--border);
+        }
+
+        .empty-timeline .empty-icon-ring {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-light), rgba(244, 180, 0, 0.03));
+            border: 1px solid rgba(244, 180, 0, 0.25);
+        }
+
+        .empty-timeline .empty-icon-ring i {
+            font-size: 1.9rem;
+            color: var(--accent);
         }
 
         .empty-timeline .empty-title {
@@ -810,28 +823,6 @@
         .empty-timeline .workflow-preview .arrow {
             color: var(--border);
             font-size: 0.6rem;
-        }
-
-        .empty-timeline .empty-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            margin-top: 6px;
-            padding: 9px 20px;
-            background: var(--accent);
-            color: var(--primary);
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all var(--transition);
-            box-shadow: 0 3px 10px rgba(244, 180, 0, 0.3);
-        }
-
-        .empty-timeline .empty-cta:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(244, 180, 0, 0.35);
         }
 
         /* empty state aktivitas terbaru */
@@ -1061,7 +1052,7 @@
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
             <a href="pengajuan.html">
-                <i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP
+                <i class="fa-solid fa-file-circle-plus"></i> Klaim SKP
             </a>
             <a href="draft.html">
                 <i class="fa-solid fa-file-pen"></i> Draft
@@ -1273,11 +1264,9 @@
 
         // ==================== RENDER DASHBOARD ====================
         let chartInstance = null;
-        let timelineInterval = null;
-
         function renderDashboard() {
             const state = AppState.getState();
-            const totalPoin = state.totalPoin || 0;
+            const totalPoin = AppState.getTotalPoin(currentUserEmail);
             const targetPoin = state.targetPoin || 100;
 
             // Semua pengajuan (termasuk dummy)
@@ -1365,67 +1354,44 @@
         }
 
         // ==================== TIMELINE VALIDASI ====================
+        // Timeline HANYA menampilkan pengajuan yang sedang berjalan di dalam
+        // workflow validasi saat ini (belum ada keputusan final). Pengajuan
+        // yang sudah Disetujui/Ditolak sengaja tidak ditampilkan di sini —
+        // riwayat lengkapnya tetap bisa dilihat di tabel "Status Pengajuan
+        // Terbaru" di bawah dan di halaman Rekapitulasi.
         function renderTimeline(myPengajuan) {
             const container = document.getElementById('timelineContainer');
             container.innerHTML = '';
 
-            // Jika tidak ada pengajuan dari mahasiswa ini
-            if (myPengajuan.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-timeline">
-                        <i class="fa-regular fa-clock"></i>
-                        <div class="empty-title">Belum ada pengajuan SKP</div>
-                        <div class="empty-desc">
-                            Silakan buat pengajuan baru untuk memulai proses validasi.
-                        </div>
-                        <div class="workflow-preview">
-                            <i class="fa-solid fa-user-graduate"></i> Mahasiswa
-                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
-                            <i class="fa-solid fa-user-tie"></i> Kaprodi
-                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
-                            <i class="fa-solid fa-user-check"></i> Admin Kemahasiswaan
-                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
-                            <i class="fa-solid fa-flag-checkered"></i> Selesai
-                        </div>
-                        <a href="pengajuan.html" class="empty-cta">
-                            <i class="fa-solid fa-file-circle-plus"></i> Buat Pengajuan
-                        </a>
-                    </div>
-                `;
-                return;
-            }
-
-            // Pengajuan "sedang berlangsung" mencakup status auto-timer mahasiswa
-            // ('Sedang Diverifikasi') MAUPUN status hasil aksi validator manusia
-            // ('Pending <Role>', 'Revisi') — bukan hanya satu status saja.
             const statusBerlangsung = ['Sedang Diverifikasi', 'Revisi'];
             const inProgress = myPengajuan.find(p =>
                 statusBerlangsung.includes(p.status) || (p.status && p.status.startsWith('Pending '))
             );
-            const latestCompleted = myPengajuan.filter(p => p.status === 'Disetujui')[0];
 
-            if (!inProgress && !latestCompleted) {
+            if (!inProgress) {
+                const belumPernah = myPengajuan.length === 0;
                 container.innerHTML = `
                     <div class="empty-timeline">
-                        <i class="fa-regular fa-circle-check"></i>
-                        <div class="empty-title">Tidak ada proses validasi aktif</div>
+                        <div class="empty-icon-ring"><i class="fa-regular fa-clock"></i></div>
+                        <div class="empty-title">${belumPernah ? 'Belum Ada Pengajuan' : 'Tidak Ada Proses yang Sedang Berjalan'}</div>
                         <div class="empty-desc">
-                            Semua pengajuan telah selesai diproses.
+                            ${belumPernah
+                                ? 'Timeline validasi akan tampil di sini secara otomatis begitu Anda mengajukan klaim SKP.'
+                                : 'Semua pengajuan Anda sebelumnya sudah selesai diproses. Timeline akan tampil kembali saat ada pengajuan baru yang berjalan.'}
                         </div>
                         <div class="workflow-preview">
+                            <i class="fa-solid fa-user-graduate"></i> Mahasiswa
+                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            <i class="fa-solid fa-user-check"></i> Validator
+                            <span class="arrow"><i class="fa-solid fa-arrow-right"></i></span>
                             <i class="fa-solid fa-flag-checkered"></i> Selesai
                         </div>
-                        <a href="pengajuan.html" class="empty-cta">
-                            <i class="fa-solid fa-file-circle-plus"></i> Buat Pengajuan Baru
-                        </a>
                     </div>
                 `;
                 return;
             }
 
-            const targetPengajuan = inProgress || latestCompleted;
-            const isActive = !!inProgress;
-            const isCompleted = targetPengajuan.status === 'Disetujui';
+            const targetPengajuan = inProgress;
 
             // Pakai workflow ASLI yang tersimpan pada data pengajuan itu sendiri
             // (status per tahap: completed/active/pending sudah dihitung oleh
@@ -1438,19 +1404,11 @@
             const allSteps = [...workflowSteps.map(w => w.role), 'Selesai'];
 
             // Tentukan index tahap yang sedang aktif berdasarkan data workflow asli,
-            // bukan asumsi "selalu index ke-1".
-            let activeIndex = allSteps.length; // default: anggap semua selesai
-            if (!isCompleted) {
-                const idxActiveNode = workflowSteps.findIndex(w => w.status === 'active');
-                if (idxActiveNode !== -1) {
-                    activeIndex = idxActiveNode;
-                } else {
-                    // Status 'Sedang Diverifikasi' dari auto-timer belum punya node
-                    // 'active' eksplisit (workflow baru selesai tahap 0/Mahasiswa) —
-                    // anggap tahap berikutnya (index 1) yang sedang berjalan.
-                    activeIndex = 1;
-                }
-            }
+            // bukan asumsi "selalu index ke-1". Node berstatus 'revisi' juga
+            // dihitung sebagai tahap "sedang berjalan" karena giliran memang
+            // sedang kembali ke mahasiswa untuk memperbaiki pengajuan tersebut.
+            const idxActiveNode = workflowSteps.findIndex(w => w.status === 'active' || w.status === 'revisi');
+            const activeIndex = idxActiveNode !== -1 ? idxActiveNode : 1;
 
             let html = '';
             allSteps.forEach((role, idx) => {
@@ -1462,30 +1420,13 @@
                     dotClass += ' completed';
                     statusText = 'Selesai';
                     dateText = (workflowSteps[idx] && workflowSteps[idx].date) ? new Date(workflowSteps[idx].date).toLocaleDateString('id-ID') : (targetPengajuan.tanggal || '-');
-                } else if (idx === activeIndex && isActive) {
+                } else if (idx === activeIndex) {
                     dotClass += ' active';
                     statusText = targetPengajuan.status === 'Revisi' ? 'Menunggu Perbaikan dari Anda' : 'Sedang Diproses';
-                    dateText = 'Sekarang';
+                    dateText = targetPengajuan.status === 'Revisi' ? 'Perlu tindakan Anda' : 'Menunggu validator';
                 } else {
                     statusText = 'Menunggu';
                     dateText = '-';
-                }
-
-                let countdownHTML = '';
-                // Countdown hanya relevan untuk auto-timer mahasiswa (status persis
-                // 'Sedang Diverifikasi'); validasi manual oleh manusia tidak punya
-                // batas waktu otomatis di prototype ini.
-                if (isActive && idx === activeIndex && role !== 'Selesai' && targetPengajuan.status === 'Sedang Diverifikasi') {
-                    const sisa = AppState.getSisaWaktuValidasi(targetPengajuan.id);
-                    if (sisa !== null && sisa > 0) {
-                        const seconds = Math.ceil(sisa / 1000);
-                        countdownHTML = `
-                            <div class="timeline-countdown">
-                                <i class="fa-solid fa-clock"></i>
-                                Estimasi selesai: <span id="countdownTimer">${formatTime(seconds)}</span>
-                            </div>
-                        `;
-                    }
                 }
 
                 html += `
@@ -1495,43 +1436,18 @@
                             <div class="timeline-title">${role}</div>
                             <div class="timeline-date">${dateText}</div>
                             <div class="timeline-sub">${statusText}</div>
-                            ${countdownHTML}
                         </div>
                     </div>
                 `;
             });
 
-            container.innerHTML = html;
-
-            if (isActive && targetPengajuan.status === 'Sedang Diverifikasi') {
-                if (timelineInterval) clearInterval(timelineInterval);
-                timelineInterval = setInterval(() => {
-                    const sisa = AppState.getSisaWaktuValidasi(targetPengajuan.id);
-                    if (sisa === null || sisa <= 0) {
-                        clearInterval(timelineInterval);
-                        timelineInterval = null;
-                        const timer = document.getElementById('countdownTimer');
-                        if (timer) timer.textContent = '00:00';
-                        renderDashboard();
-                        return;
-                    }
-                    const timer = document.getElementById('countdownTimer');
-                    if (timer) {
-                        timer.textContent = formatTime(Math.ceil(sisa / 1000));
-                    }
-                }, 1000);
-            } else {
-                if (timelineInterval) {
-                    clearInterval(timelineInterval);
-                    timelineInterval = null;
-                }
-            }
-        }
-
-        function formatTime(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            container.innerHTML = `
+                <div class="timeline-active-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Menampilkan pengajuan <strong>${targetPengajuan.id}</strong> — ${targetPengajuan.kategoriText || targetPengajuan.kategori}
+                </div>
+                ${html}
+            `;
         }
 
         // ==================== NOTIFIKASI ====================
@@ -1635,9 +1551,6 @@
 
         // ==================== CHART ====================
         function updateChart(totalPoin) {
-            const ctx = document.getElementById('chartSKP').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
             const labels = ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6'];
             const base = Math.max(0, totalPoin - 20);
             const data = [
@@ -1652,6 +1565,17 @@
                 if (data[i] < 0) data[i] = 0;
             }
 
+            // Chart dibuat sekali; render berikutnya cukup update data tanpa
+            // destroy + bikin ulang, supaya tidak beranimasi ulang saat kembali
+            // ke tab ini.
+            if (chartInstance) {
+                chartInstance.data.datasets[0].data = data;
+                chartInstance.options.scales.y.max = Math.max(140, totalPoin + 20);
+                chartInstance.update('none');
+                return;
+            }
+
+            const ctx = document.getElementById('chartSKP').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1700,24 +1624,22 @@
             });
         }
 
-        // ==================== VALIDASI TIMER ====================
-        let validationInterval = null;
-
-        function startValidationCheck() {
-            if (validationInterval) clearInterval(validationInterval);
-            validationInterval = setInterval(() => {
-                const updated = AppState.checkAndUpdateValidasi();
-                if (updated) {
-                    renderDashboard();
-                }
-            }, 1000);
-        }
-
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', function() {
             AppState.getState();
             renderDashboard();
-            startValidationCheck();
+
+            // Refresh otomatis saat tab ini difokuskan kembali (mis. setelah
+            // admin memvalidasi pengajuan di tab lain) — supaya status &
+            // poin terbaru langsung terlihat tanpa reload manual.
+            window.addEventListener('focus', renderDashboard);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) renderDashboard(); });
+            // Sinkronisasi lintas-tab: begitu admin memvalidasi di tab lain,
+            // status & poin di dashboard mahasiswa ini langsung ikut terbarui.
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'skp_app_state') renderDashboard();
+            });
+            // Polling dihapus: pembaruan lewat event 'storage'/'focus' atau refresh manual.
 
             document.getElementById('darkModeToggle').addEventListener('click', function() {
                 const icon = this.querySelector('i');

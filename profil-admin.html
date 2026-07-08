@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Mahasiswa — Sistem Informasi SKP</title>
+    <title>Profil Admin Kemahasiswaan — Sistem Informasi SKP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -599,6 +599,12 @@
             from { opacity: 0; transform: scale(0.9) translateY(20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
+        .modal-dialog .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            color: var(--danger);
+            text-align: center;
+        }
         .modal-dialog h4 {
             font-size: 1.1rem;
             font-weight: 700;
@@ -640,6 +646,13 @@
         }
         .btn-modal-primary:hover {
             background: var(--accent-hover);
+        }
+        .btn-modal-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-modal-danger:hover {
+            background: #DC2626;
         }
 
         .table-wrapper {
@@ -822,17 +835,17 @@
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
         <nav class="sidebar-menu">
-            <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-            <a href="pengajuan.html"><i class="fa-solid fa-file-circle-plus"></i> Klaim SKP</a>
-            <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
-            <a href="rekapitulasi.html"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
-            <a href="skpi.html"><i class="fa-solid fa-award"></i> SKPI</a>
+            <a href="dashboard-admin.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="validasi-admin.html"><i class="fa-solid fa-clipboard-check"></i> Validasi SKP</a>
+            <a href="master-data-skp.html"><i class="fa-solid fa-layer-group"></i> Master Sistem</a>
+            <a href="rekap-validasi.html"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi</a>
+            <a href="laporan.html"><i class="fa-solid fa-chart-pie"></i> Laporan</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil.html" class="sidebar-footer-link active">
+            <a href="profil-admin.html" class="sidebar-footer-link active">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
-            <button onclick="handleLogout()">
+            <button onclick="showLogoutModal()">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </button>
         </div>
@@ -855,10 +868,10 @@
                     <i class="fa-solid fa-moon"></i>
                 </button>
                 <div class="user-display">
-                    <div class="user-avatar" id="topbarAvatar">U</div>
+                    <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
-                        <span class="user-name" id="topbarName">User</span>
-                        <span class="user-role" id="topbarRole">Role</span>
+                        <span class="user-name" id="topbarName">Admin Kemahasiswaan</span>
+                        <span class="user-role" id="topbarRole">Admin Kemahasiswaan</span>
                     </div>
                 </div>
             </div>
@@ -869,7 +882,7 @@
 
             <!-- Breadcrumb -->
             <div class="breadcrumb">
-                <a href="dashboard-mahasiswa.html">Dashboard</a>
+                <a href="dashboard-admin.html">Dashboard</a>
                 <i class="fa-solid fa-chevron-right"></i>
                 <span>Profil Saya</span>
             </div>
@@ -877,12 +890,12 @@
             <!-- Header -->
             <div class="header-section">
                 <div>
-                    <h1>Profil Mahasiswa</h1>
-                    <p>Kelola informasi akun dan identitas mahasiswa.</p>
+                    <h1>Profil Admin Kemahasiswaan</h1>
+                    <p>Kelola informasi akun dan identitas Admin Kemahasiswaan.</p>
                 </div>
                 <div class="period-badge">
                     <i class="fa-solid fa-calendar-check"></i>
-                    Periode Akademik Aktif: <strong>2026/2027 Ganjil</strong>
+                    <span id="currentDateBadge"></span>
                 </div>
             </div>
 
@@ -892,10 +905,10 @@
             <div class="card">
                 <div class="profile-photo-wrapper">
                     <div class="profile-photo" id="profilePhoto">U</div>
-                    <div class="profile-name" id="profileName">Mahasiswa</div>
-                    <div class="profile-nim" id="profileNim">NIM: -</div>
+                    <div class="profile-name" id="profileName">Admin Kemahasiswaan</div>
+                    <div class="profile-nim" id="profileNim">NIP: -</div>
                     <div class="profile-prodi" id="profileProdi">-</div>
-                    <span class="profile-status"><i class="fa-solid fa-circle-check"></i> Mahasiswa Aktif</span>
+                    <span class="profile-status"><i class="fa-solid fa-circle-check"></i> Staf Aktif</span>
                     <button class="btn btn-outline" onclick="simulateUploadPhoto()">
                         <i class="fa-solid fa-camera"></i> Ubah Foto
                     </button>
@@ -903,7 +916,7 @@
             </div>
 
             <!-- ============================================================
-            CARD IDENTITAS & CARD INFORMASI AKADEMIK (2 columns)
+            CARD IDENTITAS & CARD INFORMASI KEPEGAWAIAN (2 columns)
             ============================================================ -->
             <div class="grid-2col">
                 <!-- Card Identitas -->
@@ -916,7 +929,7 @@
                                 <input type="text" id="editNama" readonly>
                             </div>
                             <div class="form-group">
-                                <label>NIM</label>
+                                <label>NIP</label>
                                 <input type="text" id="editNim" readonly>
                             </div>
                         </div>
@@ -926,24 +939,14 @@
                                 <input type="email" id="editEmail" readonly>
                             </div>
                             <div class="form-group">
-                                <label>Program Studi</label>
+                                <label>Bidang / Unit Kerja</label>
                                 <input type="text" id="editProdi" readonly>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Fakultas / Jurusan</label>
+                                <label>Jabatan</label>
                                 <input type="text" id="editFakultas" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Angkatan</label>
-                                <input type="text" id="editAngkatan" readonly>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Semester Aktif</label>
-                                <input type="text" id="editSemester" readonly>
                             </div>
                             <div class="form-group">
                                 <label>Jenis Kelamin</label>
@@ -972,60 +975,54 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Status Akademik</label>
+                                <label>Status Kepegawaian</label>
                                 <input type="text" id="editStatusAkademik" readonly>
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Card Informasi Akademik -->
+                <!-- Card Informasi Kepegawaian -->
                 <div class="card">
-                    <h3><i class="fa-solid fa-graduation-cap"></i> Informasi Akademik</h3>
+                    <h3><i class="fa-solid fa-building-columns"></i> Informasi Kepegawaian</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Program Studi</label>
+                            <label>Bidang / Unit Kerja</label>
                             <input type="text" id="akademikProdi" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Jenjang</label>
+                            <label>Jabatan</label>
                             <input type="text" id="akademikJenjang" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Angkatan</label>
+                            <label>NIP</label>
                             <input type="text" id="akademikAngkatan" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Semester Aktif</label>
+                            <label>Status Kepegawaian</label>
                             <input type="text" id="akademikSemester" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Dosen Pembimbing Akademik</label>
+                            <label>Tanggal Bergabung</label>
                             <input type="text" id="akademikDosen" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Status Akademik</label>
+                            <label>Atasan Langsung</label>
                             <input type="text" id="akademikStatus" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>IPK (Dummy)</label>
+                            <label>Total Pengajuan Divalidasi</label>
                             <input type="text" id="akademikIpk" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Total SKP Saat Ini</label>
+                            <label>Diproses Bulan Ini</label>
                             <input type="text" id="akademikTotalSkp" readonly>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Target SKP</label>
-                            <input type="text" id="akademikTarget" readonly>
                         </div>
                     </div>
                 </div>
@@ -1177,6 +1174,21 @@
     </div>
 
     <!-- ============================================================
+    MODAL KONFIRMASI LOGOUT
+    ============================================================ -->
+    <div class="modal-overlay hidden" id="logoutModal">
+        <div class="modal-dialog">
+            <div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <h4>Konfirmasi Logout</h4>
+            <p>Apakah Anda yakin ingin keluar dari akun ini?</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
+                <button class="btn-modal btn-modal-danger" onclick="confirmLogout()">Ya, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
     TOAST CONTAINER
     ============================================================ -->
     <div class="toast-container" id="toastContainer"></div>
@@ -1188,52 +1200,62 @@
     <script>
         (function() {
             const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-            if (!session || session.roleKey !== 'mahasiswa') {
+            if (!session || session.roleKey !== 'admin-kemahasiswaan') {
                 window.location.href = 'login.html';
                 return;
             }
 
-            const currentEmail = session.email;
             const state = AppState.getState();
-            const totalPoin = AppState.getTotalPoin(currentEmail);
-            const targetPoin = state.targetPoin || 100;
+
+            // Statistik ringan aktivitas validasi milik admin ini — dihitung dari
+            // data pengajuan yang sudah tercatat (baik hasil seed maupun hasil
+            // validasi manual sungguhan lewat detail-pengajuan.html).
+            const allPengajuan = state.pengajuan || [];
+            const divalidasiOlehSaya = allPengajuan.filter(p => p.validator === session.fullName || p.validator === session.role);
+            const bulanIni = new Date().toISOString().slice(0, 7);
+            const diprosesBulanIni = divalidasiOlehSaya.filter(p => {
+                const riwayatTerakhir = (p.riwayat || [])[(p.riwayat || []).length - 1];
+                return riwayatTerakhir && (riwayatTerakhir.tanggal || '').slice(0, 7) === bulanIni;
+            }).length;
+
+            // Badge tanggal hari ini (konsisten dengan halaman admin lainnya)
+            const today = new Date();
+            document.getElementById('currentDateBadge').textContent =
+                today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             // Topbar
-            document.getElementById('topbarAvatar').textContent = session.avatar || 'MA';
-            document.getElementById('topbarName').textContent = session.fullName || 'User';
-            document.getElementById('topbarRole').textContent = (session.prodi || '') + ' • Mahasiswa';
+            document.getElementById('topbarAvatar').textContent = session.avatar || 'SN';
+            document.getElementById('topbarName').textContent = session.fullName || 'Admin Kemahasiswaan';
+            document.getElementById('topbarRole').textContent = session.role || 'Admin Kemahasiswaan';
 
             // Profil foto
             document.getElementById('profilePhoto').textContent = session.avatar || 'U';
             document.getElementById('profileName').textContent = session.fullName || '-';
-            document.getElementById('profileNim').textContent = 'NIM: ' + (session.nim || '-');
+            document.getElementById('profileNim').textContent = 'NIP: ' + (session.nip || '-');
             document.getElementById('profileProdi').textContent = session.prodi || '-';
 
             // Identitas
             document.getElementById('editNama').value = session.fullName || '';
-            document.getElementById('editNim').value = session.nim || '';
+            document.getElementById('editNim').value = session.nip || '';
             document.getElementById('editEmail').value = session.email || '';
             document.getElementById('editProdi').value = session.prodi || '';
-            document.getElementById('editFakultas').value = 'Fakultas Teknologi Informasi';
-            document.getElementById('editAngkatan').value = session.angkatan || '2024';
-            document.getElementById('editSemester').value = '4';
+            document.getElementById('editFakultas').value = 'Koordinator Kemahasiswaan';
             document.getElementById('editJenisKelamin').value = 'Laki-laki';
-            document.getElementById('editTempatLahir').value = 'Jakarta';
-            document.getElementById('editTanggalLahir').value = '2004-01-01';
+            document.getElementById('editTempatLahir').value = 'Bandung';
+            document.getElementById('editTanggalLahir').value = '1985-01-01';
             document.getElementById('editNoHp').value = '';
             document.getElementById('editAlamat').value = '';
-            document.getElementById('editStatusAkademik').value = 'Mahasiswa Aktif';
+            document.getElementById('editStatusAkademik').value = 'Pegawai Tetap';
 
-            // Akademik
+            // Informasi Kepegawaian
             document.getElementById('akademikProdi').value = session.prodi || '';
-            document.getElementById('akademikJenjang').value = 'D4';
-            document.getElementById('akademikAngkatan').value = session.angkatan || '2024';
-            document.getElementById('akademikSemester').value = '4';
-            document.getElementById('akademikDosen').value = 'Dr. Ir. Budi Santoso, M.Kom.';
-            document.getElementById('akademikStatus').value = 'Mahasiswa Aktif';
-            document.getElementById('akademikIpk').value = '3.75';
-            document.getElementById('akademikTotalSkp').value = totalPoin + ' Poin';
-            document.getElementById('akademikTarget').value = targetPoin + ' Poin';
+            document.getElementById('akademikJenjang').value = 'Koordinator Kemahasiswaan';
+            document.getElementById('akademikAngkatan').value = session.nip || '';
+            document.getElementById('akademikSemester').value = 'Pegawai Tetap';
+            document.getElementById('akademikDosen').value = '1 Januari 2010';
+            document.getElementById('akademikStatus').value = 'Direktur Politeknik AI LPI';
+            document.getElementById('akademikIpk').value = divalidasiOlehSaya.length + ' Pengajuan';
+            document.getElementById('akademikTotalSkp').value = diprosesBulanIni + ' Pengajuan';
 
             // Keamanan
             document.getElementById('securityEmail').value = session.email || '';
@@ -1341,10 +1363,22 @@
             };
 
             // Logout
-            window.handleLogout = function() {
+            window.showLogoutModal = function() {
+                document.getElementById('logoutModal').classList.remove('hidden');
+            };
+            window.closeLogoutModal = function() {
+                document.getElementById('logoutModal').classList.add('hidden');
+            };
+            window.confirmLogout = function() {
                 sessionStorage.clear();
                 window.location.href = 'login.html';
             };
+            document.getElementById('logoutModal').addEventListener('click', function(e) {
+                if (e.target === this) closeLogoutModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeLogoutModal();
+            });
 
             // Sidebar
             window.toggleSidebar = function() {

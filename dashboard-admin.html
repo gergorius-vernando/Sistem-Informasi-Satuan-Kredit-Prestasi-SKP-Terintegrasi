@@ -464,6 +464,13 @@
 
         .card h3 i { color: var(--accent); }
 
+        .chart-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
         /* ==================== CHART CONTAINER ==================== */
         .chart-container {
             position: relative;
@@ -525,24 +532,31 @@
         .badge-priority-medium { background: #FEF3C7; color: #92400E; }
         .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+
         .btn-detail {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: var(--white);
-            color: var(--accent);
+            border: none;
+            background: var(--accent);
+            color: var(--primary);
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.74rem;
-            font-weight: 500;
+            font-size: 0.76rem;
+            font-weight: 600;
             transition: all var(--transition);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(244,180,0,0.25);
         }
 
         .btn-detail:hover {
-            background: var(--accent);
-            color: var(--primary);
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(244,180,0,0.35);
         }
 
         /* ==================== EMPTY STATE ==================== */
@@ -830,7 +844,7 @@
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil.html" class="sidebar-footer-link">
+            <a href="profil-admin.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -931,6 +945,7 @@
             <div class="grid-2col">
                 <div class="card">
                     <h3><i class="fa-solid fa-chart-column"></i> Statistik Pengajuan SKP</h3>
+                    <p class="chart-subtitle">Sebaran status pengajuan per kategori SKP</p>
                     <div class="chart-container">
                         <canvas id="chartStatistik"></canvas>
                     </div>
@@ -1012,7 +1027,6 @@
         // LOAD DASHBOARD
         // ============================================================
         function loadDashboard() {
-            AppState.checkAndUpdateValidasi();
             const state = AppState.getState();
 
             loadKPI(state);
@@ -1060,8 +1074,14 @@
         function animateCounter(elId, target) {
             const el = document.getElementById(elId);
             if (!el) return;
+            // Idempoten: kalau angka yang sedang tampil sudah sama dengan target,
+            // jangan animasikan ulang. Ini penting karena dashboard di-refresh
+            // berkala (polling) — tanpa penjagaan ini, angka akan "berkedip"
+            // dari 0 setiap 2 detik.
+            const current = parseInt(el.textContent, 10);
+            if (current === target) return;
             const duration = 600;
-            const start = 0;
+            const start = isNaN(current) ? 0 : current;
             const startTime = performance.now();
             function tick(now) {
                 const progress = Math.min(1, (now - startTime) / duration);
@@ -1078,7 +1098,10 @@
             const accounts = AppState.getAllAccounts();
 
             let antrean = allPengajuan.filter(isPendingForMe);
-            antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+            antrean.sort((a, b) => {
+                const w = (p) => { const m = String(p.id||'').match(/(\d{6,})/); return m ? Number(m[1]) : 0; };
+                return (b.tanggal || '').localeCompare(a.tanggal || '') || (w(b) - w(a));
+            });
 
             if (antrean.length === 0) {
                 wrapper.innerHTML = `
@@ -1097,22 +1120,18 @@
                 const prodi = acc.prodi || '-';
                 const nim = acc.nim || '-';
 
-                const hariMenunggu = Math.floor((Date.now() - new Date(p.tanggal).getTime()) / 86400000);
-                let prioritas = 'Rendah', prioritasClass = 'badge-priority-low';
-                if (hariMenunggu >= 3) { prioritas = 'Tinggi'; prioritasClass = 'badge-priority-high'; }
-                else if (hariMenunggu >= 1) { prioritas = 'Sedang'; prioritasClass = 'badge-priority-medium'; }
-
                 const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
 
                 return `<tr>
                     <td><strong>${p.id}</strong></td>
-                    <td>${namaMhs}<br><span style="font-size:0.7rem;color:var(--text-muted);">${nim}</span></td>
-                    <td>${prodi}</td>
+                    <td>
+                        ${namaMhs}
+                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${nim} &middot; ${prodi}</span>
+                    </td>
                     <td>${p.kategoriText || p.kategori}</td>
                     <td>${p.tanggal || '-'}</td>
                     <td><span class="badge ${statusBadge}">${p.status}</span></td>
-                    <td><span class="badge ${prioritasClass}">${prioritas}</span></td>
-                    <td><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail">Lihat Detail</a></td>
+                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
                 </tr>`;
             }).join('');
 
@@ -1123,12 +1142,10 @@
                             <tr>
                                 <th>ID Pengajuan</th>
                                 <th>Mahasiswa</th>
-                                <th>Program Studi</th>
                                 <th>Kategori</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
-                                <th>Prioritas</th>
-                                <th>Aksi</th>
+                                <th class="col-aksi-kanan">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -1141,46 +1158,62 @@
         function loadChart(state) {
             const allPengajuan = state.pengajuan || [];
 
-            // Bar chart
-            const bulanLabels = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-            const dataPerBulan = { Pending: Array(12).fill(0), Disetujui: Array(12).fill(0), Ditolak: Array(12).fill(0), Direvisi: Array(12).fill(0) };
+            // ---- Statistik Pengajuan SKP: per KATEGORI (bukan per bulan) ----
+            // Grafik lama mengelompokkan per bulan, tapi dengan volume data
+            // prototype yang masih sedikit, sebagian besar bulan selalu kosong
+            // sehingga kurang informatif. Pengelompokan per kategori SKP jauh
+            // lebih relevan bagi Admin Kemahasiswaan: langsung terlihat kategori
+            // mana yang paling banyak diajukan dan bagaimana sebaran status
+            // validasinya, dengan skema warna yang sama seperti Ringkasan Validasi
+            // supaya kedua grafik saling melengkapi.
+            const kategoriList = AppState.getMasterSKP();
+            const kategoriLabels = kategoriList.map(k => k.nama);
+            const dataPerKategori = { Pending: [], Disetujui: [], Ditolak: [], Direvisi: [] };
 
-            allPengajuan.forEach(p => {
-                const d = new Date(p.tanggal);
-                if (isNaN(d.getTime())) return;
-                const bulanIdx = d.getMonth();
-                if (p.status === 'Disetujui') dataPerBulan.Disetujui[bulanIdx]++;
-                else if (p.status === 'Ditolak') dataPerBulan.Ditolak[bulanIdx]++;
-                else if (p.status === 'Revisi') dataPerBulan.Direvisi[bulanIdx]++;
-                else dataPerBulan.Pending[bulanIdx]++;
+            kategoriList.forEach(k => {
+                const items = allPengajuan.filter(p => p.kategori === k.kode);
+                dataPerKategori.Pending.push(items.filter(p => !['Disetujui', 'Ditolak', 'Revisi'].includes(p.status)).length);
+                dataPerKategori.Disetujui.push(items.filter(p => p.status === 'Disetujui').length);
+                dataPerKategori.Ditolak.push(items.filter(p => p.status === 'Ditolak').length);
+                dataPerKategori.Direvisi.push(items.filter(p => p.status === 'Revisi').length);
             });
 
-            const ctxBar = document.getElementById('chartStatistik').getContext('2d');
-            if (chartStatistikInstance) chartStatistikInstance.destroy();
-            chartStatistikInstance = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: bulanLabels,
-                    datasets: [
-                        { label: 'Pending', data: dataPerBulan.Pending, backgroundColor: '#F59E0B' },
-                        { label: 'Disetujui', data: dataPerBulan.Disetujui, backgroundColor: '#22C55E' },
-                        { label: 'Ditolak', data: dataPerBulan.Ditolak, backgroundColor: '#EF4444' },
-                        { label: 'Direvisi', data: dataPerBulan.Direvisi, backgroundColor: '#8B5CF6' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
-                        tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+            // Chart dibuat SEKALI saja. Pada pemanggilan berikutnya (mis. saat
+            // kembali ke tab ini), cukup perbarui datanya tanpa destroy + bikin
+            // ulang, supaya tidak ada animasi berulang dari nol.
+            const barDatasets = [dataPerKategori.Pending, dataPerKategori.Disetujui, dataPerKategori.Ditolak, dataPerKategori.Direvisi];
+            if (chartStatistikInstance) {
+                chartStatistikInstance.data.labels = kategoriLabels;
+                chartStatistikInstance.data.datasets.forEach((ds, i) => { ds.data = barDatasets[i]; });
+                chartStatistikInstance.update('none'); // 'none' = tanpa animasi
+            } else {
+                const ctxBar = document.getElementById('chartStatistik').getContext('2d');
+                chartStatistikInstance = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: kategoriLabels,
+                        datasets: [
+                            { label: 'Pending', data: dataPerKategori.Pending, backgroundColor: '#F59E0B' },
+                            { label: 'Disetujui', data: dataPerKategori.Disetujui, backgroundColor: '#22C55E' },
+                            { label: 'Ditolak', data: dataPerKategori.Ditolak, backgroundColor: '#EF4444' },
+                            { label: 'Direvisi', data: dataPerKategori.Direvisi, backgroundColor: '#8B5CF6' }
+                        ]
                     },
-                    scales: {
-                        x: { stacked: false, ticks: { font: { family: 'Poppins', size: 10 }, color: '#6B7280' }, grid: { display: false } },
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Poppins', size: 11 }, color: '#6B7280' }, grid: { color: '#E5E7EB' } }
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+                        },
+                        scales: {
+                            x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' }, grid: { color: '#E5E7EB' } },
+                            y: { stacked: true, ticks: { font: { family: 'Poppins', size: 10.5 }, color: '#6B7280' }, grid: { display: false } }
+                        }
                     }
-                }
-            });
+                });
+            }
 
             // Doughnut chart
             const cPending = allPengajuan.filter(p => !['Disetujui','Ditolak'].includes(p.status) && p.status !== 'Revisi').length;
@@ -1188,29 +1221,33 @@
             const cDitolak = allPengajuan.filter(p => p.status === 'Ditolak').length;
             const cRevisi = allPengajuan.filter(p => p.status === 'Revisi').length;
 
-            const ctxDoughnut = document.getElementById('chartRingkasan').getContext('2d');
-            if (chartRingkasanInstance) chartRingkasanInstance.destroy();
-            chartRingkasanInstance = new Chart(ctxDoughnut, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pending', 'Disetujui', 'Ditolak', 'Direvisi'],
-                    datasets: [{
-                        data: [cPending, cDisetujui, cDitolak, cRevisi],
-                        backgroundColor: ['#F59E0B', '#22C55E', '#EF4444', '#8B5CF6'],
-                        borderColor: '#FFFFFF',
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
-                        tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+            if (chartRingkasanInstance) {
+                chartRingkasanInstance.data.datasets[0].data = [cPending, cDisetujui, cDitolak, cRevisi];
+                chartRingkasanInstance.update('none');
+            } else {
+                const ctxDoughnut = document.getElementById('chartRingkasan').getContext('2d');
+                chartRingkasanInstance = new Chart(ctxDoughnut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pending', 'Disetujui', 'Ditolak', 'Direvisi'],
+                        datasets: [{
+                            data: [cPending, cDisetujui, cDitolak, cRevisi],
+                            backgroundColor: ['#F59E0B', '#22C55E', '#EF4444', '#8B5CF6'],
+                            borderColor: '#FFFFFF',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         function loadTimeline(state) {
@@ -1353,15 +1390,29 @@
         });
 
         // ============================================================
-        // INIT + auto-refresh
+        // INIT
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadDashboard();
-            setInterval(() => {
-                const updated = AppState.checkAndUpdateValidasi();
-                if (updated) loadDashboard();
-            }, 2000);
         });
+
+        // Refresh otomatis saat tab ini difokuskan kembali (mis. presenter
+        // baru selesai mengajukan klaim di tab mahasiswa lalu beralih ke tab
+        // admin ini) — supaya data terbaru langsung terlihat tanpa reload
+        // manual saat demo lintas-tab/lintas-role.
+        window.addEventListener('focus', loadDashboard);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadDashboard(); });
+        // Sinkronisasi lintas-tab: event 'storage' terpicu otomatis di tab INI
+        // ketika tab LAIN (mis. tab mahasiswa) mengubah localStorage. Ini yang
+        // membuat pengajuan baru langsung muncul di dashboard admin tanpa reload.
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadDashboard();
+        });
+        // Catatan: polling setInterval sengaja TIDAK dipakai di sini supaya
+        // grafik statistik tidak beranimasi berulang tiap beberapa detik.
+        // Pembaruan terjadi lewat: (1) event 'storage' saat tab lain mengubah
+        // data, (2) 'focus'/'visibilitychange' saat kembali ke tab ini, dan
+        // (3) refresh manual (F5) kapan pun diinginkan.
     </script>
 </body>
 </html>

@@ -605,24 +605,31 @@
         .badge-priority-medium { background: #FEF3C7; color: #92400E; }
         .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+
         .btn-detail {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid var(--accent);
-            background: var(--white);
-            color: var(--accent);
+            border: none;
+            background: var(--accent);
+            color: var(--primary);
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.74rem;
-            font-weight: 500;
+            font-size: 0.76rem;
+            font-weight: 600;
             transition: all var(--transition);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(244,180,0,0.25);
         }
 
         .btn-detail:hover {
-            background: var(--accent);
-            color: var(--primary);
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(244,180,0,0.35);
         }
 
         /* ==================== EMPTY STATE ==================== */
@@ -840,7 +847,7 @@
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil.html" class="sidebar-footer-link">
+            <a href="profil-admin.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -1119,13 +1126,15 @@
 
                 return `<tr>
                     <td><strong>${p.id}</strong></td>
-                    <td>${namaMhs}<br><span style="font-size:0.7rem;color:var(--text-muted);">${nim}</span></td>
-                    <td>${prodi}</td>
+                    <td>
+                        ${namaMhs}
+                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${nim} &middot; ${prodi}</span>
+                    </td>
                     <td>${p.kategoriText || p.kategori}</td>
                     <td>${poin} poin</td>
                     <td>${tglKeputusan || '-'}</td>
                     <td><span class="badge ${statusBadge}">${p.status}</span></td>
-                    <td><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail">Lihat Detail</a></td>
+                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
                 </tr>`;
             }).join('');
 
@@ -1136,12 +1145,11 @@
                             <tr>
                                 <th>ID Pengajuan</th>
                                 <th>Mahasiswa</th>
-                                <th>Program Studi</th>
                                 <th>Kategori</th>
                                 <th>Poin</th>
                                 <th>Tanggal Keputusan</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th class="col-aksi-kanan">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>${rows}</tbody>
@@ -1212,6 +1220,15 @@
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadRiwayat();
+        });
+
+        // Sinkronisasi lintas-tab & saat kembali ke tab ini, supaya riwayat
+        // validasi ikut terbarui begitu admin memvalidasi pengajuan (mis. dari
+        // detail pengajuan) atau saat ada perubahan data dari tab lain.
+        window.addEventListener('focus', loadRiwayat);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadRiwayat(); });
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadRiwayat();
         });
     </script>
 </body>

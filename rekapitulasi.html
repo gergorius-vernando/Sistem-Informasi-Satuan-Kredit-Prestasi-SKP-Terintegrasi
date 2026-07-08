@@ -158,6 +158,17 @@
         .breadcrumb i { font-size: 0.7rem; }
         .header-section { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
         .header-section h1 { font-size: 1.6rem; font-weight: 700; }
+        .header-section .period-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 18px; background: var(--accent-light);
+            border-radius: 30px; font-size: 0.82rem; font-weight: 500;
+            color: var(--accent-hover); border: 1px solid rgba(244,180,0,0.3);
+        }
+        .status-card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+        }
+        .status-card-header h3 { margin-bottom: 0; }
         .badge-status-lg {
             display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px;
             border-radius: 30px; font-size: 0.85rem; font-weight: 600;
@@ -269,7 +280,7 @@
         </div>
         <nav class="sidebar-menu">
             <a href="dashboard-mahasiswa.html"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-            <a href="pengajuan.html"><i class="fa-solid fa-file-circle-plus"></i> Pengajuan SKP</a>
+            <a href="pengajuan.html"><i class="fa-solid fa-file-circle-plus"></i> Klaim SKP</a>
             <a href="draft.html"><i class="fa-solid fa-file-pen"></i> Draft</a>
             <a href="rekapitulasi.html" class="active"><i class="fa-solid fa-chart-pie"></i> Rekapitulasi</a>
             <a href="skpi.html"><i class="fa-solid fa-award"></i> SKPI</a>
@@ -315,12 +326,18 @@
                     <h1>Rekapitulasi Poin SKP</h1>
                     <p style="color:var(--text-secondary); font-size:0.88rem;">Ringkasan seluruh pencapaian dan perkembangan poin Satuan Kredit Prestasi.</p>
                 </div>
-                <span class="badge-status-lg warning" id="headerBadge"><i class="fa-solid fa-triangle-exclamation"></i> Belum Memenuhi Target</span>
+                <div class="period-badge">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    Periode Akademik Aktif: <strong>2026/2027 Ganjil</strong>
+                </div>
             </div>
 
             <!-- PROGRESS TARGET SKP -->
             <div class="card progress-card">
-                <h3><i class="fa-solid fa-chart-line"></i> Progress Target SKP</h3>
+                <div class="status-card-header">
+                    <h3><i class="fa-solid fa-chart-line"></i> Progress Target SKP</h3>
+                    <span class="badge-status-lg warning" id="headerBadge"><i class="fa-solid fa-triangle-exclamation"></i> Belum Memenuhi Target</span>
+                </div>
                 <div class="progress-header">
                     <span id="progressLabel">0 / 100 Poin</span>
                     <span id="progressPercent">0%</span>
@@ -418,7 +435,7 @@
                 // Hanya pengajuan milik mahasiswa yang sedang login — rekapitulasi
                 // adalah halaman pribadi, bukan rekap gabungan semua mahasiswa.
                 const allPengajuan = (state.pengajuan || []).filter(p => p.email === currentUserEmail);
-                const totalPoin = state.totalPoin || 0;
+                const totalPoin = AppState.getTotalPoin(currentUserEmail);
                 const targetPoin = state.targetPoin || 100;
 
                 // Progress
@@ -513,23 +530,15 @@
                     Array.from(kategoriSet).map(k => `<option value="${k}" ${k === currentVal ? 'selected' : ''}>${k}</option>`).join('');
             }
 
-            // ==================== VALIDASI TIMER ====================
-            let intervalId = null;
-
-            function startValidationCheck() {
-                if (intervalId) clearInterval(intervalId);
-                intervalId = setInterval(() => {
-                    const updated = AppState.checkAndUpdateValidasi();
-                    if (updated) {
-                        renderRekapitulasi();
-                    }
-                }, 2000);
-            }
-
             // ==================== INIT ====================
             document.addEventListener('DOMContentLoaded', function() {
                 renderRekapitulasi();
-                startValidationCheck();
+                window.addEventListener('focus', renderRekapitulasi);
+                document.addEventListener('visibilitychange', () => { if (!document.hidden) renderRekapitulasi(); });
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'skp_app_state') renderRekapitulasi();
+                });
+                // Polling dihapus: pembaruan lewat event 'storage'/'focus' atau refresh manual.
 
                 document.getElementById('searchInput').addEventListener('input', () => {
                     const state = AppState.getState();
