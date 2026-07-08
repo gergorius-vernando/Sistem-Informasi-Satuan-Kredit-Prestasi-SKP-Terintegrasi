@@ -416,6 +416,17 @@
         .btn-login.loading .spinner { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Spinner mandiri untuk dipakai di dalam modal (mis. saat mengalihkan) */
+        .spinner-inline {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+        }
+
         .btn-google {
             width: 100%;
             padding: 13px;
@@ -900,12 +911,16 @@
                 showMessageModal(
                     '<i class="fa-solid fa-circle-check" style="color:#22C55E; font-size:3rem;"></i>',
                     'Login Berhasil',
-                    `Selamat datang, ${account.fullName}. Anda akan diarahkan ke dashboard.`,
-                    `<button class="btn-modal btn-modal-confirm" id="btnGoDashboard">Lanjutkan ke Dashboard</button>`
+                    `Selamat datang, ${account.fullName}. Anda sedang diarahkan ke dashboard...`,
+                    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text-secondary);font-size:0.85rem;">
+                        <span class="spinner-inline"></span> Mengalihkan...
+                     </div>`
                 );
-                document.getElementById('btnGoDashboard').addEventListener('click', () => {
+                // Otomatis diarahkan ke dashboard sesuai peran setelah pop-up sempat
+                // terbaca (~1.8 detik) — tanpa perlu menekan tombol apa pun.
+                setTimeout(() => {
                     window.location.href = account.dashboardUrl;
-                });
+                }, 1800);
             }, 1000);
         });
 
