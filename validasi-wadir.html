@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Mahasiswa — Sistem Informasi SKP</title>
+    <title>Validasi SKP (Wakil Direktur) — Sistem Informasi SKP</title>
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -382,7 +382,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD RINGKASAN / KPI (4 kartu) — seragam dengan halaman lain ==================== */
+        /* ==================== CARD RINGKASAN / KPI (3 kartu) ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -419,9 +419,8 @@
             flex-shrink: 0;
         }
 
-        .summary-card .card-icon.blue { background: #EFF6FF; color: var(--info); }
-        .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
-        .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
+        .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
+        .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
         .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
 
         .summary-card .card-info .card-value {
@@ -435,19 +434,6 @@
             font-size: 0.78rem;
             color: var(--text-muted);
             margin-top: 2px;
-        }
-
-        /* ==================== GRID LAYOUT ==================== */
-        .grid-2col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .grid-3col {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 18px;
         }
 
         /* ==================== CARDS ==================== */
@@ -469,16 +455,92 @@
 
         .card h3 i { color: var(--accent); }
 
-        /* ==================== CHART CONTAINER ==================== */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 260px;
-            overflow: hidden;
+        /* ==================== FILTER & PENCARIAN (diperbaiki) ==================== */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 14px;
+            align-items: end;
         }
 
-        .chart-container canvas {
-            display: block;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        .search-box-modern {
+            display: flex;
+            align-items: center;
+            background: var(--light-gray);
+            border-radius: 30px;
+            padding: 0 16px;
+            border: 2px solid transparent;
+            transition: all var(--transition);
+        }
+
+        .search-box-modern i {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-right: 10px;
+            transition: color var(--transition);
+        }
+
+        .search-box-modern input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            padding: 12px 0;
+            width: 100%;
+            color: var(--text-primary);
+        }
+
+        .search-box-modern input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .search-box-modern:focus-within {
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
+        }
+
+        .search-box-modern:focus-within i {
+            color: var(--accent);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 30px;
+            border: 2px solid var(--border);
+            background: var(--light-gray);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all var(--transition);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent);
+            background-color: var(--white);
+            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
         }
 
         /* ==================== TABLE ==================== */
@@ -525,9 +587,14 @@
         .badge-success  { background: #D1FAE5; color: #065F46; }
         .badge-danger   { background: #FEE2E2; color: #991B1B; }
         .badge-info     { background: #DBEAFE; color: #1E40AF; }
+        .badge-pending  { background: #FEF3C7; color: #92400E; }
+        .badge-priority-high   { background: #FEE2E2; color: #991B1B; }
+        .badge-priority-medium { background: #FEF3C7; color: #92400E; }
+        .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
-        /* ==================== EMPTY STATE ==================== */
-        /* ===== Tabel Capaian Mahasiswa ===== */
+        /* Kolom Aksi dibuat menempel (sticky) di kiri, selalu terlihat
+           walau tabel di-scroll horizontal — tombol Lihat Detail langsung kejangkau. */
+        /* Kolom Aksi diletakkan di kanan (rata kanan), mengikuti lebar tabel. */
         table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
 
         .btn-detail {
@@ -548,105 +615,14 @@
             white-space: nowrap;
             box-shadow: 0 2px 6px rgba(244,180,0,0.25);
         }
+
         .btn-detail:hover {
             background: var(--accent-hover);
             transform: translateY(-1px);
             box-shadow: 0 4px 10px rgba(244,180,0,0.35);
         }
 
-        .progress-mini {
-            width: 130px; height: 7px; border-radius: 6px;
-            background: var(--light-gray); overflow: hidden; margin-bottom: 4px;
-        }
-        .progress-mini span { display: block; height: 100%; border-radius: 6px; transition: width var(--transition); }
-        .progress-mini span.ok { background: linear-gradient(90deg,#22C55E,#16A34A); }
-        .progress-mini span.kurang { background: linear-gradient(90deg,#F4B400,#D99E00); }
-        .progress-text { font-size: 0.7rem; color: var(--text-muted); }
-
-        /* ===== Kartu Profil Mahasiswa ===== */
-        .profil-card {
-            display: flex;
-            gap: 28px;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .profil-foto {
-            position: relative;
-            width: 132px; height: 132px;
-            border-radius: 18px;
-            flex-shrink: 0;
-            overflow: hidden;
-            background: linear-gradient(135deg, #1A1A1A, #2C2C2C);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-            border: 3px solid var(--accent);
-        }
-        .profil-foto img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            display: none; /* ditampilkan hanya bila foto berhasil dimuat */
-        }
-        /* Inisial dipakai sebagai foto pengganti bila mahasiswa belum punya foto */
-        .profil-inisial {
-            position: absolute; inset: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.6rem; font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 1px;
-        }
-
-        .profil-detail { flex: 1; min-width: 280px; }
-        .profil-nama-baris {
-            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-        .profil-nama-baris h1 { font-size: 1.5rem; font-weight: 700; margin: 0; }
-
-        .profil-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 14px 22px;
-        }
-        .profil-item { display: flex; flex-direction: column; gap: 4px; }
-        .pi-label {
-            font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
-            display: flex; align-items: center; gap: 7px;
-        }
-        .pi-label i { color: var(--accent); font-size: 0.75rem; width: 13px; }
-        .pi-value { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
-
-        @media (max-width: 620px) {
-            .profil-card { gap: 18px; }
-            .profil-foto { width: 96px; height: 96px; }
-            .profil-inisial { font-size: 1.9rem; }
-        }
-
-        /* ===== Tabel tetap (tanpa scroll horizontal) ===== */
-        .table-fixed { overflow-x: visible; width: 100%; }
-        .table-fixed table {
-            table-layout: fixed;
-            width: 100%;
-        }
-        .table-fixed th, .table-fixed td {
-            white-space: normal;      /* teks membungkus, tidak memaksa melebar */
-            word-break: break-word;
-            vertical-align: middle;
-        }
-        /* Tombol detail dibuat ringkas agar kolom Aksi tetap muat */
-        .table-fixed .btn-detail {
-            padding: 7px 12px;
-            font-size: 0.72rem;
-            gap: 5px;
-        }
-        .table-fixed .badge { white-space: normal; }
-
-        @media (max-width: 900px) {
-            /* Pada layar sempit, sembunyikan teks tombol dan sisakan ikonnya saja
-               supaya tabel tetap muat tanpa scroll. */
-            .table-fixed .btn-detail span.btn-label { display: none; }
-            .table-fixed .btn-detail { padding: 8px 10px; }
-        }
-
+        /* ==================== EMPTY STATE ==================== */
         .empty-state-box {
             display: flex;
             flex-direction: column;
@@ -753,7 +729,6 @@
         .btn-modal-danger { background: var(--danger); color: white; }
         .btn-modal-danger:hover { background: #DC2626; }
 
-        /* ==================== BUTTON GENERIK ==================== */
         .btn {
             padding: 12px 24px; border-radius: 30px;
             font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.84rem;
@@ -792,8 +767,9 @@
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 1024px) {
-            .grid-2col { grid-template-columns: 1fr; }
-            .grid-3col { grid-template-columns: 1fr 1fr; }
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -802,11 +778,13 @@
             .main-content { margin-left: 0; }
             .page-content { padding: 16px; }
             .summary-cards { grid-template-columns: 1fr 1fr; }
-            .grid-3col { grid-template-columns: 1fr; }
             .dashboard-header { flex-direction: column; align-items: flex-start; }
             .topbar { padding: 0 16px; }
             .topbar-right .user-info { display: none; }
             .mobile-menu-btn { display: block !important; }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -837,11 +815,27 @@
             </div>
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
-        <nav class="sidebar-menu" id="sidebarMenu">
-            <!-- Diisi dinamis oleh JS sesuai peran (Kaprodi / Wakil Direktur) -->
+        <nav class="sidebar-menu">
+            <a href="dashboard-wadir.html">
+                <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+            <a href="validasi-wadir.html" class="active">
+                <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
+            </a>
+            <a href="rekap-validasi-wadir.html">
+                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
+            </a>
+            <a href="laporan-wadir.html">
+                <i class="fa-solid fa-chart-pie"></i> Laporan
+            </a>
         </nav>
-        <div class="sidebar-footer" id="sidebarFooter">
-            <!-- Diisi dinamis oleh JS -->
+        <div class="sidebar-footer">
+            <a href="profil-wadir.html" class="sidebar-footer-link">
+                <i class="fa-solid fa-user-gear"></i> Profil
+            </a>
+            <button onclick="showLogoutModal()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
         </div>
     </aside>
 
@@ -863,114 +857,95 @@
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">SN</div>
                     <div class="user-info">
-                        <span class="user-name" id="topbarName">Admin Kemahasiswaan</span>
-                        <span class="user-role" id="topbarRole">Admin Kemahasiswaan</span>
+                        <span class="user-name" id="topbarName">Wakil Direktur</span>
+                        <span class="user-role" id="topbarRole">Wakil Direktur</span>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- ===== PAGE CONTENT ===== -->        <main class="page-content">
-
-            <!-- Kartu Profil Mahasiswa -->
-            <div class="card profil-card">
-                <div class="profil-foto">
-                    <img id="mhsFoto" alt="Foto mahasiswa" />
-                    <div class="profil-inisial" id="mhsInisial">—</div>
+        <!-- ===== PAGE CONTENT ===== -->
+        <main class="page-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Validasi Pengajuan SKP</h1>
+                    <p class="welcome-subtitle">Tinjau pengajuan Prestasi Akademik &amp; Prestasi Kompetisi mahasiswa program studi Anda.</p>
                 </div>
-
-                <div class="profil-detail">
-                    <div class="profil-nama-baris">
-                        <h1 id="mhsNama">—</h1>
-                    </div>
-                    <div id="mhsStatusTarget" style="margin-bottom:16px;"></div>
-
-                    <div class="profil-grid">
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-id-card"></i> NIM</span>
-                            <span class="pi-value" id="mhsNim">—</span>
-                        </div>
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-graduation-cap"></i> Program Studi</span>
-                            <span class="pi-value" id="mhsProdi">—</span>
-                        </div>
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-calendar-days"></i> Angkatan</span>
-                            <span class="pi-value" id="mhsAngkatan">—</span>
-                        </div>
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-envelope"></i> Email Kampus</span>
-                            <span class="pi-value" id="mhsEmail">—</span>
-                        </div>
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-building-columns"></i> Institusi</span>
-                            <span class="pi-value">Politeknik AI LPI</span>
-                        </div>
-                        <div class="profil-item">
-                            <span class="pi-label"><i class="fa-solid fa-user-check"></i> Status Mahasiswa</span>
-                            <span class="pi-value"><span class="badge badge-success">Aktif</span></span>
-                        </div>
-                    </div>
+                <div class="period-badge">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span id="currentDateBadge"></span>
                 </div>
             </div>
 
-            <!-- Ringkasan Capaian -->
+            <!-- KPI ringkas -->
             <div class="summary-cards">
                 <div class="summary-card">
-                    <div class="card-icon yellow"><i class="fa-solid fa-star"></i></div>
+                    <div class="card-icon orange"><i class="fa-solid fa-inbox"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="mhsTotalPoin">0</div>
-                        <div class="card-label">Total Poin Disetujui</div>
+                        <div class="card-value" id="kpiTotalAntrean">0</div>
+                        <div class="card-label">Total Antrean Anda</div>
                     </div>
                 </div>
                 <div class="summary-card">
-                    <div class="card-icon blue"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="card-icon blue"><i class="fa-solid fa-hourglass-half"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="mhsTarget">0</div>
-                        <div class="card-label">Target Poin</div>
+                        <div class="card-value" id="kpiMenungguBaru">0</div>
+                        <div class="card-label">Menunggu Diverifikasi</div>
                     </div>
                 </div>
                 <div class="summary-card">
-                    <div class="card-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="card-icon purple"><i class="fa-solid fa-rotate-left"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="mhsDisetujui">0</div>
-                        <div class="card-label">Pengajuan Disetujui</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-icon red"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="mhsProses">0</div>
-                        <div class="card-label">Sedang Diproses</div>
+                        <div class="card-value" id="kpiRevisiMenunggu">0</div>
+                        <div class="card-label">Revisi Menunggu Perbaikan</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Progres terhadap target -->
+            <!-- Filter & Pencarian (FR-13) dengan desain baru -->
             <div class="card">
-                <h3><i class="fa-solid fa-chart-line"></i> Progres terhadap Target SKP</h3>
-                <div style="margin-top:6px;">
-                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
-                        <span id="progresLabel" style="font-size:0.85rem; font-weight:600;">—</span>
-                        <span id="progresStatus"></span>
+                <h3><i class="fa-solid fa-filter"></i> Pencarian &amp; Filter</h3>
+                <div class="filter-grid" id="filterGrid">
+                    <div class="form-group">
+                        <label for="searchInput"><i class="fa-regular fa-user"></i> Cari NIM / Nama / ID Pengajuan</label>
+                        <div class="search-box-modern">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="searchInput" placeholder="Ketik NIM, nama mahasiswa, atau ID pengajuan...">
+                        </div>
                     </div>
-                    <div style="width:100%; height:14px; border-radius:10px; background:var(--light-gray); overflow:hidden;">
-                        <span id="progresBar" style="display:block; height:100%; width:0%; border-radius:10px; transition:width .4s;"></span>
+                    <div class="form-group">
+                        <label for="filterKategori"><i class="fa-regular fa-layer-group"></i> Kategori</label>
+                        <select id="filterKategori" class="filter-select">
+                            <option value="">Semua Kategori</option>
+                        </select>
                     </div>
-                    <p id="progresKeterangan" style="margin-top:10px; font-size:0.8rem; color:var(--text-secondary);"></p>
+                    <div class="form-group">
+                        <label for="filterStatus"><i class="fa-regular fa-clock"></i> Status Antrean</label>
+                        <select id="filterStatus" class="filter-select">
+                            <option value="semua">Semua Status Antrean</option>
+                            <option value="baru">Baru / Sedang Diverifikasi</option>
+                            <option value="revisi">Revisi (Diperbaiki Mahasiswa)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sortOrder"><i class="fa-regular fa-arrow-up-wide-short"></i> Urutkan</label>
+                        <select id="sortOrder" class="filter-select">
+                            <option value="terbaru" selected>Pengajuan Terbaru</option>
+                            <option value="terlama">Menunggu Terlama</option>
+                            <option value="poin-tinggi">Estimasi Poin Tertinggi</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <!-- Rincian poin per kategori -->
+            <!-- Tabel Antrean Lengkap -->
             <div class="card">
-                <h3><i class="fa-solid fa-layer-group"></i> Perolehan Poin per Kategori</h3>
-                <div id="kategoriWrapper"><!-- diisi JS --></div>
-            </div>
-
-            <!-- Riwayat pengajuan -->
-            <div class="card">
-                <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pengajuan SKP</h3>
-                <div id="riwayatWrapper"><!-- diisi JS --></div>
+                <h3><i class="fa-solid fa-list-check"></i> Daftar Pengajuan Menunggu Validasi</h3>
+                <div id="antreanWrapper">
+                    <!-- diisi JS -->
+                </div>
+                <div id="paginationWrapper" style="display:flex; justify-content:center; gap:8px; margin-top:16px;"></div>
             </div>
 
         </main>
@@ -995,183 +970,170 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
+
     <script src="state.js"></script>
     <script>
         // ============================================================
-        // DETAIL MAHASISWA — READ-ONLY.
-        // Dapat diakses oleh Kaprodi (terbatas prodinya) dan Wakil Direktur
-        // (seluruh institusi, sesuai FR-18).
+        // INITIALIZATION & ROLE AUTHENTICATION
         // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        const PERAN_DIIZINKAN = ['kaprodi', 'wakil-direktur'];
-        if (!session || !PERAN_DIIZINKAN.includes(session.roleKey)) {
+        if (!session || session.roleKey !== 'wakil-direktur') {
             window.location.href = 'login.html';
         }
 
-        const ROLE = session.roleKey;
-        const PRODI_SAYA = session.prodi;
-
-        // --- Sidebar dibangun sesuai peran, agar navigasinya tidak tertukar ---
-        const sidebarConfig = {
-            'kaprodi': {
-                menu: [
-                    { href: 'dashboard-kaprodi.html', icon: 'fa-gauge-high', label: 'Dashboard' },
-                    { href: 'validasi-kaprodi.html', icon: 'fa-clipboard-check', label: 'Validasi SKP' },
-                    { href: 'rekap-validasi-kaprodi.html', icon: 'fa-clock-rotate-left', label: 'Riwayat Validasi' },
-                    { href: 'laporan-kaprodi.html', icon: 'fa-chart-pie', label: 'Laporan' }
-                ],
-                profil: 'profil-kaprodi.html'
-            },
-            'wakil-direktur': {
-                menu: [
-                    { href: 'dashboard-wadir.html', icon: 'fa-gauge-high', label: 'Dashboard' },
-                    { href: 'validasi-wadir.html', icon: 'fa-clipboard-check', label: 'Validasi SKP' },
-                    { href: 'rekap-validasi-wadir.html', icon: 'fa-clock-rotate-left', label: 'Riwayat Validasi' },
-                    { href: 'laporan-wadir.html', icon: 'fa-chart-pie', label: 'Laporan' }
-                ],
-                profil: 'profil-wadir.html'
-            }
-        };
-        const cfgSidebar = sidebarConfig[ROLE];
-        document.getElementById('sidebarMenu').innerHTML = cfgSidebar.menu
-            .map(m => `<a href="${m.href}"><i class="fa-solid ${m.icon}"></i> ${m.label}</a>`).join('');
-        document.getElementById('sidebarFooter').innerHTML = `
-            <a href="${cfgSidebar.profil}" class="sidebar-footer-link">
-                <i class="fa-solid fa-user-gear"></i> Profil
-            </a>
-            <button onclick="showLogoutModal()">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>`;
-
         document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
-        document.getElementById('topbarName').textContent = session.fullName || session.role;
-        document.getElementById('topbarRole').textContent = session.role || '';
+        document.getElementById('topbarName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('topbarRole').textContent = session.role || 'Wakil Direktur';
 
-        // --- Ambil mahasiswa dari query string ---
-        const params = new URLSearchParams(window.location.search);
-        const emailMhs = params.get('email');
+        const today = new Date();
+        document.getElementById('currentDateBadge').textContent =
+            today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        const accounts = AppState.getAllAccounts();
-        const akun = emailMhs ? accounts[emailMhs] : null;
+        const VALIDATOR_ROLE = 'Wakil Direktur';
+        // Cakupan institusi: seluruh program studi.
+        // Wakil Direktur memantau & memvalidasi pada tingkat INSTITUSI
+        // (seluruh program studi), berbeda dengan Kaprodi yang dibatasi prodinya.
+        let currentPage = 1;
+        const perPage = 8;
 
-        // PENJAGA PENTING: tanpa ini, siapa pun bisa mengintip mahasiswa lain
-        // hanya dengan mengubah parameter ?email= di URL.
-        //  - Kaprodi  : hanya mahasiswa pada program studinya sendiri.
-        //  - Wakil Direktur : seluruh mahasiswa institusi (FR-18).
-        const bolehDilihat = !!akun && akun.roleKey === 'mahasiswa' &&
-            (ROLE === 'wakil-direktur' || akun.prodi === PRODI_SAYA);
-
-        if (!bolehDilihat) {
-            document.querySelector('.page-content').innerHTML = `
-                <div class="card">
-                    <div class="empty-state-box">
-                        <i class="fa-solid fa-ban"></i>
-                        <p><strong>Data tidak dapat ditampilkan.</strong></p>
-                        <p style="font-size:0.82rem;">Mahasiswa tidak ditemukan, atau berada di luar program studi Anda.</p>
-                        <p style="margin-top:14px;">
-                            <a href="${cfgSidebar.menu[3].href}" class="btn-detail">
-                                <i class="fa-solid fa-arrow-left"></i> Kembali ke Laporan
-                            </a>
-                        </p>
-                    </div>
-                </div>`;
-        } else {
-            renderDetail();
+        // Pra-isi kotak pencarian bila datang dari topbar dashboard (skp_wadir_search_query)
+        const carriedQuery = sessionStorage.getItem('skp_wadir_search_query');
+        if (carriedQuery) {
+            document.getElementById('searchInput').value = carriedQuery;
+            sessionStorage.removeItem('skp_wadir_search_query');
         }
 
-        function renderDetail() {
+        // ============================================================
+        // Pengajuan masuk antrean Wakil Direktur jika node workflow yang sedang
+        // 'active' berperan Wakil Direktur dan belum berstatus final. Sesuai FR-18 &
+        // FR-08, ini terjadi pada Prestasi Akademik dan Prestasi Kompetisi.
+        // ============================================================
+        function isPendingForMe(p) {
+            const wf = p.workflow || [];
+            const activeNode = wf.find(w => w.status === 'active');
+            const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
+            if (isFinal) return false;
+            if (activeNode) return activeNode.role === VALIDATOR_ROLE;
+            return wf[1] && wf[1].role === VALIDATOR_ROLE && p.status === 'Sedang Diverifikasi';
+        }
+
+        function populateFilterKategori() {
+            const select = document.getElementById('filterKategori');
+            const kategoriAktif = AppState.getMasterSKP(); // termasuk yang nonaktif, agar histori tetap bisa difilter
+            kategoriAktif.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k.kode;
+                opt.textContent = k.nama;
+                select.appendChild(opt);
+            });
+        }
+        populateFilterKategori();
+
+        // ============================================================
+        // LOAD ANTREAN (dengan search, filter, sort, pagination)
+        // ============================================================
+        function loadAntrean() {
             const state = AppState.getState();
-            const target = state.targetPoin || 100;
-            const totalPoin = AppState.getTotalPoin(emailMhs);
+            const accounts = AppState.getAllAccounts();
+            const allPengajuan = state.pengajuan || [];
 
-            const semua = (state.pengajuan || []).filter(p => p.email === emailMhs);
-            const disetujui = semua.filter(p => p.status === 'Disetujui');
-            const diproses = semua.filter(p => !['Disetujui', 'Ditolak'].includes(p.status));
+            // Cakupan institusi: tidak ada pembatasan program studi.
+            let antrean = allPengajuan.filter(p => isPendingForMe(p));
 
-            // --- Identitas ---
-            document.getElementById('mhsNama').textContent = akun.fullName;
-            document.getElementById('mhsNim').textContent = akun.nim || '-';
-            document.getElementById('mhsProdi').textContent = akun.prodi || '-';
-            document.getElementById('mhsEmail').textContent = emailMhs;
+            // --- KPI ringkas ---
+            const menungguBaru = antrean.filter(p => p.status === 'Sedang Diverifikasi').length;
+            const revisiMenunggu = antrean.filter(p => p.status === 'Revisi').length;
+            document.getElementById('kpiTotalAntrean').textContent = antrean.length;
+            document.getElementById('kpiMenungguBaru').textContent = menungguBaru;
+            document.getElementById('kpiRevisiMenunggu').textContent = revisiMenunggu;
 
-            // Angkatan diturunkan dari 4 digit pertama NIM (mis. 2024001 -> 2024).
-            const nim = String(akun.nim || '');
-            const angkatan = /^\d{4}/.test(nim) ? nim.slice(0, 4) : '-';
-            document.getElementById('mhsAngkatan').textContent = angkatan;
-
-            // Foto: pakai foto akun bila tersedia; jika tidak, tampilkan inisial.
-            const inisial = (akun.fullName || '?')
-                .split(' ').filter(Boolean).slice(0, 2)
-                .map(n => n[0]).join('').toUpperCase();
-            document.getElementById('mhsInisial').textContent = akun.avatar || inisial;
-
-            const imgEl = document.getElementById('mhsFoto');
-            if (akun.foto) {
-                imgEl.src = akun.foto;
-                imgEl.onload = () => {
-                    imgEl.style.display = 'block';
-                    document.getElementById('mhsInisial').style.display = 'none';
-                };
-                imgEl.onerror = () => { imgEl.style.display = 'none'; };
+            // --- Search (NIM / nama / ID pengajuan) — FR-13 ---
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (query) {
+                antrean = antrean.filter(p => {
+                    const acc = accounts[p.email] || {};
+                    const nama = (acc.fullName || '').toLowerCase();
+                    const nim = (acc.nim || '').toLowerCase();
+                    const id = (p.id || '').toLowerCase();
+                    return nama.includes(query) || nim.includes(query) || id.includes(query);
+                });
             }
 
-            // --- KPI ---
-            document.getElementById('mhsTotalPoin').textContent = totalPoin;
-            document.getElementById('mhsTarget').textContent = target;
-            document.getElementById('mhsDisetujui').textContent = disetujui.length;
-            document.getElementById('mhsProses').textContent = diproses.length;
+            // --- Filter kategori ---
+            const kategoriFilter = document.getElementById('filterKategori').value;
+            if (kategoriFilter) {
+                antrean = antrean.filter(p => p.kategori === kategoriFilter);
+            }
 
-            // --- Progres ---
-            const persen = Math.min(100, Math.round((totalPoin / target) * 100));
-            const memenuhi = totalPoin >= target;
-            const bar = document.getElementById('progresBar');
-            bar.style.width = persen + '%';
-            bar.style.background = memenuhi
-                ? 'linear-gradient(90deg,#22C55E,#16A34A)'
-                : 'linear-gradient(90deg,#F4B400,#D99E00)';
+            // --- Filter status antrean ---
+            const statusFilter = document.getElementById('filterStatus').value;
+            if (statusFilter === 'baru') {
+                antrean = antrean.filter(p => p.status !== 'Revisi');
+            } else if (statusFilter === 'revisi') {
+                antrean = antrean.filter(p => p.status === 'Revisi');
+            }
 
-            document.getElementById('progresLabel').textContent = `${totalPoin} dari ${target} poin (${persen}%)`;
-            const badgeTarget = memenuhi
-                ? '<span class="badge badge-success">Sudah Memenuhi Target</span>'
-                : '<span class="badge badge-warning">Belum Memenuhi Target</span>';
-            document.getElementById('progresStatus').innerHTML = badgeTarget;
-            document.getElementById('mhsStatusTarget').innerHTML = badgeTarget;
-            document.getElementById('progresKeterangan').textContent = memenuhi
-                ? 'Mahasiswa telah memenuhi target SKP dan memenuhi syarat penerbitan SKPI.'
-                : `Mahasiswa masih memerlukan ${target - totalPoin} poin lagi untuk memenuhi target SKP.`;
+            // --- Sort ---
+            // Tie-breaker: bila tanggal sama, pengajuan dengan ID "lebih baru"
+            // (timestamp lebih besar, mis. SKP-1783...) diletakkan lebih dulu.
+            const idWeight = (p) => {
+                const m = String(p.id || '').match(/(\d{6,})/);
+                return m ? Number(m[1]) : 0;
+            };
+            const sortOrder = document.getElementById('sortOrder').value;
+            if (sortOrder === 'terlama') {
+                antrean.sort((a, b) => (a.tanggal || '').localeCompare(b.tanggal || '') || (idWeight(a) - idWeight(b)));
+            } else if (sortOrder === 'poin-tinggi') {
+                antrean.sort((a, b) => (b.poin || b.estimasiPoin || 0) - (a.poin || a.estimasiPoin || 0));
+            } else {
+                // default: terbaru di atas
+                antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a)));
+            }
 
-            renderKategori(disetujui);
-            renderRiwayat(semua);
+            // --- Pagination ---
+            const totalPages = Math.max(1, Math.ceil(antrean.length / perPage));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const startIdx = (currentPage - 1) * perPage;
+            const pageItems = antrean.slice(startIdx, startIdx + perPage);
+
+            renderTabel(pageItems, accounts);
+            renderPagination(totalPages);
         }
 
-        // --- Perolehan poin per kategori (hanya yang Disetujui) ---
-        function renderKategori(disetujui) {
-            const wrapper = document.getElementById('kategoriWrapper');
-            const master = AppState.getMasterSKP();
+        function renderTabel(items, accounts) {
+            const wrapper = document.getElementById('antreanWrapper');
 
-            const rows = master.map(k => {
-                const items = disetujui.filter(p => p.kategori === k.kode);
-                const poin = items.reduce((s, p) => s + (p.poin || p.estimasiPoin || 0), 0);
-                return { nama: k.nama, jumlah: items.length, poin };
-            }).filter(r => r.jumlah > 0);
-
-            if (rows.length === 0) {
+            if (items.length === 0) {
                 wrapper.innerHTML = `
                     <div class="empty-state-box">
-                        <i class="fa-solid fa-inbox"></i>
-                        <p>Belum ada pengajuan yang disetujui.</p>
-                    </div>`;
+                        <div class="empty-icon-wrap"><i class="fa-solid fa-inbox"></i></div>
+                        <div class="empty-title">Belum ada pengajuan yang perlu divalidasi.</div>
+                        <div class="empty-desc">Tidak ada pengajuan yang cocok dengan pencarian/filter saat ini, atau antrean Anda memang sedang kosong.</div>
+                    </div>
+                `;
                 return;
             }
 
-            const totalPoin = rows.reduce((s, r) => s + r.poin, 0);
-            const body = rows.map(r => {
-                const persen = totalPoin > 0 ? Math.round((r.poin / totalPoin) * 100) : 0;
+            const rows = items.map(p => {
+                const acc = accounts[p.email] || {};
+                const namaMhs = acc.fullName || p.email || '-';
+                const prodi = acc.prodi || '-';
+                const nim = acc.nim || '-';
+
+                const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
+                const poin = p.poin || p.estimasiPoin || 0;
+
                 return `<tr>
-                    <td>${r.nama}</td>
-                    <td>${r.jumlah} kegiatan</td>
-                    <td><strong>${r.poin}</strong> poin</td>
-                    <td>${persen}%</td>
+                    <td><strong>${p.id}</strong></td>
+                    <td>
+                        ${namaMhs}
+                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${nim} &middot; ${prodi}</span>
+                    </td>
+                    <td>${p.kategoriText || p.kategori}</td>
+                    <td>${poin} poin</td>
+                    <td>${p.tanggal || '-'}</td>
+                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
+                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
                 </tr>`;
             }).join('');
 
@@ -1179,73 +1141,11 @@
                 <div class="table-wrapper">
                     <table>
                         <thead>
-                            <tr><th>Kategori</th><th>Jumlah Kegiatan</th><th>Total Poin</th><th>Kontribusi</th></tr>
-                        </thead>
-                        <tbody>${body}</tbody>
-                    </table>
-                </div>`;
-        }
-
-        // --- Riwayat pengajuan, terbaru di atas ---
-        function renderRiwayat(semua) {
-            const wrapper = document.getElementById('riwayatWrapper');
-
-            if (semua.length === 0) {
-                wrapper.innerHTML = `
-                    <div class="empty-state-box">
-                        <i class="fa-solid fa-inbox"></i>
-                        <p>Mahasiswa ini belum pernah mengajukan klaim SKP.</p>
-                    </div>`;
-                return;
-            }
-
-            const idWeight = (p) => {
-                const m = String(p.id || '').match(/(\d{6,})/);
-                return m ? Number(m[1]) : 0;
-            };
-            const list = [...semua].sort((a, b) =>
-                (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a))
-            );
-
-            const badgeFor = (status) => {
-                if (status === 'Disetujui') return 'badge-success';
-                if (status === 'Ditolak') return 'badge-danger';
-                if (status === 'Revisi') return 'badge-warning';
-                return 'badge-info';
-            };
-
-            const rows = list.map(p => `<tr>
-                <td><strong>${p.id}</strong></td>
-                <td>${p.judul || '-'}</td>
-                <td>${p.kategoriText || p.kategori}</td>
-                <td>${p.poin || p.estimasiPoin || 0} poin</td>
-                <td>${p.tanggal || '-'}</td>
-                <td><span class="badge ${badgeFor(p.status)}">${p.status}</span></td>
-                <td class="col-aksi-kanan">
-                    <a href="detail-pengajuan.html?id=${p.id}" class="btn-detail" title="Lihat detail pengajuan">
-                        <i class="fa-solid fa-eye"></i> <span class="btn-label">Detail</span>
-                    </a>
-                </td>
-            </tr>`).join('');
-
-            wrapper.innerHTML = `
-                <div class="table-fixed">
-                    <table>
-                        <colgroup>
-                            <col style="width:15%">
-                            <col style="width:27%">
-                            <col style="width:14%">
-                            <col style="width:8%">
-                            <col style="width:11%">
-                            <col style="width:12%">
-                            <col style="width:13%">
-                        </colgroup>
-                        <thead>
                             <tr>
                                 <th>ID Pengajuan</th>
-                                <th>Judul Kegiatan</th>
+                                <th>Mahasiswa</th>
                                 <th>Kategori</th>
-                                <th>Poin</th>
+                                <th>Estimasi Poin</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
                                 <th class="col-aksi-kanan">Aksi</th>
@@ -1253,21 +1153,84 @@
                         </thead>
                         <tbody>${rows}</tbody>
                     </table>
-                </div>`;
+                </div>
+            `;
         }
 
-        // --- Sinkronisasi lintas-tab: ikut terbarui bila ada validasi baru ---
-        function refreshBilaBoleh() { if (bolehDilihat) renderDetail(); }
-        window.addEventListener('focus', refreshBilaBoleh);
-        document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshBilaBoleh(); });
-        window.addEventListener('storage', (e) => { if (e.key === 'skp_app_state') refreshBilaBoleh(); });
+        function renderPagination(totalPages) {
+            const wrapper = document.getElementById('paginationWrapper');
+            if (totalPages <= 1) { wrapper.innerHTML = ''; return; }
 
-        // --- Sidebar & logout ---
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="btn ${i === currentPage ? 'btn-accent' : 'btn-outline'}" style="padding:8px 14px; min-width:38px;" onclick="goToPage(${i})">${i}</button>`;
+            }
+            wrapper.innerHTML = html;
+        }
+
+        window.goToPage = function(page) {
+            currentPage = page;
+            loadAntrean();
+        };
+
+        // ============================================================
+        // EVENT LISTENERS — filter & search memicu render ulang
+        // ============================================================
+        document.getElementById('searchInput').addEventListener('input', () => { currentPage = 1; loadAntrean(); });
+        document.getElementById('filterKategori').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
+        document.getElementById('filterStatus').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
+        document.getElementById('sortOrder').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
+
+        // ============================================================
+        // DARK MODE
+        // ============================================================
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            document.body.classList.toggle('dark-mode');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // ============================================================
+        // SIDEBAR & LOGOUT
+        // ============================================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) overlay.style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) overlay.style.display = 'none';
+        }
         function showLogoutModal() { document.getElementById('logoutModal').classList.remove('hidden'); }
         function closeLogoutModal() { document.getElementById('logoutModal').classList.add('hidden'); }
         function confirmLogout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+        document.getElementById('logoutModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLogoutModal();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLogoutModal();
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAntrean();
+        });
+
+        // Refresh otomatis saat tab ini difokuskan kembali, supaya pengajuan
+        // baru dari tab mahasiswa langsung terlihat tanpa reload manual.
+        window.addEventListener('focus', loadAntrean);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadAntrean(); });
+        // Sinkronisasi lintas-tab: langsung refresh antrean saat tab lain
+        // (mis. tab mahasiswa) menambah/mengubah pengajuan di localStorage.
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadAntrean();
+        });
+        // Polling dihapus: pembaruan lewat event 'storage'/'focus' atau refresh manual.
     </script>
 </body>
 </html>

@@ -505,6 +505,37 @@
             margin: 20px 0 10px;
             text-align: left;
         }
+
+        /* Modal pemilih akun Google bisa memuat banyak akun. Tinggi modal
+           dibatasi terhadap tinggi layar, dan hanya daftar akunnya yang
+           di-scroll — judul serta tombol Batal tetap terlihat. */
+        .modal-overlay { padding: 20px; }
+        #googleAccountModal .modal-dialog {
+            display: flex;
+            flex-direction: column;
+            max-height: 88vh;
+            padding: 28px 24px;
+            overflow: hidden;
+        }
+        #googleAccountModal .modal-icon,
+        #googleAccountModal h4,
+        #googleAccountModal p,
+        #googleAccountModal .btn-modal { flex-shrink: 0; }
+        #googleAccountModal .modal-icon { font-size: 2.4rem; margin-bottom: 10px; }
+        #googleAccountModal p { margin-bottom: 8px; }
+        #googleAccountModal .google-account-list {
+            flex: 1 1 auto;
+            min-height: 0;          /* penting agar overflow bekerja di dalam flex */
+            overflow-y: auto;
+            padding-right: 6px;
+            margin: 14px 0 6px;
+        }
+        #googleAccountModal .google-account-list::-webkit-scrollbar { width: 6px; }
+        #googleAccountModal .google-account-list::-webkit-scrollbar-track { background: transparent; }
+        #googleAccountModal .google-account-list::-webkit-scrollbar-thumb {
+            background: var(--border); border-radius: 10px;
+        }
+        #googleAccountModal .google-account-list::-webkit-scrollbar-thumb:hover { background: var(--accent); }
         .google-account-item {
             display: flex;
             align-items: center;
@@ -898,7 +929,12 @@
             const listContainer = document.getElementById('googleAccountList');
             listContainer.innerHTML = '';
 
-            Object.entries(dummyAccounts).forEach(([email, account]) => {
+            Object.entries(dummyAccounts)
+                // Akun bertanda `dataOnly` hanya menjadi data pengujian filter
+                // (mahasiswa lintas prodi/angkatan), bukan akun peragaan.
+                // Karena itu tidak ditampilkan di pemilih akun Google.
+                .filter(([email, account]) => !account.dataOnly)
+                .forEach(([email, account]) => {
                 const initials = account.fullName.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
                 const item = document.createElement('div');
                 item.className = 'google-account-item';

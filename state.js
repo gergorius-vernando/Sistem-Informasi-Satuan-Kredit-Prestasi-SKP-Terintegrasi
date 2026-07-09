@@ -34,6 +34,71 @@
             nim: '2024002',
             prodi: 'Sains Data Terapan'
         },
+        // ================================================================
+        // Mahasiswa tambahan — dipakai sebagai DATA monitoring saja
+        // (lintas program studi & angkatan) agar filter pada dashboard/laporan
+        // Wakil Direktur dan Kaprodi dapat diuji dan didemokan.
+        // Angkatan diturunkan dari 4 digit pertama NIM.
+        //
+        // Ditandai `dataOnly: true` sehingga TIDAK ditampilkan pada daftar
+        // pemilih akun Google di halaman login (daftar itu hanya memuat akun
+        // peragaan utama). Mereka tetap dapat login lewat form email/kata sandi
+        // bila sewaktu-waktu diperlukan untuk pengujian.
+        // ================================================================
+
+        // --- Angkatan 2024 (paling senior; menjadi fokus pemantauan SKPI) ---
+        'mahasiswa3@plai.ac.id': {
+            fullName: 'Raden Bagus Khalid Izza Mahendra',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'RB', nim: '2024003', prodi: 'Rekayasa Keamanan Siber',
+            dataOnly: true
+        },
+        'mahasiswa4@plai.ac.id': {
+            fullName: 'Siti Aisyah',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'SA', nim: '2024004', prodi: 'Rekayasa Keamanan Siber',
+            dataOnly: true
+        },
+        'mahasiswa5@plai.ac.id': {
+            fullName: 'Yudha Arikusuma',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'YA', nim: '2024005', prodi: 'Kecerdasan Buatan & Robotik',
+            dataOnly: true
+        },
+        'mahasiswa6@plai.ac.id': {
+            fullName: 'Muhammad Ibnu Sina Nur Amanullah',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'MI', nim: '2024006', prodi: 'Kecerdasan Buatan & Robotik',
+            dataOnly: true
+        },
+
+        // --- Angkatan 2025 (satu tingkat di bawah) ---
+        'mahasiswa7@plai.ac.id': {
+            fullName: 'Ibrahim Al Muhsin',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'IA', nim: '2025001', prodi: 'Sains Data Terapan',
+            dataOnly: true
+        },
+        'mahasiswa8@plai.ac.id': {
+            fullName: 'Jasmine Nur Faizah',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'JN', nim: '2025002', prodi: 'Rekayasa Keamanan Siber',
+            dataOnly: true
+        },
+        'mahasiswa9@plai.ac.id': {
+            fullName: 'Gandi Ilmi Hadhi',
+            role: 'Mahasiswa', roleKey: 'mahasiswa', password: '12345',
+            dashboardUrl: 'dashboard-mahasiswa.html',
+            avatar: 'GI', nim: '2025003', prodi: 'Kecerdasan Buatan & Robotik',
+            dataOnly: true
+        },
+
         'adminmhs@plai.ac.id': {
             fullName: 'Habib Gili Ajiwinata, M.Pd.',
             role: 'Admin Kemahasiswaan',
@@ -347,6 +412,72 @@
         { id: 'SKP-2024-004', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Internasional AI', penyelenggara: 'IEEE', lokasi: 'Bali', tglMulai: '2024-04-05', tglSelesai: '2024-04-05', tingkatText: 'Internasional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-04-05', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar internasional bidang kecerdasan buatan.', file: 'sertifikat-seminar-internasional.pdf' },
         { id: 'SKP-2024-005', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Data Science', penyelenggara: 'Digitalent', lokasi: 'Daring', tglMulai: '2024-05-01', tglSelesai: '2024-05-10', tingkatText: 'Nasional', poin: 18, estimasiPoin: 18, status: 'Disetujui', tanggal: '2024-05-10', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan intensif data science bersertifikat.', file: 'sertifikat-datascience.pdf' },
         { id: 'SKP-2024-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Masyarakat Desa Binaan', penyelenggara: 'LPPM', lokasi: 'Sleman', tglMulai: '2024-05-20', tglSelesai: '2024-06-01', tingkatText: 'Regional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-06-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Program pengabdian masyarakat di desa binaan kampus.', file: 'sertifikat-pengabdian.pdf' },
+
+        // ================================================================
+        // Riwayat prestasi mahasiswa lintas prodi & angkatan (data monitoring).
+        // Poin sengaja dibuat bervariasi terhadap target 100:
+        //   Angkatan 2024 (senior) : Raden Bagus 105 (sudah), Siti Aisyah 60 (belum),
+        //                            Yudha 112 (sudah), M. Ibnu Sina 35 (belum)
+        //   Angkatan 2025          : Ibrahim 45, Jasmine 70 (belum), Gandi 100 (sudah)
+        // Mahasiswa senior yang BELUM memenuhi menjadi peringatan bagi pimpinan,
+        // karena SKPI mereka terancam tidak terbit saat kelulusan.
+        // ================================================================
+
+        // -- Raden Bagus Khalid Izza Mahendra (2024003) = 45+35+25 = 105 --
+        { id: 'SKP-2024-201', email: 'mahasiswa3@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 1 Capture The Flag Nasional', penyelenggara: 'BSSN', lokasi: 'Jakarta', tglMulai: '2024-04-10', tglSelesai: '2024-04-12', tingkatText: 'Nasional', poin: 45, estimasiPoin: 45, status: 'Disetujui', tanggal: '2024-04-12', validator: 'Wakil Direktur', deskripsi: 'Juara 1 kompetisi keamanan siber tingkat nasional.', file: 'sertifikat-ctf.pdf' },
+        { id: 'SKP-2024-202', email: 'mahasiswa3@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal Keamanan Siber', penyelenggara: 'LPPM', lokasi: 'Kampus', tglMulai: '2024-06-01', tglSelesai: '2024-06-20', tingkatText: 'Nasional', poin: 35, estimasiPoin: 35, status: 'Disetujui', tanggal: '2024-06-20', validator: 'Kaprodi', deskripsi: 'Artikel ilmiah bidang keamanan siber.', file: 'bukti-jurnal.pdf' },
+        { id: 'SKP-2024-203', email: 'mahasiswa3@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Ketua Komunitas Cyber Security', penyelenggara: 'UKM', lokasi: 'Kampus', tglMulai: '2024-08-01', tglSelesai: '2024-12-01', tingkatText: 'Internal', poin: 25, estimasiPoin: 25, status: 'Disetujui', tanggal: '2024-12-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Memimpin komunitas keamanan siber kampus.', file: 'sk-ketua.pdf' },
+
+        // -- Siti Aisyah (2024004) = 20+20+20 = 60 (BELUM memenuhi) --
+        { id: 'SKP-2024-211', email: 'mahasiswa4@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Nasional Keamanan Data', penyelenggara: 'BSSN', lokasi: 'Bandung', tglMulai: '2024-03-05', tglSelesai: '2024-03-05', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2024-03-05', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar nasional keamanan data.', file: 'sertifikat-seminar.pdf' },
+        { id: 'SKP-2024-212', email: 'mahasiswa4@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Ethical Hacking', penyelenggara: 'Digitalent', lokasi: 'Daring', tglMulai: '2024-05-01', tglSelesai: '2024-05-14', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2024-05-14', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan ethical hacking bersertifikat.', file: 'sertifikat-hacking.pdf' },
+        { id: 'SKP-2024-213', email: 'mahasiswa4@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Sekretaris HIMA Keamanan Siber', penyelenggara: 'HIMA', lokasi: 'Kampus', tglMulai: '2024-08-01', tglSelesai: '2024-12-01', tingkatText: 'Internal', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2024-12-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Pengurus himpunan mahasiswa.', file: 'sk-sekretaris.pdf' },
+
+        // -- Yudha Arikusuma (2024005) = 50+32+30 = 112 --
+        { id: 'SKP-2024-221', email: 'mahasiswa5@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 1 Kontes Robot Indonesia', penyelenggara: 'Kemdikbudristek', lokasi: 'Surabaya', tglMulai: '2024-07-10', tglSelesai: '2024-07-14', tingkatText: 'Nasional', poin: 50, estimasiPoin: 50, status: 'Disetujui', tanggal: '2024-07-14', validator: 'Wakil Direktur', deskripsi: 'Juara 1 kontes robot tingkat nasional.', file: 'sertifikat-kri.pdf' },
+        { id: 'SKP-2024-222', email: 'mahasiswa5@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Asisten Riset Robotika', penyelenggara: 'LPPM', lokasi: 'Kampus', tglMulai: '2024-02-01', tglSelesai: '2024-06-30', tingkatText: 'Internal', poin: 32, estimasiPoin: 32, status: 'Disetujui', tanggal: '2024-06-30', validator: 'Kaprodi', deskripsi: 'Asisten riset pada laboratorium robotika.', file: 'surat-tugas.pdf' },
+        { id: 'SKP-2024-223', email: 'mahasiswa5@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pelatihan Robotika untuk Siswa SMK', penyelenggara: 'LPPM', lokasi: 'Klaten', tglMulai: '2024-09-01', tglSelesai: '2024-09-10', tingkatText: 'Regional', poin: 30, estimasiPoin: 30, status: 'Disetujui', tanggal: '2024-09-10', validator: 'Admin Kemahasiswaan', deskripsi: 'Mengajar dasar robotika kepada siswa SMK.', file: 'laporan-pengabdian.pdf' },
+
+        // -- Muhammad Ibnu Sina Nur Amanullah (2024006) = 15+20 = 35 (BELUM memenuhi) --
+        { id: 'SKP-2024-231', email: 'mahasiswa6@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Kecerdasan Buatan', penyelenggara: 'HIMTI', lokasi: 'Yogyakarta', tglMulai: '2024-04-20', tglSelesai: '2024-04-20', tingkatText: 'Nasional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-04-20', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar kecerdasan buatan.', file: 'sertifikat-seminar-ai.pdf' },
+        { id: 'SKP-2024-232', email: 'mahasiswa6@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Machine Learning Dasar', penyelenggara: 'Digitalent', lokasi: 'Daring', tglMulai: '2024-06-01', tglSelesai: '2024-06-14', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2024-06-14', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan dasar machine learning.', file: 'sertifikat-ml.pdf' },
+
+        // -- Ibrahim Al Muhsin (2025001) = 20+15+10 = 45 --
+        { id: 'SKP-2025-101', email: 'mahasiswa7@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Python untuk Data Science', penyelenggara: 'Digitalent', lokasi: 'Daring', tglMulai: '2025-03-01', tglSelesai: '2025-03-14', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2025-03-14', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan Python tingkat dasar.', file: 'sertifikat-python.pdf' },
+        { id: 'SKP-2025-102', email: 'mahasiswa7@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Big Data', penyelenggara: 'APTIKOM', lokasi: 'Semarang', tglMulai: '2025-05-08', tglSelesai: '2025-05-08', tingkatText: 'Nasional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2025-05-08', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar big data.', file: 'sertifikat-bigdata.pdf' },
+        { id: 'SKP-2025-103', email: 'mahasiswa7@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Anggota Divisi Riset HIMA', penyelenggara: 'HIMA', lokasi: 'Kampus', tglMulai: '2025-08-01', tglSelesai: '2025-12-01', tingkatText: 'Internal', poin: 10, estimasiPoin: 10, status: 'Disetujui', tanggal: '2025-12-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Anggota divisi riset himpunan mahasiswa.', file: 'sk-anggota.pdf' },
+
+        // -- Jasmine Nur Faizah (2025002) = 30+20+20 = 70 --
+        { id: 'SKP-2025-111', email: 'mahasiswa8@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Finalis Lomba Karya Tulis Ilmiah', penyelenggara: 'Kemdikbudristek', lokasi: 'Malang', tglMulai: '2025-04-02', tglSelesai: '2025-04-04', tingkatText: 'Nasional', poin: 30, estimasiPoin: 30, status: 'Disetujui', tanggal: '2025-04-04', validator: 'Kaprodi', deskripsi: 'Finalis lomba karya tulis ilmiah nasional.', file: 'sertifikat-lkti.pdf' },
+        { id: 'SKP-2025-112', email: 'mahasiswa8@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Bendahara UKM Cyber', penyelenggara: 'UKM', lokasi: 'Kampus', tglMulai: '2025-08-01', tglSelesai: '2025-12-01', tingkatText: 'Internal', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2025-12-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Bendahara unit kegiatan mahasiswa.', file: 'sk-bendahara.pdf' },
+        { id: 'SKP-2025-113', email: 'mahasiswa8@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Jaringan Komputer', penyelenggara: 'Cisco Academy', lokasi: 'Kampus', tglMulai: '2025-09-01', tglSelesai: '2025-09-20', tingkatText: 'Nasional', poin: 20, estimasiPoin: 20, status: 'Disetujui', tanggal: '2025-09-20', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan jaringan komputer bersertifikat.', file: 'sertifikat-jaringan.pdf' },
+
+        // -- Gandi Ilmi Hadhi (2025003) = 40+30+30 = 100 (pas memenuhi target) --
+        { id: 'SKP-2025-121', email: 'mahasiswa9@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 2 Lomba Robot Line Follower', penyelenggara: 'Kemdikbudristek', lokasi: 'Bandung', tglMulai: '2025-06-11', tglSelesai: '2025-06-13', tingkatText: 'Nasional', poin: 40, estimasiPoin: 40, status: 'Disetujui', tanggal: '2025-06-13', validator: 'Wakil Direktur', deskripsi: 'Juara 2 kompetisi robot line follower.', file: 'sertifikat-robot.pdf' },
+        { id: 'SKP-2025-122', email: 'mahasiswa9@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Asisten Praktikum Kecerdasan Buatan', penyelenggara: 'Program Studi', lokasi: 'Kampus', tglMulai: '2025-02-01', tglSelesai: '2025-06-30', tingkatText: 'Internal', poin: 30, estimasiPoin: 30, status: 'Disetujui', tanggal: '2025-06-30', validator: 'Kaprodi', deskripsi: 'Asisten praktikum mata kuliah kecerdasan buatan.', file: 'surat-tugas-asisten.pdf' },
+        { id: 'SKP-2025-123', email: 'mahasiswa9@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Sosialisasi AI untuk Guru SMA', penyelenggara: 'LPPM', lokasi: 'Bantul', tglMulai: '2025-10-05', tglSelesai: '2025-10-12', tingkatText: 'Regional', poin: 30, estimasiPoin: 30, status: 'Disetujui', tanggal: '2025-10-12', validator: 'Admin Kemahasiswaan', deskripsi: 'Sosialisasi pemanfaatan AI kepada guru SMA.', file: 'laporan-sosialisasi.pdf' },
+
+
+        // Pengajuan Prestasi Kompetisi yang SUDAH lolos Kaprodi dan kini menunggu
+        // keputusan Wakil Direktur (validator tahap akhir, FR-18).
+        {
+            id: 'SKP-2026-108', email: 'mahasiswa5@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 3 Kontes Robot Terbang Indonesia', penyelenggara: 'Kemdikbudristek', lokasi: 'Bali', tglMulai: '2026-06-20', tglSelesai: '2026-06-23', tingkatText: 'Nasional', poin: 35, estimasiPoin: 35, status: 'Pending Wakil Direktur', tanggal: '2026-07-06', validator: 'Wakil Direktur', deskripsi: 'Meraih juara 3 pada kontes robot terbang tingkat nasional.', file: 'sertifikat-krti.pdf',
+            workflow: [
+                { role: 'Mahasiswa', status: 'completed', date: '2026-07-06T08:00:00.000Z' },
+                { role: 'Kaprodi', status: 'completed', date: '2026-07-06T13:00:00.000Z' },
+                { role: 'Wakil Direktur', status: 'active', date: null }
+            ],
+            timeline: [
+                { title: 'Pengajuan dibuat', date: '2026-07-06T08:00:00.000Z' },
+                { title: 'Disetujui oleh Kaprodi', date: '2026-07-06T13:00:00.000Z' },
+                { title: 'Menunggu verifikasi Wakil Direktur', date: '2026-07-06T13:05:00.000Z' }
+            ],
+            riwayat: [
+                { tanggal: '2026-07-06T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' },
+                { tanggal: '2026-07-06T13:00:00.000Z', status: 'Pending Wakil Direktur', validator: 'Kaprodi', keterangan: 'Disetujui oleh Kaprodi, diteruskan ke Wakil Direktur' }
+            ],
+            catatan: []
+        },
 
         {
             id: 'SKP-2026-104', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Peserta Seminar Nasional Teknologi Hijau', penyelenggara: 'HIMTI', lokasi: 'Yogyakarta', tglMulai: '2026-06-28', tglSelesai: '2026-06-28', tingkatText: 'Nasional', poin: 10, estimasiPoin: 10, status: 'Revisi', tanggal: '2026-07-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Mengikuti seminar nasional bertema teknologi hijau dan keberlanjutan.', file: 'sertifikat-seminar-blur.jpg',

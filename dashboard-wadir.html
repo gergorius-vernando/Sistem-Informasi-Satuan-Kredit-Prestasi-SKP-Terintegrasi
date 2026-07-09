@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Wakil Direktur — Sistem Informasi SKP</title>
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* ==================== DESIGN SYSTEM — IDENTIK DENGAN DASHBOARD MAHASISWA ==================== */
+        :root {
+            --primary: #1A1A1A;
+            --accent: #F4B400;
+            --accent-hover: #D99E00;
+            --accent-light: #FFF8E1;
+            --white: #FFFFFF;
+            --dark-gray: #2C2C2C;
+            --light-gray: #F5F5F5;
+            --border: #E5E7EB;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 25px 60px rgba(0, 0, 0, 0.15);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-md: 16px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --transition: 0.25s ease;
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
+            --topbar-height: 68px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #F8F9FA;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: #111;
+            filter: invert(0.9) hue-rotate(180deg);
+        }
+        body.dark-mode img,
+        body.dark-mode canvas {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--white);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition-slow);
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.08);
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .sidebar-logo .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(244, 180, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo .logo-icon i {
+            font-size: 22px;
+            color: var(--accent);
+        }
+
+        .sidebar-logo .logo-text {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            letter-spacing: 0.2px;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 8px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(244, 180, 0, 0.25);
+        }
+
+        .sidebar-footer {
+            padding: 16px 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sidebar-footer a.sidebar-footer-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .sidebar-footer a.sidebar-footer-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .sidebar-footer a.sidebar-footer-link:hover {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+
+        .sidebar-footer button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+
+        .sidebar-footer button:hover {
+            background: #FEE2E2;
+            color: var(--danger);
+            transform: translateX(4px);
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin-left var(--transition-slow);
+            background: #F8F9FA;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        /* ==================== TOPBAR ==================== */
+        .topbar {
+            height: var(--topbar-height);
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: var(--shadow-sm);
+            gap: 16px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .topbar-right .icon-btn {
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: 50%;
+            transition: all var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-right .icon-btn:hover {
+            background: var(--light-gray);
+            color: var(--accent);
+        }
+
+        .topbar-right .user-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 8px;
+            border-radius: 30px;
+        }
+
+        .topbar-right .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .topbar-right .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar-right .user-info .user-name {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .topbar-right .user-info .user-role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* ==================== PAGE CONTENT ==================== */
+        .page-content {
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ==================== HEADER DASHBOARD ==================== */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .dashboard-header .welcome-section h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+            margin-bottom: 2px;
+        }
+
+        .dashboard-header .welcome-section .welcome-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .dashboard-header .period-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--accent-light);
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--accent-hover);
+            border: 1px solid rgba(244, 180, 0, 0.3);
+        }
+
+        .dashboard-header .period-badge i {
+            font-size: 0.9rem;
+        }
+
+        /* ==================== CARD RINGKASAN / KPI (5 kartu) ==================== */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 22px 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-light);
+        }
+
+        .summary-card .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
+        .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
+        .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
+        .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
+        .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
+
+        .summary-card .card-info .card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .summary-card .card-info .card-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ==================== GRID LAYOUT ==================== */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        /* ==================== CARDS ==================== */
+        .card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card h3 i { color: var(--accent); }
+
+        .chart-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        /* ==================== CHART CONTAINER ==================== */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+        }
+
+        .chart-container canvas {
+            display: block;
+        }
+
+        /* ==================== TABLE ==================== */
+        .table-wrapper { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        table th {
+            background: var(--light-gray);
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        table tbody tr { transition: background var(--transition); }
+        table tbody tr:hover { background: var(--accent-light); }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .badge-warning  { background: #FEF3C7; color: #92400E; }
+        .badge-success  { background: #D1FAE5; color: #065F46; }
+        .badge-danger   { background: #FEE2E2; color: #991B1B; }
+        .badge-info     { background: #DBEAFE; color: #1E40AF; }
+        .badge-pending  { background: #FEF3C7; color: #92400E; }
+        .badge-priority-high   { background: #FEE2E2; color: #991B1B; }
+        .badge-priority-medium { background: #FEF3C7; color: #92400E; }
+        .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
+
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+
+        .btn-detail {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent);
+            color: var(--primary);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 600;
+            transition: all var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(244,180,0,0.25);
+        }
+
+        .btn-detail:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(244,180,0,0.35);
+        }
+
+        /* ==================== EMPTY STATE ==================== */
+        .empty-state-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px;
+            gap: 10px;
+            text-align: center;
+        }
+        .empty-state-box .empty-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+        .empty-state-box .empty-icon-wrap i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+        .empty-state-box .empty-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        .empty-state-box .empty-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            max-width: 320px;
+        }
+
+        /* ==================== NOTIFICATION LIST ==================== */
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notification-list::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--light-gray);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .notification-item:hover { background: var(--accent-light); }
+        .notification-item i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+
+        .notification-item .notif-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ==================== ACTIVITY LIST ==================== */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item i { color: var(--accent); width: 16px; text-align: center; }
+        .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
+
+        /* ==================== STATUS PERIODE ==================== */
+        .periode-status-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--light-gray);
+            border-radius: var(--radius);
+        }
+        .periode-status-box .ps-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .periode-status-box.belum-konfigurasi .ps-icon { background: var(--text-muted); }
+        .periode-status-box .ps-title { font-weight: 700; font-size: 0.9rem; }
+        .periode-status-box .ps-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 16px 28px;
+            text-align: center;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.hidden { display: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-dialog {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-dialog .modal-icon { font-size: 3rem; margin-bottom: 12px; color: var(--danger); }
+        .modal-dialog h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .modal-dialog p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+
+        .btn-modal {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.84rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition);
+        }
+
+        .btn-modal-cancel { background: var(--light-gray); color: var(--text-primary); }
+        .btn-modal-cancel:hover { background: var(--border); }
+        .btn-modal-danger { background: var(--danger); color: white; }
+        .btn-modal-danger:hover { background: #DC2626; }
+
+        .toast-container {
+            position: fixed; top: 24px; right: 24px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            background: var(--primary);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+        }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(80px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .grid-2col { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .page-content { padding: 16px; }
+            .summary-cards { grid-template-columns: 1fr 1fr; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .topbar { padding: 0 16px; }
+            .topbar-right .user-info { display: none; }
+            .mobile-menu-btn { display: block !important; }
+        }
+
+        @media (max-width: 480px) {
+            .summary-cards { grid-template-columns: 1fr; }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 8px;
+        }
+
+        /* ===== Tambahan khusus dashboard Wakil Direktur ===== */
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+        .prodi-badge {
+            display:inline-flex; align-items:center; gap:6px;
+            background: var(--accent-light); color: var(--accent-hover);
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 0.74rem; font-weight: 600; margin-top: 6px;
+        }
+        .progress-mini { width: 120px; height: 7px; background: var(--light-gray); border-radius: 10px; overflow: hidden; }
+        .progress-mini .bar { height: 100%; border-radius: 10px; transition: width var(--transition); }
+        .progress-mini .bar.low { background: var(--danger); }
+        .progress-mini .bar.mid { background: var(--warning); }
+        .progress-mini .bar.high { background: var(--success); }
+        .poin-cell { display:flex; flex-direction:column; gap:5px; }
+        .poin-text { font-size: 0.76rem; color: var(--text-muted); }
+        .kekurangan { font-weight: 700; color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR OVERLAY (MOBILE) ==================== -->
+    <div id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;" onclick="closeSidebar()"></div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div class="logo-text">Sistem Informasi<br>SKP</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="dashboard-wadir.html" class="active">
+                <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+            <a href="validasi-wadir.html">
+                <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
+            </a>
+            <a href="rekap-validasi-wadir.html">
+                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
+            </a>
+            <a href="laporan-wadir.html">
+                <i class="fa-solid fa-chart-pie"></i> Laporan
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profil-wadir.html" class="sidebar-footer-link">
+                <i class="fa-solid fa-user-gear"></i> Profil
+            </a>
+            <button onclick="showLogoutModal()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main-content" id="mainContent">
+        <!-- ===== TOPBAR ===== -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <!-- Search box dihapus -->
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="darkModeToggle" title="Dark Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <!-- Ikon notifikasi dihapus -->
+                <div class="user-display">
+                    <div class="user-avatar" id="topbarAvatar">MR</div>
+                    <div class="user-info">
+                        <span class="user-name" id="topbarName">Wakil Direktur</span>
+                        <span class="user-role" id="topbarRole">Wakil Direktur</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== PAGE CONTENT ===== -->
+        <main class="page-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Selamat Datang, <span id="welcomeName">Wakil Direktur</span></h1>
+                    <p class="welcome-subtitle">Pantau tren capaian SKP mahasiswa tingkat institusi dan validasi pengajuan Prestasi Kompetisi.</p>
+                    <div class="prodi-badge"><i class="fa-solid fa-graduation-cap"></i> <span id="prodiBadge">-</span></div>
+                </div>
+                <div class="period-badge">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span id="currentDateBadge"></span>
+                </div>
+            </div>
+
+            <!-- KPI Cards (5) — statistik capaian khusus program studi (FR-17, AB-20) -->
+            <div class="summary-cards">
+                <div class="summary-card" onclick="window.location.href='validasi-wadir.html'">
+                    <div class="card-icon orange"><i class="fa-solid fa-inbox"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiMenungguSaya">0</div>
+                        <div class="card-label">Menunggu Validasi Anda</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon purple"><i class="fa-solid fa-users"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiMahasiswaProdi">0</div>
+                        <div class="card-label">Total Mahasiswa</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiMemenuhiTarget">0</div>
+                        <div class="card-label">Sudah Memenuhi Target</div>
+                    </div>
+                </div>
+                <div class="summary-card" onclick="document.getElementById('cardBelumTarget').scrollIntoView({behavior:'smooth'})">
+                    <div class="card-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiBelumTarget">0</div>
+                        <div class="card-label">Belum Memenuhi Target</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon gold"><i class="fa-solid fa-star"></i></div>
+                    <div class="card-info">
+                        <div class="card-value" id="kpiRataPoin">0</div>
+                        <div class="card-label">Rata-rata Poin SKP</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Antrean validasi Wakil Direktur (FR-18) -->
+            <div class="card">
+                <h3><i class="fa-solid fa-list-check"></i> Pengajuan Menunggu Validasi Anda</h3>
+                <div id="antreanWrapper">
+                    <!-- diisi JS -->
+                </div>
+            </div>
+
+            <!-- Statistik aktivitas kemahasiswaan program studi -->
+            <div class="grid-2col">
+                <div class="card">
+                    <h3><i class="fa-solid fa-chart-column"></i> Aktivitas Kemahasiswaan</h3>
+                    <p class="chart-subtitle">Sebaran status pengajuan per kategori SKP di program studi Anda</p>
+                    <div class="chart-container">
+                        <canvas id="chartStatistik"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Capaian per Program Studi</h3>
+                    <p class="chart-subtitle">Perbandingan mahasiswa yang sudah dan belum memenuhi target</p>
+                    <div class="chart-container">
+                        <canvas id="chartCapaian"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar mahasiswa belum memenuhi target SKP (inti FR-17) -->
+            <div class="card" id="cardBelumTarget">
+                <h3><i class="fa-solid fa-user-clock"></i> Mahasiswa Belum Memenuhi Target SKP</h3>
+                <p class="chart-subtitle">Daftar mahasiswa program studi Anda yang poinnya masih di bawah target kelulusan.</p>
+                <div id="belumTargetWrapper">
+                    <!-- diisi JS -->
+                </div>
+            </div>
+
+            <!-- Aktivitas terbaru -->
+            <div class="card">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Aktivitas Terbaru</h3>
+                <div class="activity-list" id="activityList"></div>
+            </div>
+
+        </main>
+
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            © 2026 Politeknik AI Lembaga Pendidikan Indonesia &nbsp;|&nbsp; Prototype Version 1.0
+        </footer>
+    </div>
+
+    <!-- ==================== LOGOUT MODAL ==================== -->
+    <div class="modal-overlay hidden" id="logoutModal">
+        <div class="modal-dialog">
+            <div class="modal-icon"><i class="fa-solid fa-right-from-bracket"></i></div>
+            <h4>Konfirmasi Logout</h4>
+            <p>Apakah Anda yakin ingin keluar dari akun ini?</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-cancel" onclick="closeLogoutModal()">Batal</button>
+                <button class="btn-modal btn-modal-danger" onclick="confirmLogout()">Ya, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="state.js"></script>
+    <script>
+        // ============================================================
+        // INITIALIZATION — DASHBOARD WAKIL DIREKTUR
+        // Mengacu pada SRS:
+        //  - FR-18         : Wakil Direktur sebagai validator tahap AKHIR untuk
+        //                    Prestasi Akademik dan Prestasi Kompetisi.
+        //  - FR-17         : Dashboard pemantauan statistik capaian, aktivitas
+        //                    kemahasiswaan, dan daftar mahasiswa yang belum
+        //                    memenuhi target SKP, spesifik program studinya.
+        //  - Cakupan       : Wakil Direktur melihat data mahasiswa pada seluruh program
+        //                    studi yang menjadi tanggung jawabnya.
+        // ============================================================
+        const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
+        if (!session || session.roleKey !== 'wakil-direktur') {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
+        document.getElementById('topbarName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('topbarRole').textContent = session.role || 'Wakil Direktur';
+        document.getElementById('welcomeName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('prodiBadge').textContent = 'Seluruh Program Studi (Tingkat Institusi)';
+
+        const today = new Date();
+        document.getElementById('currentDateBadge').textContent =
+            today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        const VALIDATOR_ROLE = 'Wakil Direktur';
+        // Wakil Direktur memantau seluruh program studi (tingkat institusi).
+
+        let chartStatistikInstance = null;
+        let chartCapaianInstance = null;
+
+        // ============================================================
+        // HELPER
+        // ============================================================
+
+        // Seluruh mahasiswa institusi (lintas program studi).
+        function getMahasiswaProdi() {
+            const accounts = AppState.getAllAccounts();
+            return Object.entries(accounts)
+                .filter(([email, a]) => a.roleKey === 'mahasiswa')
+                .map(([email, a]) => ({ email, ...a }));
+        }
+
+        // Pengajuan yang giliran validasinya ada di Wakil Direktur (dan belum final).
+        function isPendingForMe(p) {
+            const wf = p.workflow || [];
+            const activeNode = wf.find(w => w.status === 'active');
+            const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
+            if (isFinal) return false;
+            if (activeNode) return activeNode.role === VALIDATOR_ROLE;
+            return wf[1] && wf[1].role === VALIDATOR_ROLE && p.status === 'Sedang Diverifikasi';
+        }
+
+        function animateCounter(elId, target) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const current = parseInt(el.textContent, 10);
+            if (current === target) return; // idempoten, cegah "berkedip"
+            const duration = 600;
+            const start = isNaN(current) ? 0 : current;
+            const startTime = performance.now();
+            function tick(now) {
+                const progress = Math.min(1, (now - startTime) / duration);
+                el.textContent = Math.round(start + (target - start) * progress);
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // ============================================================
+        // LOAD DASHBOARD
+        // ============================================================
+        function loadDashboard() {
+            const state = AppState.getState();
+            const mahasiswaProdi = getMahasiswaProdi();
+            const emailProdi = new Set(mahasiswaProdi.map(m => m.email));
+            const pengajuanProdi = (state.pengajuan || []).filter(p => emailProdi.has(p.email));
+            const target = state.targetPoin || 100;
+
+            loadKPI(state, mahasiswaProdi, pengajuanProdi, target);
+            loadQueue(pengajuanProdi);
+            loadChart(state, mahasiswaProdi, pengajuanProdi, target);
+            loadBelumTarget(mahasiswaProdi, target);
+            loadTimeline(state, emailProdi);
+        }
+
+        function loadKPI(state, mahasiswaProdi, pengajuanProdi, target) {
+            const menungguSaya = pengajuanProdi.filter(isPendingForMe).length;
+
+            const poinList = mahasiswaProdi.map(m => AppState.getTotalPoin(m.email));
+            const memenuhi = poinList.filter(p => p >= target).length;
+            const belum = mahasiswaProdi.length - memenuhi;
+            const rata = mahasiswaProdi.length
+                ? Math.round(poinList.reduce((a, b) => a + b, 0) / mahasiswaProdi.length)
+                : 0;
+
+            animateCounter('kpiMenungguSaya', menungguSaya);
+            animateCounter('kpiMahasiswaProdi', mahasiswaProdi.length);
+            animateCounter('kpiMemenuhiTarget', memenuhi);
+            animateCounter('kpiBelumTarget', belum);
+            animateCounter('kpiRataPoin', rata);
+        }
+
+        // ============================================================
+        // ANTREAN VALIDASI WAKIL DIREKTUR
+        // ============================================================
+        function loadQueue(pengajuanProdi) {
+            const wrapper = document.getElementById('antreanWrapper');
+            const accounts = AppState.getAllAccounts();
+
+            const antrean = pengajuanProdi.filter(isPendingForMe);
+
+            // Terbaru di atas; tie-breaker pakai bobot ID agar pengajuan yang
+            // baru dibuat (ID berbasis timestamp) benar-benar naik ke atas.
+            const idWeight = (p) => { const m = String(p.id || '').match(/(\d{6,})/); return m ? Number(m[1]) : 0; };
+            antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a)));
+
+            if (antrean.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="empty-state-box">
+                        <div class="empty-icon-wrap"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="empty-title">Tidak ada pengajuan menunggu</div>
+                        <div class="empty-desc">Semua pengajuan yang memerlukan persetujuan Anda sudah diproses.</div>
+                    </div>`;
+                return;
+            }
+
+            const rows = antrean.map(p => {
+                const acc = accounts[p.email] || {};
+                const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
+                return `<tr>
+                    <td><strong>${p.id}</strong></td>
+                    <td>
+                        ${acc.fullName || p.email}
+                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${acc.nim || '-'} &middot; ${acc.prodi || '-'}</span>
+                    </td>
+                    <td>${p.kategoriText || p.kategori}</td>
+                    <td>${p.poin || p.estimasiPoin || 0} poin</td>
+                    <td>${p.tanggal || '-'}</td>
+                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
+                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
+                </tr>`;
+            }).join('');
+
+            wrapper.innerHTML = `
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Pengajuan</th>
+                                <th>Mahasiswa</th>
+                                <th>Kategori</th>
+                                <th>Estimasi Poin</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
+                                <th class="col-aksi-kanan">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        // ============================================================
+        // CHART — dibuat sekali, selanjutnya hanya di-update (tanpa destroy)
+        // ============================================================
+        function loadChart(state, mahasiswaProdi, pengajuanProdi, target) {
+            const kategoriList = AppState.getMasterSKP();
+            const labels = kategoriList.map(k => k.nama);
+            const data = { Pending: [], Disetujui: [], Ditolak: [], Direvisi: [] };
+
+            kategoriList.forEach(k => {
+                const items = pengajuanProdi.filter(p => p.kategori === k.kode);
+                data.Pending.push(items.filter(p => !['Disetujui', 'Ditolak', 'Revisi'].includes(p.status)).length);
+                data.Disetujui.push(items.filter(p => p.status === 'Disetujui').length);
+                data.Ditolak.push(items.filter(p => p.status === 'Ditolak').length);
+                data.Direvisi.push(items.filter(p => p.status === 'Revisi').length);
+            });
+
+            const datasets = [data.Pending, data.Disetujui, data.Ditolak, data.Direvisi];
+            if (chartStatistikInstance) {
+                chartStatistikInstance.data.labels = labels;
+                chartStatistikInstance.data.datasets.forEach((ds, i) => { ds.data = datasets[i]; });
+                chartStatistikInstance.update('none');
+            } else {
+                const ctx = document.getElementById('chartStatistik').getContext('2d');
+                chartStatistikInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [
+                            { label: 'Pending', data: data.Pending, backgroundColor: '#F59E0B' },
+                            { label: 'Disetujui', data: data.Disetujui, backgroundColor: '#22C55E' },
+                            { label: 'Ditolak', data: data.Ditolak, backgroundColor: '#EF4444' },
+                            { label: 'Direvisi', data: data.Direvisi, backgroundColor: '#8B5CF6' }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: { backgroundColor: '#1A1A1A', titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }, padding: 12, cornerRadius: 8 }
+                        },
+                        scales: {
+                            x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' }, grid: { color: '#E5E7EB' } },
+                            y: { stacked: true, ticks: { font: { family: 'Poppins', size: 10.5 }, color: '#6B7280' }, grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            // Bar bertumpuk: capaian target per program studi.
+            // Menampilkan jumlah mahasiswa yang sudah vs belum memenuhi target
+            // pada tiap prodi, sehingga Wakil Direktur langsung melihat prodi
+            // mana yang kesenjangannya paling besar (bukan sekadar total institusi).
+            const perProdi = {};
+            mahasiswaProdi.forEach(m => {
+                const prodi = m.prodi || 'Tidak diketahui';
+                if (!perProdi[prodi]) perProdi[prodi] = { sudah: 0, belum: 0 };
+                if (AppState.getTotalPoin(m.email) >= target) perProdi[prodi].sudah++;
+                else perProdi[prodi].belum++;
+            });
+
+            // Urutkan: yang paling banyak "belum memenuhi" tampil di atas.
+            const entriProdi = Object.entries(perProdi)
+                .sort((a, b) => b[1].belum - a[1].belum);
+
+            const labelProdi = entriProdi.map(e => e[0]);
+            const dataSudah = entriProdi.map(e => e[1].sudah);
+            const dataBelum = entriProdi.map(e => e[1].belum);
+
+            if (chartCapaianInstance) {
+                chartCapaianInstance.data.labels = labelProdi;
+                chartCapaianInstance.data.datasets[0].data = dataSudah;
+                chartCapaianInstance.data.datasets[1].data = dataBelum;
+                chartCapaianInstance.update('none');
+            } else {
+                const ctx2 = document.getElementById('chartCapaian').getContext('2d');
+                chartCapaianInstance = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: labelProdi,
+                        datasets: [
+                            {
+                                label: 'Sudah Memenuhi',
+                                data: dataSudah,
+                                backgroundColor: '#22C55E',
+                                borderRadius: 6,
+                                borderSkipped: false,
+                                maxBarThickness: 26
+                            },
+                            {
+                                label: 'Belum Memenuhi',
+                                data: dataBelum,
+                                backgroundColor: '#F4B400',
+                                borderRadius: 6,
+                                borderSkipped: false,
+                                maxBarThickness: 26
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
+                            tooltip: {
+                                backgroundColor: '#1A1A1A', padding: 12, cornerRadius: 8,
+                                titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 },
+                                callbacks: {
+                                    label: (c) => ` ${c.dataset.label}: ${c.parsed.x} mahasiswa`,
+                                    footer: (items) => {
+                                        const i = items[0].dataIndex;
+                                        const total = dataSudah[i] + dataBelum[i];
+                                        const persen = total ? Math.round((dataSudah[i] / total) * 100) : 0;
+                                        return `Total ${total} mahasiswa · ${persen}% memenuhi`;
+                                    }
+                                },
+                                footerFont: { family: 'Poppins', size: 11, weight: '400' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true, beginAtZero: true,
+                                ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' },
+                                grid: { color: '#F1F1F1' }, border: { display: false }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: { font: { family: 'Poppins', size: 10.5 }, color: '#374151', crossAlign: 'far' },
+                                grid: { display: false }, border: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // DAFTAR MAHASISWA BELUM MEMENUHI TARGET SKP (FR-17)
+        // ============================================================
+        function loadBelumTarget(mahasiswaProdi, target) {
+            const wrapper = document.getElementById('belumTargetWrapper');
+
+            const belum = mahasiswaProdi
+                .map(m => ({ ...m, poin: AppState.getTotalPoin(m.email) }))
+                .filter(m => m.poin < target)
+                .sort((a, b) => a.poin - b.poin); // paling tertinggal di atas
+
+            if (belum.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="empty-state-box">
+                        <div class="empty-icon-wrap"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="empty-title">Semua mahasiswa memenuhi target</div>
+                        <div class="empty-desc">Seluruh mahasiswa program studi Anda telah mencapai target ${target} poin SKP.</div>
+                    </div>`;
+                return;
+            }
+
+            const rows = belum.map(m => {
+                const persen = Math.min(100, Math.round((m.poin / target) * 100));
+                const level = persen < 40 ? 'low' : (persen < 80 ? 'mid' : 'high');
+                const kurang = target - m.poin;
+                return `<tr>
+                    <td><strong>${m.nim || '-'}</strong></td>
+                    <td>${m.fullName}</td>
+                    <td>
+                        <div class="poin-cell">
+                            <div class="progress-mini"><div class="bar ${level}" style="width:${persen}%"></div></div>
+                            <span class="poin-text">${m.poin} / ${target} poin (${persen}%)</span>
+                        </div>
+                    </td>
+                    <td><span class="kekurangan">${kurang} poin</span></td>
+                </tr>`;
+            }).join('');
+
+            wrapper.innerHTML = `
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NIM</th>
+                                <th>Nama Mahasiswa</th>
+                                <th>Progres Capaian</th>
+                                <th>Kekurangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>`;
+        }
+
+        // ============================================================
+        // AKTIVITAS TERBARU (hanya mahasiswa program studi ini — AB-20)
+        // ============================================================
+        function loadTimeline(state, emailProdi) {
+            const activityList = document.getElementById('activityList');
+            const logs = (state.aktivitas || [])
+                .filter(a => !a.email || emailProdi.has(a.email))
+                .slice(0, 10);
+
+            if (logs.length === 0) {
+                activityList.innerHTML = `
+                    <div class="empty-state-box" style="padding:24px 8px;">
+                        <div class="empty-icon-wrap" style="width:48px;height:48px;"><i class="fa-solid fa-list-check" style="font-size:1.2rem;"></i></div>
+                        <div class="empty-title">Belum ada aktivitas</div>
+                        <div class="empty-desc">Aktivitas kemahasiswaan akan tampil di sini.</div>
+                    </div>`;
+                return;
+            }
+
+            activityList.innerHTML = logs.map(a => `
+                <div class="activity-item">
+                    <div class="activity-icon ${a.warna || 'info'}"><i class="fa-solid ${a.ikon || 'fa-circle-info'}"></i></div>
+                    <div class="activity-content">
+                        <div class="activity-title">${a.judul || '-'}</div>
+                        <div class="activity-desc">${a.detail || ''}</div>
+                        <div class="activity-time">${a.waktu ? new Date(a.waktu).toLocaleString('id-ID') : ''}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ============================================================
+        // UI HELPERS (dark mode, sidebar, logout)
+        // ============================================================
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const state = AppState.getState();
+            state.preferences = state.preferences || {};
+            state.preferences.darkMode = document.body.classList.contains('dark-mode');
+            AppState.setState(state);
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        }
+        function showLogoutModal() { document.getElementById('logoutModal').classList.remove('hidden'); }
+        function closeLogoutModal() { document.getElementById('logoutModal').classList.add('hidden'); }
+        function confirmLogout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+        document.getElementById('logoutModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLogoutModal();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeLogoutModal();
+        });
+
+        // ============================================================
+        // INIT + SINKRONISASI LINTAS-TAB
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            AppState.initState();
+            const state = AppState.getState();
+            if (state.preferences && state.preferences.darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            loadDashboard();
+        });
+
+        // Data statistik diperbarui real-time setiap ada perubahan status
+        // pengajuan/validasi (asumsi SRS pada use case dashboard laporan).
+        window.addEventListener('focus', loadDashboard);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadDashboard(); });
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'skp_app_state') loadDashboard();
+        });
+
+        console.log('📊 Dashboard Wakil Direktur siap.');
+    </script>
+</body>
+</html>
