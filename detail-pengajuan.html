@@ -292,6 +292,11 @@
 
         /* ===== Panel Keputusan Validasi (khusus validator/admin) ===== */
         .validation-panel {
+            /* #actionBar memakai display:flex, sehingga panel akan menyusut
+               mengikuti lebar isinya. flex-basis 100% memaksanya memenuhi
+               seluruh lebar kontainer agar tombol benar-benar memanjang. */
+            flex: 1 1 100%;
+            width: 100%;
             margin-top: 20px;
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -593,6 +598,18 @@
                         { href: 'laporan.html', icon: 'fa-chart-pie', label: 'Laporan' }
                     ],
                     profil: 'profil-admin.html'
+                },
+                // Kaprodi: validator tahap menengah + monitoring prodi (FR-05, FR-08, FR-17).
+                // Tidak diberi menu Master Sistem/Laporan karena kewenangan itu milik
+                // Admin Kemahasiswaan (AB-19: akses sesuai ruang lingkup peran).
+                'kaprodi': {
+                    menu: [
+                        { href: 'dashboard-kaprodi.html', icon: 'fa-gauge-high', label: 'Dashboard' },
+                        { href: 'validasi-kaprodi.html', icon: 'fa-clipboard-check', label: 'Validasi SKP' },
+                        { href: 'rekap-validasi-kaprodi.html', icon: 'fa-clock-rotate-left', label: 'Riwayat Validasi' },
+                        { href: 'laporan-kaprodi.html', icon: 'fa-chart-pie', label: 'Laporan' }
+                    ],
+                    profil: 'profil-kaprodi.html'
                 }
             };
             const cfg = sidebarConfig[userRole] || sidebarConfig['mahasiswa'];

@@ -294,6 +294,61 @@
             ]
         },
         {
+            // Menunggu giliran KAPRODI (Prestasi Akademik: Mahasiswa → Kaprodi → Admin Kemahasiswaan)
+            id: 'SKP-2026-106', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal Nasional Terakreditasi Sinta 3', penyelenggara: 'Jurnal JUTIF', lokasi: 'Daring', tglMulai: '2026-06-01', tglSelesai: '2026-06-20', tingkatText: 'Nasional', poin: 25, estimasiPoin: 25, status: 'Sedang Diverifikasi', tanggal: '2026-07-06', validator: 'Kaprodi', deskripsi: 'Publikasi artikel ilmiah sebagai penulis pertama pada jurnal nasional terakreditasi.', file: 'bukti-publikasi-jurnal.pdf',
+            workflow: [
+                { role: 'Mahasiswa', status: 'completed', date: '2026-07-06T08:00:00.000Z' },
+                { role: 'Kaprodi', status: 'active', date: null },
+                { role: 'Admin Kemahasiswaan', status: 'pending', date: null }
+            ],
+            timeline: [
+                { title: 'Pengajuan dibuat', date: '2026-07-06T08:00:00.000Z' },
+                { title: 'Menunggu verifikasi Kaprodi', date: '2026-07-06T08:05:00.000Z' }
+            ],
+            riwayat: [
+                { tanggal: '2026-07-06T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' }
+            ],
+            catatan: []
+        },
+        {
+            // Menunggu giliran KAPRODI (Prestasi Kompetisi: Mahasiswa → Kaprodi → Wakil Direktur)
+            id: 'SKP-2026-107', email: 'mahasiswa1@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 2 Lomba Data Science Nasional', penyelenggara: 'Kemdikbudristek', lokasi: 'Jakarta', tglMulai: '2026-06-10', tglSelesai: '2026-06-12', tingkatText: 'Nasional', poin: 30, estimasiPoin: 30, status: 'Sedang Diverifikasi', tanggal: '2026-07-07', validator: 'Kaprodi', deskripsi: 'Meraih juara 2 pada kompetisi data science tingkat nasional.', file: 'sertifikat-juara-2.pdf',
+            workflow: [
+                { role: 'Mahasiswa', status: 'completed', date: '2026-07-07T09:00:00.000Z' },
+                { role: 'Kaprodi', status: 'active', date: null },
+                { role: 'Wakil Direktur', status: 'pending', date: null }
+            ],
+            timeline: [
+                { title: 'Pengajuan dibuat', date: '2026-07-07T09:00:00.000Z' },
+                { title: 'Menunggu verifikasi Kaprodi', date: '2026-07-07T09:05:00.000Z' }
+            ],
+            riwayat: [
+                { tanggal: '2026-07-07T09:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' }
+            ],
+            catatan: []
+        },
+
+        // ================================================================
+        // Riwayat prestasi mahasiswa2 (Siti) yang sudah DISETUJUI.
+        // Total 25+15+30+15+18+15 = 118 poin (melewati target 100).
+        //
+        // Dulu data ini baru dibuat saat Siti login (seed di login.html).
+        // Akibatnya, bila Kaprodi/Admin membuka dashboard sebelum Siti pernah
+        // login, Siti tampak 0 poin dan "belum memenuhi target" — monitoring
+        // Kaprodi (FR-17) jadi keliru. Karena itu datanya dipindah ke sini
+        // agar selalu tersedia, tidak bergantung urutan login.
+        //
+        // Status 'Disetujui' akan otomatis ditandai selesai di semua tahap
+        // workflow oleh enrichDummyPengajuan().
+        // ================================================================
+        { id: 'SKP-2024-001', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal Nasional Terakreditasi', penyelenggara: 'LPPM', lokasi: 'Kampus', tglMulai: '2024-01-05', tglSelesai: '2024-01-10', tingkatText: 'Nasional', poin: 25, estimasiPoin: 25, status: 'Disetujui', tanggal: '2024-01-10', validator: 'Kaprodi', deskripsi: 'Publikasi artikel ilmiah pada jurnal nasional terakreditasi.', file: 'bukti-publikasi.pdf' },
+        { id: 'SKP-2024-002', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Prestasi Organisasi', judul: 'Ketua BEM Politeknik', penyelenggara: 'BEM', lokasi: 'Kampus', tglMulai: '2024-02-01', tglSelesai: '2024-02-15', tingkatText: 'Internal', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-02-15', validator: 'Admin Kemahasiswaan', deskripsi: 'Menjabat sebagai Ketua Badan Eksekutif Mahasiswa.', file: 'sk-ketua-bem.pdf' },
+        { id: 'SKP-2024-003', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Prestasi Kompetisi', judul: 'Juara 1 Hackathon Nasional', penyelenggara: 'Kemdikbudristek', lokasi: 'Jakarta', tglMulai: '2024-03-18', tglSelesai: '2024-03-20', tingkatText: 'Nasional', poin: 30, estimasiPoin: 30, status: 'Disetujui', tanggal: '2024-03-20', validator: 'Wakil Direktur', deskripsi: 'Meraih juara 1 pada hackathon tingkat nasional.', file: 'sertifikat-juara-1.pdf' },
+        { id: 'SKP-2024-004', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Internasional AI', penyelenggara: 'IEEE', lokasi: 'Bali', tglMulai: '2024-04-05', tglSelesai: '2024-04-05', tingkatText: 'Internasional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-04-05', validator: 'Admin Kemahasiswaan', deskripsi: 'Peserta seminar internasional bidang kecerdasan buatan.', file: 'sertifikat-seminar-internasional.pdf' },
+        { id: 'SKP-2024-005', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Data Science', penyelenggara: 'Digitalent', lokasi: 'Daring', tglMulai: '2024-05-01', tglSelesai: '2024-05-10', tingkatText: 'Nasional', poin: 18, estimasiPoin: 18, status: 'Disetujui', tanggal: '2024-05-10', validator: 'Admin Kemahasiswaan', deskripsi: 'Pelatihan intensif data science bersertifikat.', file: 'sertifikat-datascience.pdf' },
+        { id: 'SKP-2024-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Masyarakat Desa Binaan', penyelenggara: 'LPPM', lokasi: 'Sleman', tglMulai: '2024-05-20', tglSelesai: '2024-06-01', tingkatText: 'Regional', poin: 15, estimasiPoin: 15, status: 'Disetujui', tanggal: '2024-06-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Program pengabdian masyarakat di desa binaan kampus.', file: 'sertifikat-pengabdian.pdf' },
+
+        {
             id: 'SKP-2026-104', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Peserta Seminar Nasional Teknologi Hijau', penyelenggara: 'HIMTI', lokasi: 'Yogyakarta', tglMulai: '2026-06-28', tglSelesai: '2026-06-28', tingkatText: 'Nasional', poin: 10, estimasiPoin: 10, status: 'Revisi', tanggal: '2026-07-01', validator: 'Admin Kemahasiswaan', deskripsi: 'Mengikuti seminar nasional bertema teknologi hijau dan keberlanjutan.', file: 'sertifikat-seminar-blur.jpg',
             // Workflow eksplisit (bukan auto "semua selesai") supaya jelas tahap
             // mana yang meminta revisi — konsisten dengan perilaku validasiPengajuan.

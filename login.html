@@ -764,10 +764,9 @@
         //
         // Yang dibersihkan:
         //  - 'skp_app_state'   : seluruh data aplikasi (pengajuan, draft, poin, dll).
-        //  - 'skp_mhs2_seeded' : penanda bahwa data khusus mahasiswa2 (Siti, 118
-        //                        poin) sudah pernah dibuat. WAJIB ikut dihapus,
-        //                        supaya saat Siti login lagi datanya ter-seed
-        //                        ulang; kalau tidak, poin Siti akan jadi 0.
+        //  - 'skp_mhs2_seeded' : flag lama yang sudah tidak dipakai (riwayat Siti
+        //                        kini bagian dari data dummy). Tetap dihapus agar
+        //                        sisa data dari versi lama ikut bersih.
         //
         // Sesi login (skp_user_session) dibiarkan / dibersihkan lewat reload —
         // halaman login memang tidak dalam keadaan login, jadi aman.
@@ -854,41 +853,11 @@
                 // mahasiswa2 login lagi dari tab/browser session yang berbeda.
                 // Pengecekan ID juga ditambahkan sebagai pengaman ganda.
                 // ============================================================
-                const sudahDiseed = localStorage.getItem('skp_mhs2_seeded');
-                const stateCek = AppState.getState();
-                const sudahAdaDatanya = stateCek.pengajuan.some(p => p.id === 'SKP-2024-001');
-                if (email === 'mahasiswa2@plai.ac.id' && !sudahDiseed && !sudahAdaDatanya) {
-                    const state = stateCek;
-                    // Tambahkan data pengajuan yang sudah disetujui (total poin 118)
-                    const approvedPengajuan = [
-                        { id: 'SKP-2024-001', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-akademik', kategoriText: 'Prestasi Akademik', judul: 'Publikasi Jurnal', poin: 25, status: 'Disetujui', tanggal: '2024-01-10', validator: 'Kaprodi', estimasiPoin: 25 },
-                        { id: 'SKP-2024-002', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-organisasi', kategoriText: 'Organisasi', judul: 'Ketua BEM', poin: 15, status: 'Disetujui', tanggal: '2024-02-15', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 },
-                        { id: 'SKP-2024-003', email: 'mahasiswa2@plai.ac.id', kategori: 'prestasi-kompetisi', kategoriText: 'Kompetisi', judul: 'Juara 1 Hackathon', poin: 30, status: 'Disetujui', tanggal: '2024-03-20', validator: 'Wakil Direktur', estimasiPoin: 30 },
-                        { id: 'SKP-2024-004', email: 'mahasiswa2@plai.ac.id', kategori: 'seminar', kategoriText: 'Seminar', judul: 'Seminar Internasional', poin: 15, status: 'Disetujui', tanggal: '2024-04-05', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 },
-                        { id: 'SKP-2024-005', email: 'mahasiswa2@plai.ac.id', kategori: 'pelatihan', kategoriText: 'Pelatihan', judul: 'Pelatihan Data Science', poin: 18, status: 'Disetujui', tanggal: '2024-05-10', validator: 'Admin Kemahasiswaan', estimasiPoin: 18 },
-                        { id: 'SKP-2024-006', email: 'mahasiswa2@plai.ac.id', kategori: 'pengabdian', kategoriText: 'Pengabdian', judul: 'Pengabdian Masyarakat', poin: 15, status: 'Disetujui', tanggal: '2024-06-01', validator: 'Admin Kemahasiswaan', estimasiPoin: 15 }
-                    ].map(p => ({
-                        ...p,
-                        workflow: AppState.buildWorkflow(p.kategori).map(w => ({ ...w, status: 'completed', date: p.tanggal })),
-                        timeline: [
-                            { title: 'Pengajuan dibuat', date: p.tanggal + 'T08:00:00.000Z' },
-                            { title: `Disetujui oleh ${p.validator}`, date: p.tanggal + 'T15:00:00.000Z' }
-                        ],
-                        riwayat: [
-                            { tanggal: p.tanggal + 'T08:00:00.000Z', status: 'Sedang Diverifikasi', validator: 'Sistem', keterangan: 'Pengajuan dibuat' },
-                            { tanggal: p.tanggal + 'T15:00:00.000Z', status: 'Disetujui', validator: p.validator, keterangan: `Disetujui oleh ${p.validator}` }
-                        ],
-                        catatan: [],
-                        dokumen: []
-                    }));
-                    // Gabungkan dengan data dummy yang sudah ada (state.pengajuan).
-                    // Tidak perlu set totalPoin manual — getTotalPoin(email)
-                    // menghitungnya otomatis dari 6 pengajuan Disetujui di atas
-                    // (25+15+30+15+18+15 = 118, sudah melewati target 100).
-                    state.pengajuan = state.pengajuan.concat(approvedPengajuan);
-                    AppState.setState(state);
-                    localStorage.setItem('skp_mhs2_seeded', 'true');
-                }
+                // Catatan: riwayat prestasi mahasiswa2 (Siti, 118 poin) kini sudah
+                // menjadi bagian dari data dummy di state.js, jadi tidak perlu
+                // di-seed saat login. Dengan begitu monitoring Kaprodi & Admin
+                // menampilkan capaian Siti dengan benar tanpa bergantung pada
+                // siapa yang login lebih dulu.
                 // ============================================================
 
 
