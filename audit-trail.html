@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validasi SKP (Wakil Direktur) — Sistem Informasi SKP</title>
+    <title>Dashboard Wakil Direktur — Sistem Informasi SKP</title>
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -382,7 +382,7 @@
             font-size: 0.9rem;
         }
 
-        /* ==================== CARD RINGKASAN / KPI (3 kartu) ==================== */
+        /* ==================== CARD RINGKASAN / KPI (5 kartu) ==================== */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -420,8 +420,10 @@
         }
 
         .summary-card .card-icon.orange { background: #FFF7ED; color: var(--warning); }
-        .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
+        .summary-card .card-icon.green { background: #ECFDF5; color: var(--success); }
         .summary-card .card-icon.purple { background: #F5F3FF; color: #8B5CF6; }
+        .summary-card .card-icon.red { background: #FEF2F2; color: var(--danger); }
+        .summary-card .card-icon.gold { background: var(--accent-light); color: var(--accent-hover); }
 
         .summary-card .card-info .card-value {
             font-size: 1.5rem;
@@ -434,6 +436,13 @@
             font-size: 0.78rem;
             color: var(--text-muted);
             margin-top: 2px;
+        }
+
+        /* ==================== GRID LAYOUT ==================== */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
         }
 
         /* ==================== CARDS ==================== */
@@ -455,92 +464,23 @@
 
         .card h3 i { color: var(--accent); }
 
-        /* ==================== FILTER & PENCARIAN (diperbaiki) ==================== */
-        .filter-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 14px;
-            align-items: end;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-group label {
+        .chart-subtitle {
             font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            letter-spacing: 0.2px;
-        }
-
-        .search-box-modern {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 30px;
-            padding: 0 16px;
-            border: 2px solid transparent;
-            transition: all var(--transition);
-        }
-
-        .search-box-modern i {
             color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-right: 10px;
-            transition: color var(--transition);
+            margin-top: -12px;
+            margin-bottom: 16px;
         }
 
-        .search-box-modern input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            padding: 12px 0;
+        /* ==================== CHART CONTAINER ==================== */
+        .chart-container {
+            position: relative;
             width: 100%;
-            color: var(--text-primary);
+            height: 260px;
+            overflow: hidden;
         }
 
-        .search-box-modern input::placeholder {
-            color: var(--text-muted);
-            font-weight: 300;
-        }
-
-        .search-box-modern:focus-within {
-            border-color: var(--accent);
-            background: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
-        }
-
-        .search-box-modern:focus-within i {
-            color: var(--accent);
-        }
-
-        .filter-select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 30px;
-            border: 2px solid var(--border);
-            background: var(--light-gray);
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.82rem;
-            color: var(--text-primary);
-            outline: none;
-            transition: all var(--transition);
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-        }
-
-        .filter-select:focus {
-            border-color: var(--accent);
-            background-color: var(--white);
-            box-shadow: 0 0 0 4px rgba(244, 180, 0, 0.06);
+        .chart-container canvas {
+            display: block;
         }
 
         /* ==================== TABLE ==================== */
@@ -593,9 +533,6 @@
         .badge-priority-medium { background: #FEF3C7; color: #92400E; }
         .badge-priority-low    { background: #DBEAFE; color: #1E40AF; }
 
-        /* Kolom Aksi dibuat menempel (sticky) di kiri, selalu terlihat
-           walau tabel di-scroll horizontal — tombol Lihat Detail langsung kejangkau. */
-        /* Kolom Aksi diletakkan di kanan (rata kanan), mengikuti lebar tabel. */
         table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
 
         .btn-detail {
@@ -657,6 +594,96 @@
             color: var(--text-muted);
             max-width: 320px;
         }
+
+        /* ==================== NOTIFICATION LIST ==================== */
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notification-list::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .notification-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--light-gray);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+        }
+
+        .notification-item:hover { background: var(--accent-light); }
+        .notification-item i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+
+        .notification-item .notif-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ==================== ACTIVITY LIST ==================== */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item i { color: var(--accent); width: 16px; text-align: center; }
+        .activity-item .activity-date { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
+
+        /* ==================== STATUS PERIODE ==================== */
+        .periode-status-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--light-gray);
+            border-radius: var(--radius);
+        }
+        .periode-status-box .ps-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .periode-status-box.belum-konfigurasi .ps-icon { background: var(--text-muted); }
+        .periode-status-box .ps-title { font-weight: 700; font-size: 0.9rem; }
+        .periode-status-box .ps-sub { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
 
         /* ==================== FOOTER ==================== */
         .footer {
@@ -730,17 +757,6 @@
         .btn-modal-danger { background: var(--danger); color: white; }
         .btn-modal-danger:hover { background: #DC2626; }
 
-        .btn {
-            padding: 12px 24px; border-radius: 30px;
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.84rem;
-            cursor: pointer; border: none; transition: all var(--transition);
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-secondary); }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-accent { background: var(--accent); color: var(--primary); }
-        .btn-accent:hover { background: var(--accent-hover); }
-
         .toast-container {
             position: fixed; top: 24px; right: 24px; z-index: 9999;
             display: flex; flex-direction: column; gap: 10px;
@@ -768,9 +784,7 @@
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 1024px) {
-            .filter-grid {
-                grid-template-columns: 1fr 1fr;
-            }
+            .grid-2col { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
@@ -783,9 +797,6 @@
             .topbar { padding: 0 16px; }
             .topbar-right .user-info { display: none; }
             .mobile-menu-btn { display: block !important; }
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
@@ -801,6 +812,23 @@
             color: var(--text-primary);
             padding: 8px;
         }
+
+        /* ===== Tambahan khusus dashboard Wakil Direktur ===== */
+        table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
+        .prodi-badge {
+            display:inline-flex; align-items:center; gap:6px;
+            background: var(--accent-light); color: var(--accent-hover);
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 0.74rem; font-weight: 600; margin-top: 6px;
+        }
+        .progress-mini { width: 120px; height: 7px; background: var(--light-gray); border-radius: 10px; overflow: hidden; }
+        .progress-mini .bar { height: 100%; border-radius: 10px; transition: width var(--transition); }
+        .progress-mini .bar.low { background: var(--danger); }
+        .progress-mini .bar.mid { background: var(--warning); }
+        .progress-mini .bar.high { background: var(--success); }
+        .poin-cell { display:flex; flex-direction:column; gap:5px; }
+        .poin-text { font-size: 0.76rem; color: var(--text-muted); }
+        .kekurangan { font-weight: 700; color: var(--danger); }
     </style>
 </head>
 <body>
@@ -817,21 +845,18 @@
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
         <nav class="sidebar-menu">
-            <a href="dashboard-wadir.html">
+            <a href="dashboard-lsi.html">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
-            <a href="validasi-wadir.html" class="active">
-                <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
+            <a href="manajemen-pengguna.html">
+                <i class="fa-solid fa-users-gear"></i> Manajemen Pengguna
             </a>
-            <a href="rekap-validasi-wadir.html">
-                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
-            </a>
-            <a href="laporan-wadir.html">
-                <i class="fa-solid fa-chart-pie"></i> Laporan
+            <a href="audit-trail.html" class="active">
+                <i class="fa-solid fa-clipboard-list"></i> Audit Trail
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil-wadir.html" class="sidebar-footer-link">
+            <a href="profil-lsi.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -856,7 +881,7 @@
                 </button>
                 <!-- Ikon notifikasi dihapus -->
                 <div class="user-display">
-                    <div class="user-avatar" id="topbarAvatar">SN</div>
+                    <div class="user-avatar" id="topbarAvatar">MR</div>
                     <div class="user-info">
                         <span class="user-name" id="topbarName">Wakil Direktur</span>
                         <span class="user-role" id="topbarRole">Wakil Direktur</span>
@@ -865,91 +890,67 @@
             </div>
         </header>
 
-        <!-- ===== PAGE CONTENT ===== -->
-        <main class="page-content">
-            <!-- Dashboard Header -->
+        <!-- ===== PAGE CONTENT ===== -->        <main class="page-content">
+
+            <!-- Header -->
             <div class="dashboard-header">
                 <div class="welcome-section">
-                    <h1>Validasi Pengajuan SKP</h1>
-                    <p class="welcome-subtitle">Tinjau pengajuan Prestasi Akademik &amp; Prestasi Kompetisi mahasiswa program studi Anda.</p>
+                    <h1>Audit Trail</h1>
+                    <p class="welcome-subtitle">Catatan seluruh aktivitas penting dalam sistem. Bersifat permanen dan tidak dapat diubah atau dihapus.</p>
                 </div>
-                <div class="period-badge">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span id="currentDateBadge"></span>
-                </div>
-            </div>
-
-            <!-- KPI ringkas -->
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <div class="card-icon orange"><i class="fa-solid fa-inbox"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="kpiTotalAntrean">0</div>
-                        <div class="card-label">Total Antrean Anda</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-icon blue"><i class="fa-solid fa-hourglass-half"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="kpiMenungguBaru">0</div>
-                        <div class="card-label">Menunggu Diverifikasi</div>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-icon purple"><i class="fa-solid fa-rotate-left"></i></div>
-                    <div class="card-info">
-                        <div class="card-value" id="kpiRevisiMenunggu">0</div>
-                        <div class="card-label">Revisi Menunggu Perbaikan</div>
-                    </div>
+                <div class="period-badge" style="background:#FEF3C7; color:#92400E;">
+                    <i class="fa-solid fa-lock"></i> Immutable
                 </div>
             </div>
 
-            <!-- Filter & Pencarian (FR-13) dengan desain baru -->
+            <!-- Filter -->
             <div class="card">
-                <h3><i class="fa-solid fa-filter"></i> Pencarian &amp; Filter</h3>
-                <div class="filter-grid" id="filterGrid">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:14px; align-items:end;">
                     <div class="form-group">
-                        <label for="searchInput"><i class="fa-regular fa-user"></i> Cari NIM / Nama / ID Pengajuan</label>
-                        <div class="search-box-modern">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="searchInput" placeholder="Ketik NIM, nama mahasiswa, atau ID pengajuan...">
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Cari</label>
+                        <div style="position:relative;">
+                            <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.8rem;"></i>
+                            <input type="text" id="searchAudit" placeholder="Aksi, aktor, atau entitas..."
+                                   style="width:100%; padding:10px 12px 10px 34px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="filterKategori"><i class="fa-regular fa-layer-group"></i> Kategori</label>
-                        <select id="filterKategori" class="filter-select">
-                            <option value="">Semua Kategori</option>
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Entitas</label>
+                        <select id="filterEntitas" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                            <option value="">Semua Entitas</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="filterStatus"><i class="fa-regular fa-clock"></i> Status Antrean</label>
-                        <select id="filterStatus" class="filter-select">
-                            <option value="semua">Semua Status Antrean</option>
-                            <option value="baru">Baru / Sedang Diverifikasi</option>
-                            <option value="revisi">Revisi (Diperbaiki Mahasiswa)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sortOrder"><i class="fa-regular fa-arrow-up-wide-short"></i> Urutkan</label>
-                        <select id="sortOrder" class="filter-select">
-                            <option value="terbaru" selected>Pengajuan Terbaru</option>
-                            <option value="terlama">Menunggu Terlama</option>
-                            <option value="poin-tinggi">Estimasi Poin Tertinggi</option>
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Peran Aktor</label>
+                        <select id="filterAktor" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                            <option value="">Semua Peran</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Tabel Antrean Lengkap -->
+            <!-- Tabel audit -->
             <div class="card">
-                <h3><i class="fa-solid fa-list-check"></i> Daftar Pengajuan Menunggu Validasi</h3>
-                <div id="antreanWrapper">
-                    <!-- diisi JS -->
-                </div>
-                <div id="paginationWrapper" style="display:flex; justify-content:center; gap:8px; margin-top:16px;"></div>
+                <h3><i class="fa-solid fa-clipboard-list"></i> Riwayat Aktivitas <span id="auditCount" style="font-size:0.8rem; color:var(--text-muted); font-weight:400;"></span></h3>
+                <div id="auditWrapper"><!-- diisi JS --></div>
             </div>
 
         </main>
+
+        <!-- Modal Detail Audit -->
+        <div class="modal-overlay hidden" id="detailModal">
+            <div class="modal-dialog" style="max-width:560px; text-align:left;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                    <h4 style="margin:0;"><i class="fa-solid fa-clipboard-check" style="color:var(--accent);"></i> Detail Audit</h4>
+                    <button onclick="tutupDetail()" style="background:none; border:none; cursor:pointer; font-size:1.2rem; color:var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="detailKonten" style="font-size:0.85rem;"></div>
+                <div class="modal-buttons" style="margin-top:16px;">
+                    <button class="btn-modal btn-modal-cancel" onclick="tutupDetail()">Tutup</button>
+                </div>
+            </div>
+        </div>
+
 
         <!-- ===== FOOTER ===== -->
         <footer class="footer">
@@ -971,267 +972,117 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-
+    <style>
+        .audit-detail-btn { padding:6px 12px; border-radius:8px; border:none; background:var(--light-gray); color:var(--text-primary); cursor:pointer; font-family:'Poppins',sans-serif; font-size:0.72rem; font-weight:600; white-space:nowrap; }
+        .audit-detail-btn:hover { background:#E5E7EB; }
+        .dt-row { display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); }
+        .dt-label { flex:0 0 110px; color:var(--text-muted); font-size:0.78rem; font-weight:600; }
+        .dt-val { flex:1; word-break:break-word; }
+        .dt-before { background:#FEF2F2; border-left:3px solid #EF4444; padding:8px 10px; border-radius:6px; font-size:0.8rem; }
+        .dt-after { background:#F0FDF4; border-left:3px solid #22C55E; padding:8px 10px; border-radius:6px; font-size:0.8rem; margin-top:6px; }
+    </style>
     <script src="state.js"></script>
     <script>
-        // ============================================================
-        // INITIALIZATION & ROLE AUTHENTICATION
-        // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        if (!session || session.roleKey !== 'wakil-direktur') {
+        if (!session || session.roleKey !== 'tim-lsi') {
             window.location.href = 'login.html';
         }
 
-        document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
-        document.getElementById('topbarName').textContent = session.fullName || 'Wakil Direktur';
-        document.getElementById('topbarRole').textContent = session.role || 'Wakil Direktur';
+        document.getElementById('topbarAvatar').textContent = session.avatar || 'LS';
+        document.getElementById('topbarName').textContent = session.fullName || 'Tim LSI';
+        document.getElementById('topbarRole').textContent = session.role || 'Tim LSI';
 
-        const today = new Date();
-        document.getElementById('currentDateBadge').textContent =
-            today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const LABEL = AppState.LABEL_ROLE || {};
+        let auditCache = [];
 
-        const VALIDATOR_ROLE = 'Wakil Direktur';
-        // Cakupan institusi: seluruh program studi.
-        // Wakil Direktur memantau & memvalidasi pada tingkat INSTITUSI
-        // (seluruh program studi), berbeda dengan Kaprodi yang dibatasi prodinya.
-        let currentPage = 1;
-        const perPage = 8;
+        (function isiFilter() {
+            const audit = AppState.getAuditTrail();
+            const entitasSet = [...new Set(audit.map(a => a.entitas).filter(Boolean))].sort();
+            const aktorSet = [...new Set(audit.map(a => a.aktorRole).filter(Boolean))].sort();
+            const selE = document.getElementById('filterEntitas');
+            const selA = document.getElementById('filterAktor');
+            entitasSet.forEach(e => selE.insertAdjacentHTML('beforeend', `<option value="${e}">${e}</option>`));
+            aktorSet.forEach(a => selA.insertAdjacentHTML('beforeend', `<option value="${a}">${LABEL[a] || a}</option>`));
+        })();
 
-        // Pra-isi kotak pencarian bila datang dari topbar dashboard (skp_wadir_search_query)
-        const carriedQuery = sessionStorage.getItem('skp_wadir_search_query');
-        if (carriedQuery) {
-            document.getElementById('searchInput').value = carriedQuery;
-            sessionStorage.removeItem('skp_wadir_search_query');
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // ============================================================
-        // Pengajuan masuk antrean Wakil Direktur jika node workflow yang sedang
-        // 'active' berperan Wakil Direktur dan belum berstatus final. Sesuai FR-18 &
-        // FR-08, ini terjadi pada Prestasi Akademik dan Prestasi Kompetisi.
-        // ============================================================
-        function isPendingForMe(p) {
-            const wf = p.workflow || [];
-            const activeNode = wf.find(w => w.status === 'active');
-            const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
-            if (isFinal) return false;
-            if (activeNode) return activeNode.role === VALIDATOR_ROLE;
-            return wf[1] && wf[1].role === VALIDATOR_ROLE && p.status === 'Sedang Diverifikasi';
-        }
+        function render() {
+            const wrapper = document.getElementById('auditWrapper');
+            let audit = AppState.getAuditTrail();
+            const keyword = (document.getElementById('searchAudit').value || '').trim().toLowerCase();
+            const fE = document.getElementById('filterEntitas').value;
+            const fA = document.getElementById('filterAktor').value;
 
-        function populateFilterKategori() {
-            const select = document.getElementById('filterKategori');
-            const kategoriAktif = AppState.getMasterSKP(); // termasuk yang nonaktif, agar histori tetap bisa difilter
-            kategoriAktif.forEach(k => {
-                const opt = document.createElement('option');
-                opt.value = k.kode;
-                opt.textContent = k.nama;
-                select.appendChild(opt);
-            });
-        }
-        populateFilterKategori();
+            if (keyword) audit = audit.filter(a =>
+                (a.aksi || '').toLowerCase().includes(keyword) ||
+                (a.aktor || '').toLowerCase().includes(keyword) ||
+                (a.entitas || '').toLowerCase().includes(keyword) ||
+                (a.entitasId || '').toLowerCase().includes(keyword));
+            if (fE) audit = audit.filter(a => a.entitas === fE);
+            if (fA) audit = audit.filter(a => a.aktorRole === fA);
 
-        // ============================================================
-        // LOAD ANTREAN (dengan search, filter, sort, pagination)
-        // ============================================================
-        function loadAntrean() {
-            const state = AppState.getState();
-            const accounts = AppState.getAllAccounts();
-            const allPengajuan = state.pengajuan || [];
+            auditCache = audit;
+            document.getElementById('auditCount').textContent = `(${audit.length} catatan)`;
 
-            // Cakupan institusi: tidak ada pembatasan program studi.
-            let antrean = allPengajuan.filter(p => isPendingForMe(p));
-
-            // --- KPI ringkas ---
-            const menungguBaru = antrean.filter(p => p.status === 'Sedang Diverifikasi').length;
-            const revisiMenunggu = antrean.filter(p => p.status === 'Revisi').length;
-            document.getElementById('kpiTotalAntrean').textContent = antrean.length;
-            document.getElementById('kpiMenungguBaru').textContent = menungguBaru;
-            document.getElementById('kpiRevisiMenunggu').textContent = revisiMenunggu;
-
-            // --- Search (NIM / nama / ID pengajuan) — FR-13 ---
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (query) {
-                antrean = antrean.filter(p => {
-                    const acc = accounts[p.email] || {};
-                    const nama = (acc.fullName || '').toLowerCase();
-                    const nim = (acc.nim || '').toLowerCase();
-                    const id = (p.id || '').toLowerCase();
-                    return nama.includes(query) || nim.includes(query) || id.includes(query);
-                });
-            }
-
-            // --- Filter kategori ---
-            const kategoriFilter = document.getElementById('filterKategori').value;
-            if (kategoriFilter) {
-                antrean = antrean.filter(p => p.kategori === kategoriFilter);
-            }
-
-            // --- Filter status antrean ---
-            const statusFilter = document.getElementById('filterStatus').value;
-            if (statusFilter === 'baru') {
-                antrean = antrean.filter(p => p.status !== 'Revisi');
-            } else if (statusFilter === 'revisi') {
-                antrean = antrean.filter(p => p.status === 'Revisi');
-            }
-
-            // --- Sort ---
-            // Tie-breaker: bila tanggal sama, pengajuan dengan ID "lebih baru"
-            // (timestamp lebih besar, mis. SKP-1783...) diletakkan lebih dulu.
-            const idWeight = (p) => {
-                const m = String(p.id || '').match(/(\d{6,})/);
-                return m ? Number(m[1]) : 0;
-            };
-            const sortOrder = document.getElementById('sortOrder').value;
-            if (sortOrder === 'terlama') {
-                antrean.sort((a, b) => (a.tanggal || '').localeCompare(b.tanggal || '') || (idWeight(a) - idWeight(b)));
-            } else if (sortOrder === 'poin-tinggi') {
-                antrean.sort((a, b) => (b.poin || b.estimasiPoin || 0) - (a.poin || a.estimasiPoin || 0));
-            } else {
-                // default: terbaru di atas
-                antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a)));
-            }
-
-            // --- Pagination ---
-            const totalPages = Math.max(1, Math.ceil(antrean.length / perPage));
-            if (currentPage > totalPages) currentPage = totalPages;
-            const startIdx = (currentPage - 1) * perPage;
-            const pageItems = antrean.slice(startIdx, startIdx + perPage);
-
-            renderTabel(pageItems, accounts);
-            renderPagination(totalPages);
-        }
-
-        function renderTabel(items, accounts) {
-            const wrapper = document.getElementById('antreanWrapper');
-
-            if (items.length === 0) {
-                wrapper.innerHTML = `
-                    <div class="empty-state-box">
-                        <div class="empty-icon-wrap"><i class="fa-solid fa-inbox"></i></div>
-                        <div class="empty-title">Belum ada pengajuan yang perlu divalidasi.</div>
-                        <div class="empty-desc">Tidak ada pengajuan yang cocok dengan pencarian/filter saat ini, atau antrean Anda memang sedang kosong.</div>
-                    </div>
-                `;
+            if (audit.length === 0) {
+                wrapper.innerHTML = '<div class="empty-state-box"><i class="fa-solid fa-inbox"></i><p>Tidak ada catatan audit yang cocok.</p></div>';
                 return;
             }
 
-            const rows = items.map(p => {
-                const acc = accounts[p.email] || {};
-                const namaMhs = acc.fullName || p.email || '-';
-                const prodi = acc.prodi || '-';
-                const nim = acc.nim || '-';
-
-                const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
-                const poin = p.poin || p.estimasiPoin || 0;
-
-                return `<tr>
-                    <td><strong>${p.id}</strong></td>
-                    <td>
-                        ${namaMhs}
-                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${nim} &middot; ${prodi}</span>
-                    </td>
-                    <td>${p.kategoriText || p.kategori}</td>
-                    <td>${poin} poin</td>
-                    <td>${p.tanggal || '-'}</td>
-                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
-                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
-                </tr>`;
-            }).join('');
+            const rows = audit.map((a, i) => `<tr>
+                <td style="white-space:nowrap;">${new Date(a.waktu).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                <td><strong>${esc(a.aksi)}</strong></td>
+                <td>${esc(a.aktor)}<div style="font-size:0.72rem;color:var(--text-muted);">${LABEL[a.aktorRole] || a.aktorRole || ''}</div></td>
+                <td><span class="badge badge-info">${esc(a.entitas || '-')}</span></td>
+                <td style="text-align:right;"><button class="audit-detail-btn" onclick="lihatDetail(${i})"><i class="fa-solid fa-eye"></i> Detail</button></td>
+            </tr>`).join('');
 
             wrapper.innerHTML = `
                 <div class="table-wrapper">
                     <table>
-                        <thead>
-                            <tr>
-                                <th>ID Pengajuan</th>
-                                <th>Mahasiswa</th>
-                                <th>Kategori</th>
-                                <th>Estimasi Poin</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th class="col-aksi-kanan">Aksi</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>Waktu</th><th>Aksi</th><th>Aktor</th><th>Entitas</th><th style="text-align:right;">Rincian</th></tr></thead>
                         <tbody>${rows}</tbody>
                     </table>
-                </div>
-            `;
+                </div>`;
         }
 
-        function renderPagination(totalPages) {
-            const wrapper = document.getElementById('paginationWrapper');
-            if (totalPages <= 1) { wrapper.innerHTML = ''; return; }
-
-            let html = '';
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button class="btn ${i === currentPage ? 'btn-accent' : 'btn-outline'}" style="padding:8px 14px; min-width:38px;" onclick="goToPage(${i})">${i}</button>`;
+        function lihatDetail(i) {
+            const a = auditCache[i];
+            if (!a) return;
+            let html = `
+                <div class="dt-row"><div class="dt-label">Waktu</div><div class="dt-val">${new Date(a.waktu).toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' })}</div></div>
+                <div class="dt-row"><div class="dt-label">Aksi</div><div class="dt-val"><strong>${esc(a.aksi)}</strong></div></div>
+                <div class="dt-row"><div class="dt-label">Aktor</div><div class="dt-val">${esc(a.aktor)} <span style="color:var(--text-muted);">(${LABEL[a.aktorRole] || a.aktorRole || '-'})</span></div></div>
+                <div class="dt-row"><div class="dt-label">Entitas</div><div class="dt-val">${esc(a.entitas || '-')} <span style="color:var(--text-muted);">${a.entitasId && a.entitasId !== '-' ? '· ' + esc(a.entitasId) : ''}</span></div></div>
+                <div class="dt-row"><div class="dt-label">ID Audit</div><div class="dt-val" style="font-family:monospace; font-size:0.78rem;">${esc(a.id)}</div></div>`;
+            if (a.keterangan) html += `<div class="dt-row"><div class="dt-label">Keterangan</div><div class="dt-val">${esc(a.keterangan)}</div></div>`;
+            if (a.dataSebelum || a.dataSesudah) {
+                html += '<div style="margin-top:12px;">';
+                if (a.dataSebelum) html += `<div class="dt-before"><strong>Sebelum:</strong> ${esc(a.dataSebelum)}</div>`;
+                if (a.dataSesudah) html += `<div class="dt-after"><strong>Sesudah:</strong> ${esc(a.dataSesudah)}</div>`;
+                html += '</div>';
             }
-            wrapper.innerHTML = html;
+            document.getElementById('detailKonten').innerHTML = html;
+            document.getElementById('detailModal').classList.remove('hidden');
         }
+        function tutupDetail() { document.getElementById('detailModal').classList.add('hidden'); }
 
-        window.goToPage = function(page) {
-            currentPage = page;
-            loadAntrean();
-        };
+        document.getElementById('searchAudit').addEventListener('input', render);
+        document.getElementById('filterEntitas').addEventListener('change', render);
+        document.getElementById('filterAktor').addEventListener('change', render);
 
-        // ============================================================
-        // EVENT LISTENERS — filter & search memicu render ulang
-        // ============================================================
-        document.getElementById('searchInput').addEventListener('input', () => { currentPage = 1; loadAntrean(); });
-        document.getElementById('filterKategori').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
-        document.getElementById('filterStatus').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
-        document.getElementById('sortOrder').addEventListener('change', () => { currentPage = 1; loadAntrean(); });
+        render();
+        window.addEventListener('focus', render);
+        window.addEventListener('storage', (e) => { if (e.key === 'skp_app_state') render(); });
 
-        // ============================================================
-        // DARK MODE
-        // ============================================================
-        document.getElementById('darkModeToggle').addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            document.body.classList.toggle('dark-mode');
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        });
-
-        // ============================================================
-        // SIDEBAR & LOGOUT
-        // ============================================================
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (overlay) overlay.style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
-        }
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (overlay) overlay.style.display = 'none';
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
         function showLogoutModal() { document.getElementById('logoutModal').classList.remove('hidden'); }
         function closeLogoutModal() { document.getElementById('logoutModal').classList.add('hidden'); }
         function confirmLogout() { sessionStorage.clear(); window.location.href = 'login.html'; }
-        document.getElementById('logoutModal').addEventListener('click', function(e) {
-            if (e.target === this) closeLogoutModal();
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeLogoutModal();
-        });
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAntrean();
-        });
-
-        // Refresh otomatis saat tab ini difokuskan kembali, supaya pengajuan
-        // baru dari tab mahasiswa langsung terlihat tanpa reload manual.
-        window.addEventListener('focus', loadAntrean);
-        document.addEventListener('visibilitychange', () => { if (!document.hidden) loadAntrean(); });
-        // Sinkronisasi lintas-tab: langsung refresh antrean saat tab lain
-        // (mis. tab mahasiswa) menambah/mengubah pengajuan di localStorage.
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'skp_app_state') loadAntrean();
-        });
-        // Polling dihapus: pembaruan lewat event 'storage'/'focus' atau refresh manual.
     </script>
 </body>
 </html>

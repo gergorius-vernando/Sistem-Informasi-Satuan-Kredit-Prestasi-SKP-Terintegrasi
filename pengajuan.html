@@ -865,6 +865,7 @@
         let currentStep  = 1;
         const totalSteps = 4;
         let uploadedFile = null;
+        let uploadedFileData = null;   // data URL (base64) isi file bukti
         const stepTitles = ['Data Kegiatan','Dokumen Pendukung','Review Pengajuan','Selesai'];
 
         // Catatan: bobot poin dan alur workflow TIDAK lagi disimpan sebagai
@@ -876,9 +877,6 @@
             'prestasi-akademik':'3-5 Hari kerja',
             'prestasi-organisasi':'2-3 Hari kerja',
             'prestasi-kompetisi':'5-7 Hari kerja',
-            'seminar':'2-3 Hari kerja',
-            'pelatihan':'2-3 Hari kerja',
-            'pengabdian':'2-3 Hari kerja',
         };
 
         // ==================== ISI DROPDOWN KATEGORI (dinamis) ====================
@@ -988,6 +986,24 @@
             document.getElementById(id).addEventListener('input', updateInfoCard);
         });
 
+        // Batasi tanggal selesai agar tidak lebih awal dari tanggal mulai.
+        // 'min' membuat pemilih tanggal otomatis menonaktifkan tanggal sebelum
+        // tanggal mulai; validasi di validateStep1 menjadi lapis pengaman kedua
+        // bila nilai diketik/diubah secara manual.
+        (function aturBatasTanggal() {
+            const mulai = document.getElementById('tglMulai');
+            const selesai = document.getElementById('tglSelesai');
+            mulai.addEventListener('change', () => {
+                selesai.min = mulai.value || '';
+                // Bila tanggal selesai sudah terisi tapi kini lebih awal dari
+                // tanggal mulai, kosongkan agar pengguna memilih ulang.
+                if (selesai.value && mulai.value && selesai.value < mulai.value) {
+                    selesai.value = '';
+                    updateInfoCard();
+                }
+            });
+        })();
+
         // ==================== VALIDATION ====================
         function validateStep1() {
             let ok = true;
@@ -1008,6 +1024,21 @@
                     el.classList.remove('error-border'); e.style.display='none';
                 }
             });
+
+            // Lapis pengaman: tanggal selesai tidak boleh sebelum tanggal mulai.
+            const mulai = document.getElementById('tglMulai');
+            const selesai = document.getElementById('tglSelesai');
+            const errSelesai = document.getElementById('errTglSelesai');
+            if (mulai.value && selesai.value && selesai.value < mulai.value) {
+                selesai.classList.add('error-border');
+                errSelesai.textContent = 'Tanggal selesai tidak boleh sebelum tanggal mulai.';
+                errSelesai.style.display = 'block';
+                ok = false;
+            } else if (selesai.value) {
+                // Pulihkan pesan default bila tanggalnya sudah benar.
+                errSelesai.textContent = 'Tanggal selesai diperlukan.';
+            }
+
             return ok;
         }
 
@@ -1064,6 +1095,20 @@
             const file = files[0];
             if (file.size > 5*1024*1024) { showNotifModal('Gagal','Ukuran file maksimum 5 MB.','fa-circle-xmark','var(--danger)'); return; }
             uploadedFile = file;
+            uploadedFileData = null;   // reset dulu; diisi setelah FileReader selesai
+
+            // Baca isi file menjadi data URL (base64) supaya bisa ditampilkan
+            // kembali kepada validator (Admin/Kaprodi/Wakil Direktur) saat
+            // memeriksa bukti. Disimpan di memori, lalu ikut tersimpan ke
+            // localStorage saat pengajuan dikirim.
+            const reader = new FileReader();
+            reader.onload = (e) => { uploadedFileData = e.target.result; };
+            reader.onerror = () => {
+                uploadedFileData = null;
+                showNotifModal('Gagal Membaca File','Berkas tidak dapat dibaca. Silakan coba unggah ulang.','fa-circle-xmark','var(--danger)');
+            };
+            reader.readAsDataURL(file);
+
             document.getElementById('filePreviewContainer').innerHTML = `
                 <div class="file-preview">
                     <i class="fa-solid fa-file-lines" style="color:var(--accent);font-size:1.2rem;"></i>
@@ -1079,6 +1124,7 @@
         }
         function removeFile() {
             uploadedFile=null;
+            uploadedFileData=null;
             document.getElementById('filePreviewContainer').innerHTML='';
             document.getElementById('fileInput').value='';
             updateInfoCard();
@@ -1196,7 +1242,9 @@
                 tingkatText:tk.options[tk.selectedIndex].text,
                 estimasiPoin:getEstimasiPoin(),
                 deskripsi:document.getElementById('deskripsi').value,
-                file:uploadedFile?uploadedFile.name:null
+                file:uploadedFile?uploadedFile.name:null,
+                fileData:uploadedFileData||null,
+                fileType:uploadedFile?uploadedFile.type:null
             };
         }
 

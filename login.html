@@ -862,6 +862,14 @@
                 return;
             }
 
+            // Akun yang dinonaktifkan Tim LSI (RBAC) tidak boleh masuk.
+            if (account.aktif === false) {
+                showMessageModal('<i class="fa-solid fa-user-lock" style="color:#EF4444; font-size:3rem;"></i>',
+                    'Akun Dinonaktifkan', 'Akun ini telah dinonaktifkan oleh Tim LSI. Silakan hubungi administrator sistem.',
+                    '<button class="btn-modal btn-modal-confirm" onclick="closeModal(\'messageModal\')">Mengerti</button>');
+                return;
+            }
+
             // Success – show loading then modal
             btnLogin.classList.add('loading');
             btnLogin.querySelector('.btn-text').textContent = '';

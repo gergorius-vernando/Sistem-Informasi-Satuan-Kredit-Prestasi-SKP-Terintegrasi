@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kaprodi — Sistem Informasi SKP</title>
+    <title>Dashboard Wakil Direktur — Sistem Informasi SKP</title>
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -813,7 +813,7 @@
             padding: 8px;
         }
 
-        /* ===== Tambahan khusus dashboard Kaprodi ===== */
+        /* ===== Tambahan khusus dashboard Wakil Direktur ===== */
         table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
         .prodi-badge {
             display:inline-flex; align-items:center; gap:6px;
@@ -845,21 +845,15 @@
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
         <nav class="sidebar-menu">
-            <a href="dashboard-kaprodi.html" class="active">
+            <a href="dashboard-direktur.html" class="active">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
-            <a href="validasi-kaprodi.html">
-                <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
-            </a>
-            <a href="rekap-validasi-kaprodi.html">
-                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
-            </a>
-            <a href="laporan-kaprodi.html">
+            <a href="laporan-direktur.html">
                 <i class="fa-solid fa-chart-pie"></i> Laporan
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil-kaprodi.html" class="sidebar-footer-link">
+            <a href="profil-direktur.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -886,8 +880,8 @@
                 <div class="user-display">
                     <div class="user-avatar" id="topbarAvatar">MR</div>
                     <div class="user-info">
-                        <span class="user-name" id="topbarName">Kaprodi</span>
-                        <span class="user-role" id="topbarRole">Kaprodi</span>
+                        <span class="user-name" id="topbarName">Wakil Direktur</span>
+                        <span class="user-role" id="topbarRole">Wakil Direktur</span>
                     </div>
                 </div>
             </div>
@@ -898,9 +892,9 @@
             <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="welcome-section">
-                    <h1>Selamat Datang, <span id="welcomeName">Kaprodi</span></h1>
-                    <p class="welcome-subtitle">Pantau capaian SKP dan validasi pengajuan mahasiswa program studi Anda.</p>
-                    <div class="prodi-badge"><i class="fa-solid fa-graduation-cap"></i> <span id="prodiBadge">-</span></div>
+                    <h1>Selamat Datang, <span id="welcomeName">Direktur</span></h1>
+                    <p class="welcome-subtitle">Ringkasan statistik prestasi institusi sebagai pendukung keputusan strategis dan akreditasi kampus.</p>
+                    <div class="prodi-badge"><i class="fa-solid fa-building-columns"></i> <span id="prodiBadge">-</span></div>
                 </div>
                 <div class="period-badge">
                     <i class="fa-solid fa-calendar-check"></i>
@@ -908,34 +902,34 @@
                 </div>
             </div>
 
-            <!-- KPI Cards (5) — statistik capaian khusus program studi (FR-17, AB-20) -->
+            <!-- KPI strategis tingkat institusi (FR-19) — Direktur bersifat read-only -->
             <div class="summary-cards">
-                <div class="summary-card" onclick="window.location.href='validasi-kaprodi.html'">
-                    <div class="card-icon orange"><i class="fa-solid fa-inbox"></i></div>
+                <div class="summary-card">
+                    <div class="card-icon orange"><i class="fa-solid fa-trophy"></i></div>
                     <div class="card-info">
-                        <div class="card-value" id="kpiMenungguSaya">0</div>
-                        <div class="card-label">Menunggu Validasi Anda</div>
+                        <div class="card-value" id="kpiPrestasiDisetujui">0</div>
+                        <div class="card-label">Prestasi Disetujui</div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon purple"><i class="fa-solid fa-users"></i></div>
                     <div class="card-info">
                         <div class="card-value" id="kpiMahasiswaProdi">0</div>
-                        <div class="card-label">Mahasiswa Program Studi</div>
+                        <div class="card-label">Total Mahasiswa</div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon green"><i class="fa-solid fa-circle-check"></i></div>
                     <div class="card-info">
                         <div class="card-value" id="kpiMemenuhiTarget">0</div>
-                        <div class="card-label">Sudah Memenuhi Target</div>
+                        <div class="card-label">Memenuhi Syarat SKPI</div>
                     </div>
                 </div>
                 <div class="summary-card" onclick="document.getElementById('cardBelumTarget').scrollIntoView({behavior:'smooth'})">
                     <div class="card-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
                     <div class="card-info">
                         <div class="card-value" id="kpiBelumTarget">0</div>
-                        <div class="card-label">Belum Memenuhi Target</div>
+                        <div class="card-label">Belum Memenuhi SKPI</div>
                     </div>
                 </div>
                 <div class="summary-card">
@@ -947,36 +941,38 @@
                 </div>
             </div>
 
-            <!-- Antrean validasi Kaprodi (FR-05 & FR-08) -->
+
+            <!-- Tren capaian SKP dari waktu ke waktu (FR-19) -->
             <div class="card">
-                <h3><i class="fa-solid fa-list-check"></i> Pengajuan Menunggu Validasi Anda</h3>
-                <div id="antreanWrapper">
-                    <!-- diisi JS -->
+                <h3><i class="fa-solid fa-chart-line"></i> Tren Capaian SKP Institusi</h3>
+                <p class="chart-subtitle">Jumlah pengajuan yang masuk dan yang disetujui setiap bulan, beserta akumulasi mahasiswa yang memenuhi syarat SKPI.</p>
+                <div class="chart-container" style="height:320px;">
+                    <canvas id="chartTren"></canvas>
                 </div>
             </div>
 
-            <!-- Statistik aktivitas kemahasiswaan program studi -->
+            <!-- Statistik aktivitas kemahasiswaan tingkat institusi -->
             <div class="grid-2col">
                 <div class="card">
-                    <h3><i class="fa-solid fa-chart-column"></i> Aktivitas Kemahasiswaan</h3>
-                    <p class="chart-subtitle">Sebaran status pengajuan per kategori SKP di program studi Anda</p>
+                    <h3><i class="fa-solid fa-chart-column"></i> Ringkasan Aktivitas Kemahasiswaan</h3>
+                    <p class="chart-subtitle">Sebaran status pengajuan per kategori SKP di seluruh institusi</p>
                     <div class="chart-container">
                         <canvas id="chartStatistik"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <h3><i class="fa-solid fa-chart-pie"></i> Capaian Target SKP</h3>
-                    <p class="chart-subtitle">Perbandingan mahasiswa yang sudah dan belum memenuhi target</p>
+                    <h3><i class="fa-solid fa-chart-pie"></i> Capaian per Program Studi</h3>
+                    <p class="chart-subtitle">Perbandingan mahasiswa yang sudah dan belum memenuhi syarat SKPI</p>
                     <div class="chart-container">
                         <canvas id="chartCapaian"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Daftar mahasiswa belum memenuhi target SKP (inti FR-17) -->
+            <!-- Mahasiswa belum memenuhi syarat SKPI (data dukung keputusan) -->
             <div class="card" id="cardBelumTarget">
-                <h3><i class="fa-solid fa-user-clock"></i> Mahasiswa Belum Memenuhi Target SKP</h3>
-                <p class="chart-subtitle">Daftar mahasiswa program studi Anda yang poinnya masih di bawah target kelulusan.</p>
+                <h3><i class="fa-solid fa-user-clock"></i> Mahasiswa Belum Memenuhi Syarat SKPI</h3>
+                <p class="chart-subtitle">Mahasiswa lintas program studi yang poinnya masih di bawah target kelulusan.</p>
                 <div id="belumTargetWrapper">
                     <!-- diisi JS -->
                 </div>
@@ -1015,58 +1011,50 @@
     <script src="state.js"></script>
     <script>
         // ============================================================
-        // INITIALIZATION — DASHBOARD KAPRODI
+        // INITIALIZATION — DASHBOARD WAKIL DIREKTUR
         // Mengacu pada SRS:
-        //  - FR-05 & FR-08 : Kaprodi sebagai validator tahap menengah untuk
+        //  - FR-18         : Wakil Direktur sebagai validator tahap AKHIR untuk
         //                    Prestasi Akademik dan Prestasi Kompetisi.
         //  - FR-17         : Dashboard pemantauan statistik capaian, aktivitas
         //                    kemahasiswaan, dan daftar mahasiswa yang belum
         //                    memenuhi target SKP, spesifik program studinya.
-        //  - AB-20         : Kaprodi hanya melihat data mahasiswa pada program
+        //  - Cakupan       : Wakil Direktur melihat data mahasiswa pada seluruh program
         //                    studi yang menjadi tanggung jawabnya.
         // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        if (!session || session.roleKey !== 'kaprodi') {
+        if (!session || session.roleKey !== 'direktur') {
             window.location.href = 'login.html';
         }
 
         document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
-        document.getElementById('topbarName').textContent = session.fullName || 'Kaprodi';
-        document.getElementById('topbarRole').textContent = session.role || 'Kaprodi';
-        document.getElementById('welcomeName').textContent = session.fullName || 'Kaprodi';
-        document.getElementById('prodiBadge').textContent = 'Program Studi ' + (session.prodi || '-');
+        document.getElementById('topbarName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('topbarRole').textContent = session.role || 'Wakil Direktur';
+        document.getElementById('welcomeName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('prodiBadge').textContent = 'Seluruh Program Studi (Tingkat Institusi)';
 
         const today = new Date();
         document.getElementById('currentDateBadge').textContent =
             today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        const VALIDATOR_ROLE = 'Kaprodi';
-        const PRODI_SAYA = session.prodi;
+        const VALIDATOR_ROLE = 'Wakil Direktur';
+        // Wakil Direktur memantau seluruh program studi (tingkat institusi).
 
         let chartStatistikInstance = null;
+        let chartTrenInstance = null;
         let chartCapaianInstance = null;
 
         // ============================================================
         // HELPER
         // ============================================================
 
-        // AB-20: daftar mahasiswa yang menjadi tanggung jawab Kaprodi ini.
+        // Seluruh mahasiswa institusi (lintas program studi).
         function getMahasiswaProdi() {
             const accounts = AppState.getAllAccounts();
             return Object.entries(accounts)
-                .filter(([email, a]) => a.roleKey === 'mahasiswa' && a.prodi === PRODI_SAYA)
+                .filter(([email, a]) => a.roleKey === 'mahasiswa')
                 .map(([email, a]) => ({ email, ...a }));
         }
 
-        // Pengajuan yang giliran validasinya ada di Kaprodi (dan belum final).
-        function isPendingForMe(p) {
-            const wf = p.workflow || [];
-            const activeNode = wf.find(w => w.status === 'active');
-            const isFinal = ['Disetujui', 'Ditolak'].includes(p.status);
-            if (isFinal) return false;
-            if (activeNode) return activeNode.role === VALIDATOR_ROLE;
-            return wf[1] && wf[1].role === VALIDATOR_ROLE && p.status === 'Sedang Diverifikasi';
-        }
 
         function animateCounter(elId, target) {
             const el = document.getElementById(elId);
@@ -1095,14 +1083,16 @@
             const target = state.targetPoin || 100;
 
             loadKPI(state, mahasiswaProdi, pengajuanProdi, target);
-            loadQueue(pengajuanProdi);
             loadChart(state, mahasiswaProdi, pengajuanProdi, target);
+            loadChartTren(mahasiswaProdi, pengajuanProdi, target);
             loadBelumTarget(mahasiswaProdi, target);
             loadTimeline(state, emailProdi);
         }
 
         function loadKPI(state, mahasiswaProdi, pengajuanProdi, target) {
-            const menungguSaya = pengajuanProdi.filter(isPendingForMe).length;
+            // Direktur bersifat read-only: tidak ada KPI antrean validasi.
+            // Yang ditampilkan adalah ringkasan strategis tingkat institusi.
+            const prestasiDisetujui = pengajuanProdi.filter(p => p.status === 'Disetujui').length;
 
             const poinList = mahasiswaProdi.map(m => AppState.getTotalPoin(m.email));
             const memenuhi = poinList.filter(p => p >= target).length;
@@ -1111,76 +1101,139 @@
                 ? Math.round(poinList.reduce((a, b) => a + b, 0) / mahasiswaProdi.length)
                 : 0;
 
-            animateCounter('kpiMenungguSaya', menungguSaya);
+            animateCounter('kpiPrestasiDisetujui', prestasiDisetujui);
             animateCounter('kpiMahasiswaProdi', mahasiswaProdi.length);
             animateCounter('kpiMemenuhiTarget', memenuhi);
             animateCounter('kpiBelumTarget', belum);
             animateCounter('kpiRataPoin', rata);
         }
 
-        // ============================================================
-        // ANTREAN VALIDASI KAPRODI
-        // ============================================================
-        function loadQueue(pengajuanProdi) {
-            const wrapper = document.getElementById('antreanWrapper');
-            const accounts = AppState.getAllAccounts();
-
-            const antrean = pengajuanProdi.filter(isPendingForMe);
-
-            // Terbaru di atas; tie-breaker pakai bobot ID agar pengajuan yang
-            // baru dibuat (ID berbasis timestamp) benar-benar naik ke atas.
-            const idWeight = (p) => { const m = String(p.id || '').match(/(\d{6,})/); return m ? Number(m[1]) : 0; };
-            antrean.sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || '') || (idWeight(b) - idWeight(a)));
-
-            if (antrean.length === 0) {
-                wrapper.innerHTML = `
-                    <div class="empty-state-box">
-                        <div class="empty-icon-wrap"><i class="fa-solid fa-clipboard-check"></i></div>
-                        <div class="empty-title">Tidak ada pengajuan menunggu</div>
-                        <div class="empty-desc">Semua pengajuan yang memerlukan persetujuan Anda sudah diproses.</div>
-                    </div>`;
-                return;
-            }
-
-            const rows = antrean.map(p => {
-                const acc = accounts[p.email] || {};
-                const statusBadge = p.status === 'Revisi' ? 'badge-warning' : 'badge-info';
-                return `<tr>
-                    <td><strong>${p.id}</strong></td>
-                    <td>
-                        ${acc.fullName || p.email}
-                        <br><span style="font-size:0.7rem;color:var(--text-muted);">${acc.nim || '-'} &middot; ${acc.prodi || '-'}</span>
-                    </td>
-                    <td>${p.kategoriText || p.kategori}</td>
-                    <td>${p.poin || p.estimasiPoin || 0} poin</td>
-                    <td>${p.tanggal || '-'}</td>
-                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
-                    <td class="col-aksi-kanan"><a href="detail-pengajuan.html?id=${p.id}" class="btn-detail"><i class="fa-solid fa-eye"></i> Lihat Detail</a></td>
-                </tr>`;
-            }).join('');
-
-            wrapper.innerHTML = `
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID Pengajuan</th>
-                                <th>Mahasiswa</th>
-                                <th>Kategori</th>
-                                <th>Estimasi Poin</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th class="col-aksi-kanan">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>`;
-        }
 
         // ============================================================
         // CHART — dibuat sekali, selanjutnya hanya di-update (tanpa destroy)
         // ============================================================
+
+        // ============================================================
+        // TREN CAPAIAN SKP INSTITUSI (FR-19)
+        // Menggabungkan dua sudut pandang:
+        //  - batang : jumlah pengajuan masuk & disetujui tiap bulan
+        //  - garis  : akumulasi mahasiswa yang memenuhi syarat SKPI
+        // Bulan diambil dari tanggal pengajuan; hanya 12 bulan terakhir yang
+        // memiliki data yang ditampilkan agar grafik tetap terbaca.
+        // ============================================================
+        function loadChartTren(mahasiswaProdi, pengajuanProdi, target) {
+            const NAMA_BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+            const bulanKey = (tgl) => {
+                const d = new Date(tgl);
+                if (isNaN(d)) return null;
+                return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+            };
+
+            // Kumpulkan per bulan
+            const perBulan = {};
+            pengajuanProdi.forEach(p => {
+                const k = bulanKey(p.tanggal);
+                if (!k) return;
+                if (!perBulan[k]) perBulan[k] = { masuk: 0, disetujui: 0, poin: {} };
+                perBulan[k].masuk++;
+                if (p.status === 'Disetujui') {
+                    perBulan[k].disetujui++;
+                    // catat poin per mahasiswa untuk akumulasi SKPI
+                    perBulan[k].poin[p.email] = (perBulan[k].poin[p.email] || 0) + (p.poin || p.estimasiPoin || 0);
+                }
+            });
+
+            // PENTING: akumulasi dihitung dari SELURUH riwayat bulan, bukan hanya
+            // 12 bulan yang ditampilkan. Kalau dipotong lebih dulu, poin dari
+            // bulan-bulan awal ikut hilang dan garis kumulatif jadi terlalu rendah.
+            const semuaKeys = Object.keys(perBulan).sort();
+
+            if (semuaKeys.length === 0) {
+                if (chartTrenInstance) { chartTrenInstance.destroy(); chartTrenInstance = null; }
+                return;
+            }
+
+            const akumulasiPoin = {};
+            const memenuhiPerBulan = semuaKeys.map(k => {
+                Object.entries(perBulan[k].poin).forEach(([email, poin]) => {
+                    akumulasiPoin[email] = (akumulasiPoin[email] || 0) + poin;
+                });
+                return Object.values(akumulasiPoin).filter(v => v >= target).length;
+            });
+
+            // Baru setelah akumulasi lengkap, ambil 12 bulan terakhir untuk ditampilkan.
+            const mulai = Math.max(0, semuaKeys.length - 12);
+            const keys = semuaKeys.slice(mulai);
+            const dataMemenuhi = memenuhiPerBulan.slice(mulai);
+
+            const labels = keys.map(k => {
+                const [th, bl] = k.split('-');
+                return NAMA_BULAN[Number(bl) - 1] + ' ' + th.slice(2);
+            });
+            const dataMasuk = keys.map(k => perBulan[k].masuk);
+            const dataSetuju = keys.map(k => perBulan[k].disetujui);
+
+            if (chartTrenInstance) {
+                chartTrenInstance.data.labels = labels;
+                chartTrenInstance.data.datasets[0].data = dataMasuk;
+                chartTrenInstance.data.datasets[1].data = dataSetuju;
+                chartTrenInstance.data.datasets[2].data = dataMemenuhi;
+                chartTrenInstance.update('none');
+                return;
+            }
+
+            const ctx = document.getElementById('chartTren').getContext('2d');
+            chartTrenInstance = new Chart(ctx, {
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            type: 'bar', label: 'Pengajuan Masuk', data: dataMasuk,
+                            backgroundColor: '#E5E7EB', borderRadius: 6, maxBarThickness: 26, order: 3
+                        },
+                        {
+                            type: 'bar', label: 'Pengajuan Disetujui', data: dataSetuju,
+                            backgroundColor: '#F4B400', borderRadius: 6, maxBarThickness: 26, order: 2
+                        },
+                        {
+                            type: 'line', label: 'Kumulatif Memenuhi Syarat SKPI', data: dataMemenuhi,
+                            borderColor: '#22C55E', backgroundColor: 'rgba(34,197,94,0.12)',
+                            borderWidth: 3, tension: 0.35, fill: true, pointRadius: 4,
+                            pointBackgroundColor: '#22C55E', yAxisID: 'y1', order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12, usePointStyle: true } },
+                        tooltip: {
+                            backgroundColor: '#1A1A1A', padding: 12, cornerRadius: 8,
+                            titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 10 }, color: '#6B7280' }, border: { display: false } },
+                        y: {
+                            beginAtZero: true, position: 'left',
+                            title: { display: true, text: 'Jumlah Pengajuan', font: { family: 'Poppins', size: 10 }, color: '#9CA3AF' },
+                            ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' },
+                            grid: { color: '#F1F1F1' }, border: { display: false }
+                        },
+                        y1: {
+                            beginAtZero: true, position: 'right',
+                            title: { display: true, text: 'Mahasiswa Memenuhi SKPI', font: { family: 'Poppins', size: 10 }, color: '#9CA3AF' },
+                            ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#22C55E' },
+                            grid: { display: false }, border: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
         function loadChart(state, mahasiswaProdi, pengajuanProdi, target) {
             const kategoriList = AppState.getMasterSKP();
             const labels = kategoriList.map(k => k.nama);
@@ -1228,37 +1281,87 @@
                 });
             }
 
-            // Doughnut: capaian target mahasiswa prodi
-            const poinList = mahasiswaProdi.map(m => AppState.getTotalPoin(m.email));
-            const memenuhi = poinList.filter(p => p >= target).length;
-            const belum = mahasiswaProdi.length - memenuhi;
+            // Bar bertumpuk: capaian target per program studi.
+            // Menampilkan jumlah mahasiswa yang sudah vs belum memenuhi target
+            // pada tiap prodi, sehingga Wakil Direktur langsung melihat prodi
+            // mana yang kesenjangannya paling besar (bukan sekadar total institusi).
+            const perProdi = {};
+            mahasiswaProdi.forEach(m => {
+                const prodi = m.prodi || 'Tidak diketahui';
+                if (!perProdi[prodi]) perProdi[prodi] = { sudah: 0, belum: 0 };
+                if (AppState.getTotalPoin(m.email) >= target) perProdi[prodi].sudah++;
+                else perProdi[prodi].belum++;
+            });
+
+            // Urutkan: yang paling banyak "belum memenuhi" tampil di atas.
+            const entriProdi = Object.entries(perProdi)
+                .sort((a, b) => b[1].belum - a[1].belum);
+
+            const labelProdi = entriProdi.map(e => e[0]);
+            const dataSudah = entriProdi.map(e => e[1].sudah);
+            const dataBelum = entriProdi.map(e => e[1].belum);
 
             if (chartCapaianInstance) {
-                chartCapaianInstance.data.datasets[0].data = [memenuhi, belum];
+                chartCapaianInstance.data.labels = labelProdi;
+                chartCapaianInstance.data.datasets[0].data = dataSudah;
+                chartCapaianInstance.data.datasets[1].data = dataBelum;
                 chartCapaianInstance.update('none');
             } else {
                 const ctx2 = document.getElementById('chartCapaian').getContext('2d');
                 chartCapaianInstance = new Chart(ctx2, {
-                    type: 'doughnut',
+                    type: 'bar',
                     data: {
-                        labels: ['Sudah Memenuhi', 'Belum Memenuhi'],
-                        datasets: [{
-                            data: [memenuhi, belum],
-                            backgroundColor: ['#22C55E', '#EF4444'],
-                            borderColor: '#FFFFFF',
-                            borderWidth: 3
-                        }]
+                        labels: labelProdi,
+                        datasets: [
+                            {
+                                label: 'Sudah Memenuhi',
+                                data: dataSudah,
+                                backgroundColor: '#22C55E',
+                                borderRadius: 6,
+                                borderSkipped: false,
+                                maxBarThickness: 26
+                            },
+                            {
+                                label: 'Belum Memenuhi',
+                                data: dataBelum,
+                                backgroundColor: '#F4B400',
+                                borderRadius: 6,
+                                borderSkipped: false,
+                                maxBarThickness: 26
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '65%',
+                        indexAxis: 'y',
                         plugins: {
                             legend: { position: 'bottom', labels: { font: { family: 'Poppins', size: 10 }, boxWidth: 12 } },
                             tooltip: {
                                 backgroundColor: '#1A1A1A', padding: 12, cornerRadius: 8,
                                 titleFont: { family: 'Poppins', size: 13 }, bodyFont: { family: 'Poppins', size: 12 },
-                                callbacks: { label: (c) => ` ${c.parsed} mahasiswa` }
+                                callbacks: {
+                                    label: (c) => ` ${c.dataset.label}: ${c.parsed.x} mahasiswa`,
+                                    footer: (items) => {
+                                        const i = items[0].dataIndex;
+                                        const total = dataSudah[i] + dataBelum[i];
+                                        const persen = total ? Math.round((dataSudah[i] / total) * 100) : 0;
+                                        return `Total ${total} mahasiswa · ${persen}% memenuhi`;
+                                    }
+                                },
+                                footerFont: { family: 'Poppins', size: 11, weight: '400' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true, beginAtZero: true,
+                                ticks: { stepSize: 1, font: { family: 'Poppins', size: 10 }, color: '#6B7280' },
+                                grid: { color: '#F1F1F1' }, border: { display: false }
+                            },
+                            y: {
+                                stacked: true,
+                                ticks: { font: { family: 'Poppins', size: 10.5 }, color: '#374151', crossAlign: 'far' },
+                                grid: { display: false }, border: { display: false }
                             }
                         }
                     }
@@ -1399,7 +1502,7 @@
             if (e.key === 'skp_app_state') loadDashboard();
         });
 
-        console.log('📊 Dashboard Kaprodi siap.');
+        console.log('📊 Dashboard Wakil Direktur siap.');
     </script>
 </body>
 </html>

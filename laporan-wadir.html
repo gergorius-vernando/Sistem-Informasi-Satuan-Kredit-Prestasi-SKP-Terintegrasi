@@ -519,6 +519,7 @@
             font-size: 0.72rem;
             font-weight: 600;
             letter-spacing: 0.2px;
+            white-space: nowrap;   /* status tidak boleh pecah dua baris */
         }
 
         .badge-warning  { background: #FEF3C7; color: #92400E; }
@@ -536,7 +537,29 @@
             vertical-align: middle;
         }
         .table-fixed .btn-detail { padding: 7px 12px; font-size: 0.72rem; gap: 5px; max-width: 100%; }
-        .table-fixed .badge { white-space: normal; }
+        /* Badge status harus tetap satu baris — jangan dibiarkan membungkus,
+           karena "Belum Memenuhi" terpecah jadi dua baris dan tabel jadi tinggi
+           tidak beraturan. Lebar kolom Status sudah disiapkan agar muat. */
+        .table-fixed .badge {
+            white-space: nowrap;            /* status selalu satu baris */
+            font-size: 0.66rem;
+            padding: 4px 9px;
+            max-width: 100%;                /* tidak pernah meluber keluar sel */
+            overflow: hidden;
+            text-overflow: ellipsis;        /* dipotong rapi bila kolom sempit */
+            vertical-align: middle;
+        }
+
+        @media (max-width: 1300px) {
+            /* Layar sempit: perkecil badge & teks tabel supaya status tetap satu
+               baris dan tidak meluber keluar sel, tanpa memunculkan scroll. */
+            .table-fixed .badge { font-size: 0.6rem; padding: 3px 7px; }
+            .table-fixed th, .table-fixed td { font-size: 0.74rem; }
+            .table-fixed .progress-text { font-size: 0.64rem; }
+        }
+
+        /* Keterangan singkat pada kolom Kekurangan juga dijaga satu baris. */
+        .table-fixed .progress-text { white-space: nowrap; }
         .table-fixed .progress-mini { width: 100%; max-width: 130px; }
 
         @media (max-width: 1300px) {
@@ -1345,12 +1368,12 @@
                     <table>
                         <colgroup>
                             <col style="width:9%">
-                            <col style="width:19%">
-                            <col style="width:16%">
+                            <col style="width:17%">
+                            <col style="width:15%">
                             <col style="width:8%">
                             <col style="width:16%">
-                            <col style="width:10%">
-                            <col style="width:12%">
+                            <col style="width:11%">
+                            <col style="width:14%">
                             <col style="width:10%">
                         </colgroup>
                         <thead>
@@ -1399,7 +1422,7 @@
                     <td>${p.kategoriText || p.kategori}</td>
                     <td>${p.poin || p.estimasiPoin || 0}</td>
                     <td>${p.tanggal || '-'}</td>
-                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
+                    <td><span class="badge ${statusBadge}" title="${p.status}">${p.status}</span></td>
                 </tr>`;
             }).join('');
 
@@ -1409,13 +1432,14 @@
                 <div class="table-fixed">
                     <table>
                         <colgroup>
-                            <col style="width:16%">
-                            <col style="width:20%">
+                            <col style="width:14%">
                             <col style="width:18%">
                             <col style="width:15%">
-                            <col style="width:7%">
-                            <col style="width:11%">
                             <col style="width:13%">
+                            <col style="width:6%">
+                            <col style="width:11%">
+                            <col style="width:23%"><!-- Status: cukup lebar untuk teks
+                                 terpanjang ("Pending Admin Kemahasiswaan") tanpa membungkus -->
                         </colgroup>
                         <thead>
                             <tr>

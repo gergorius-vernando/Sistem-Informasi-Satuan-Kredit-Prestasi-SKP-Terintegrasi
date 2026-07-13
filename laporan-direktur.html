@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Program Studi — Sistem Informasi SKP</title>
+    <title>Laporan Strategis — Sistem Informasi SKP</title>
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -528,6 +528,46 @@
         .badge-info     { background: #DBEAFE; color: #1E40AF; }
 
         /* ==================== EMPTY STATE ==================== */
+        /* ===== Tabel tetap (tanpa scroll horizontal) ===== */
+        .table-fixed { overflow-x: visible; width: 100%; }
+        .table-fixed table { table-layout: fixed; width: 100%; }
+        .table-fixed th, .table-fixed td {
+            white-space: normal;      /* teks membungkus, tidak memaksa tabel melebar */
+            word-break: break-word;
+            vertical-align: middle;
+        }
+        .table-fixed .btn-detail { padding: 7px 12px; font-size: 0.72rem; gap: 5px; max-width: 100%; }
+        /* Badge status harus tetap satu baris — jangan dibiarkan membungkus,
+           karena "Belum Memenuhi" terpecah jadi dua baris dan tabel jadi tinggi
+           tidak beraturan. Lebar kolom Status sudah disiapkan agar muat. */
+        .table-fixed .badge {
+            white-space: nowrap;            /* status selalu satu baris */
+            font-size: 0.66rem;
+            padding: 4px 9px;
+            max-width: 100%;                /* tidak pernah meluber keluar sel */
+            overflow: hidden;
+            text-overflow: ellipsis;        /* dipotong rapi bila kolom sempit */
+            vertical-align: middle;
+        }
+
+        @media (max-width: 1300px) {
+            /* Layar sempit: perkecil badge & teks tabel supaya status tetap satu
+               baris dan tidak meluber keluar sel, tanpa memunculkan scroll. */
+            .table-fixed .badge { font-size: 0.6rem; padding: 3px 7px; }
+            .table-fixed th, .table-fixed td { font-size: 0.74rem; }
+            .table-fixed .progress-text { font-size: 0.64rem; }
+        }
+
+        /* Keterangan singkat pada kolom Kekurangan juga dijaga satu baris. */
+        .table-fixed .progress-text { white-space: nowrap; }
+        .table-fixed .progress-mini { width: 100%; max-width: 130px; }
+
+        @media (max-width: 1300px) {
+            /* Layar sempit: sisakan ikon pada tombol agar tabel tetap muat */
+            .table-fixed .btn-detail span.btn-label { display: none; }
+            .table-fixed .btn-detail { padding: 8px 10px; }
+        }
+
         /* ===== Tabel Capaian Mahasiswa ===== */
         table th.col-aksi-kanan, table td.col-aksi-kanan { text-align: right; }
 
@@ -755,21 +795,15 @@
             <div class="logo-text">Sistem Informasi<br>SKP</div>
         </div>
         <nav class="sidebar-menu">
-            <a href="dashboard-kaprodi.html">
+            <a href="dashboard-direktur.html">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
             </a>
-            <a href="validasi-kaprodi.html">
-                <i class="fa-solid fa-clipboard-check"></i> Validasi SKP
-            </a>
-            <a href="rekap-validasi-kaprodi.html">
-                <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Validasi
-            </a>
-            <a href="laporan-kaprodi.html" class="active">
+            <a href="laporan-direktur.html" class="active">
                 <i class="fa-solid fa-chart-pie"></i> Laporan
             </a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profil-kaprodi.html" class="sidebar-footer-link">
+            <a href="profil-direktur.html" class="sidebar-footer-link">
                 <i class="fa-solid fa-user-gear"></i> Profil
             </a>
             <button onclick="showLogoutModal()">
@@ -808,9 +842,9 @@
             <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="welcome-section">
-                    <h1>Laporan Program Studi</h1>
+                    <h1>Laporan Strategis</h1>
                     <p class="welcome-subtitle">
-                        Statistik capaian SKP mahasiswa <strong id="subtitleProdi">—</strong>.
+                        Rekapitulasi prestasi mahasiswa tingkat institusi beserta data dukung yang dapat diekspor untuk keperluan akreditasi.
                     </p>
                 </div>
                 <div class="period-badge">
@@ -825,10 +859,9 @@
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:14px; align-items:end;">
                     <div class="form-group">
                         <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Program Studi</label>
-                        <div id="prodiTerkunci" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--light-gray); font-size:0.82rem; color:var(--text-secondary); display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-lock" style="font-size:0.72rem;"></i>
-                            <span id="prodiTerkunciText">—</span>
-                        </div>
+                        <select id="filterProdi" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                            <option value="">Semua Program Studi</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Kategori SKP</label>
@@ -847,7 +880,7 @@
                         </select>
                     </div>
                     <button class="btn btn-accent" onclick="exportCSV()" style="height:42px;">
-                        <i class="fa-solid fa-file-csv"></i> Ekspor CSV
+                        <i class="fa-solid fa-file-csv"></i> Ekspor Rincian
                     </button>
                 </div>
             </div>
@@ -893,31 +926,77 @@
                     </div>
                 </div>
                 <div class="card">
-                    <h3><i class="fa-solid fa-chart-column"></i> Capaian Poin Mahasiswa</h3>
+                    <h3><i class="fa-solid fa-chart-column"></i> Distribusi per Program Studi</h3>
                     <div class="chart-container">
-                        <canvas id="chartMahasiswa"></canvas>
+                        <canvas id="chartProdi"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Daftar Capaian Mahasiswa (sudah / belum memenuhi target) -->
+            <!-- Ekspor data dukung akreditasi (FR-19) -->
             <div class="card">
-                <h3><i class="fa-solid fa-user-graduate"></i> Capaian Mahasiswa</h3>
-                <div style="display:grid; grid-template-columns: 1fr 240px; gap:14px; align-items:end; margin-bottom:16px;">
+                <h3><i class="fa-solid fa-file-arrow-down"></i> Data Dukung Akreditasi</h3>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin:-6px 0 16px;">
+                    Unduh berkas CSV sebagai lampiran borang akreditasi. Berkas mengikuti filter yang sedang aktif di atas.
+                </p>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px;">
+                    <button class="btn btn-outline" onclick="exportCSV()" style="justify-content:flex-start; gap:10px; padding:14px 16px; text-align:left;">
+                        <i class="fa-solid fa-list-ul" style="color:var(--accent);"></i>
+                        <span>
+                            <strong style="display:block; font-size:0.85rem;">Rincian Pengajuan SKP</strong>
+                            <span style="font-size:0.72rem; color:var(--text-muted);">Seluruh pengajuan beserta status &amp; validator</span>
+                        </span>
+                    </button>
+                    <button class="btn btn-outline" onclick="exportCapaianCSV()" style="justify-content:flex-start; gap:10px; padding:14px 16px; text-align:left;">
+                        <i class="fa-solid fa-user-graduate" style="color:var(--accent);"></i>
+                        <span>
+                            <strong style="display:block; font-size:0.85rem;">Capaian SKPI Mahasiswa</strong>
+                            <span style="font-size:0.72rem; color:var(--text-muted);">Poin, angkatan, dan status pemenuhan syarat</span>
+                        </span>
+                    </button>
+                    <button class="btn btn-outline" onclick="exportRekapProdiCSV()" style="justify-content:flex-start; gap:10px; padding:14px 16px; text-align:left;">
+                        <i class="fa-solid fa-building-columns" style="color:var(--accent);"></i>
+                        <span>
+                            <strong style="display:block; font-size:0.85rem;">Rekapitulasi per Program Studi</strong>
+                            <span style="font-size:0.72rem; color:var(--text-muted);">Jumlah mahasiswa, capaian, dan rata-rata poin</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progres Pemenuhan Syarat SKPI (tingkat institusi) -->
+            <div class="card">
+                <h3><i class="fa-solid fa-user-graduate"></i> Progres Pemenuhan Syarat SKPI</h3>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin:-6px 0 16px;">
+                    Gunakan filter angkatan untuk meninjau mahasiswa tingkat akhir yang belum memenuhi syarat SKPI menjelang kelulusan.
+                </p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:14px; align-items:end; margin-bottom:16px;">
                     <div class="form-group">
                         <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Cari Mahasiswa</label>
                         <div style="position:relative;">
                             <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.8rem;"></i>
-                            <input type="text" id="searchMahasiswa" placeholder="Ketik nama atau NIM..."
+                            <input type="text" id="searchMahasiswa" placeholder="Nama atau NIM..."
                                    style="width:100%; padding:10px 12px 10px 34px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Status Target</label>
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Program Studi</label>
+                        <select id="filterProdiSkpi" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                            <option value="">Semua Program Studi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Angkatan</label>
+                        <select id="filterAngkatan" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
+                            <option value="">Semua Angkatan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Status SKPI</label>
                         <select id="filterTarget" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:'Poppins',sans-serif; font-size:0.82rem;">
                             <option value="">Semua Mahasiswa</option>
-                            <option value="sudah">Sudah Memenuhi Target</option>
-                            <option value="belum">Belum Memenuhi Target</option>
+                            <option value="sudah">Sudah Memenuhi Syarat</option>
+                            <option value="belum">Belum Memenuhi Syarat</option>
                         </select>
                     </div>
                 </div>
@@ -963,35 +1042,61 @@
         // INITIALIZATION & ROLE AUTHENTICATION
         // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        if (!session || session.roleKey !== 'kaprodi') {
+        if (!session || session.roleKey !== 'direktur') {
             window.location.href = 'login.html';
         }
 
-        // Laporan Kaprodi bersifat READ-ONLY dan DIBATASI pada program studinya
-        // sendiri (SRS: "membaca dan menganalisis laporan statistik capaian SKP
-        // mahasiswa pada program studinya", read-only untuk laporan).
-        const PRODI_SAYA = session.prodi;
-
+        // Laporan Wakil Direktur bersifat READ-ONLY dan bercakupan INSTITUSI
+        // (SRS FR-18: tren capaian tingkat institusi, statistik per program studi,
+        // dan progres pemenuhan syarat SKPI). Tidak dikunci pada satu prodi.
         document.getElementById('topbarAvatar').textContent = session.avatar || 'MR';
-        document.getElementById('topbarName').textContent = session.fullName || 'Kaprodi';
-        document.getElementById('topbarRole').textContent = session.role || 'Kaprodi';
-        document.getElementById('prodiTerkunciText').textContent = PRODI_SAYA || '—';
-        document.getElementById('subtitleProdi').textContent = PRODI_SAYA || '—';
+        document.getElementById('topbarName').textContent = session.fullName || 'Wakil Direktur';
+        document.getElementById('topbarRole').textContent = session.role || 'Wakil Direktur';
 
         const today = new Date();
         document.getElementById('currentDateBadge').textContent =
             today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
         let chartKategoriInstance = null;
-        let chartMahasiswaInstance = null;
+        let chartProdiInstance = null;
         let filteredDataCache = []; // dipakai juga oleh exportCSV agar konsisten dengan tabel yang terlihat
 
+        // Angkatan diturunkan dari 4 digit pertama NIM (mis. 2024001 -> 2024).
+        function angkatanDari(nim) {
+            const s = String(nim || '');
+            return /^\d{4}/.test(s) ? s.slice(0, 4) : '-';
+        }
+
         // ============================================================
-        // ISI FILTER (Program Studi & Kategori) — diturunkan dari data akun & Master SKP
+        // ISI FILTER — diturunkan dari data akun & Master SKP
         // ============================================================
         function populateFilters() {
-            // Filter Program Studi ditiadakan: Kaprodi selalu terkunci pada
-            // program studinya sendiri.
+            const accounts = AppState.getAllAccounts();
+            const mahasiswa = Object.values(accounts).filter(a => a.roleKey === 'mahasiswa');
+
+            // Program Studi (dipakai di filter laporan & filter SKPI)
+            const prodiList = [...new Set(mahasiswa.map(a => a.prodi).filter(Boolean))].sort();
+            ['filterProdi', 'filterProdiSkpi'].forEach(id => {
+                const sel = document.getElementById(id);
+                prodiList.forEach(prodi => {
+                    const opt = document.createElement('option');
+                    opt.value = prodi;
+                    opt.textContent = prodi;
+                    sel.appendChild(opt);
+                });
+            });
+
+            // Angkatan (terbaru dulu)
+            const angkatanList = [...new Set(mahasiswa.map(a => angkatanDari(a.nim)))]
+                .filter(a => a !== '-').sort().reverse();
+            const selAngkatan = document.getElementById('filterAngkatan');
+            angkatanList.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = 'Angkatan ' + a;
+                selAngkatan.appendChild(opt);
+            });
+
             const selKategori = document.getElementById('filterKategoriLaporan');
             AppState.getMasterSKP().forEach(k => {
                 const opt = document.createElement('option');
@@ -1010,14 +1115,14 @@
             const accounts = AppState.getAllAccounts();
             let data = state.pengajuan || [];
 
-            // --- BATAS UTAMA: hanya pengajuan mahasiswa pada prodi Kaprodi ---
-            // Ini penjaga utama agar Kaprodi tidak melihat data prodi lain.
-            data = data.filter(p => (accounts[p.email] || {}).prodi === PRODI_SAYA);
-
-            // --- Terapkan filter tambahan ---
+            // --- Terapkan filter (cakupan institusi: semua prodi) ---
+            const prodiFilter = document.getElementById('filterProdi').value;
             const kategoriFilter = document.getElementById('filterKategoriLaporan').value;
             const statusFilter = document.getElementById('filterStatusLaporan').value;
 
+            if (prodiFilter) {
+                data = data.filter(p => (accounts[p.email] || {}).prodi === prodiFilter);
+            }
             if (kategoriFilter) {
                 data = data.filter(p => p.kategori === kategoriFilter);
             }
@@ -1029,7 +1134,7 @@
 
             renderStatistik(data);
             renderChartKategori(data);
-            renderChartMahasiswa(accounts);
+            renderChartProdi(data, accounts);
             renderCapaianMahasiswa(accounts);
             renderTabelLaporan(data, accounts);
         }
@@ -1110,39 +1215,36 @@
         // GRAFIK: DISTRIBUSI PER PROGRAM STUDI (bar)
         // ============================================================
         // ============================================================
-        // GRAFIK CAPAIAN POIN PER MAHASISWA (khusus prodi Kaprodi)
-        // Menggantikan grafik "distribusi per program studi" milik Admin, yang
-        // tidak bermakna di sini karena Kaprodi hanya melihat satu prodi.
-        // Grafik ini memakai SELURUH poin Disetujui tiap mahasiswa (bukan data
-        // terfilter) agar capaian terhadap target tetap utuh dan tidak menyesatkan.
         // ============================================================
-        function renderChartMahasiswa(accounts) {
-            const target = AppState.getState().targetPoin || 100;
+        // GRAFIK DISTRIBUSI PENGAJUAN PER PROGRAM STUDI (tingkat institusi)
+        // Sesuai FR-18: Wakil Direktur memantau statistik per program studi.
+        // Mengikuti data yang sedang difilter agar konsisten dengan tabel.
+        // ============================================================
+        function renderChartProdi(data, accounts) {
+            const counts = {};
+            data.forEach(p => {
+                const prodi = (accounts[p.email] || {}).prodi || 'Tidak diketahui';
+                counts[prodi] = (counts[prodi] || 0) + 1;
+            });
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(e => e[0]);
+            const values = sorted.map(e => e[1]);
 
-            const mahasiswa = Object.entries(accounts)
-                .filter(([email, a]) => a.roleKey === 'mahasiswa' && a.prodi === PRODI_SAYA)
-                .map(([email, a]) => ({
-                    nama: a.fullName || email,
-                    poin: AppState.getTotalPoin(email)
-                }))
-                .sort((a, b) => b.poin - a.poin);
+            const ctx = document.getElementById('chartProdi').getContext('2d');
+            if (chartProdiInstance) chartProdiInstance.destroy();
 
-            const ctx = document.getElementById('chartMahasiswa').getContext('2d');
-            if (chartMahasiswaInstance) chartMahasiswaInstance.destroy();
-
-            if (mahasiswa.length === 0) {
-                chartMahasiswaInstance = null;
+            if (labels.length === 0) {
+                chartProdiInstance = null;
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 return;
             }
 
-            const labels = mahasiswa.map(m => m.nama);
-            const values = mahasiswa.map(m => m.poin);
-            // Hijau bila sudah memenuhi target, kuning bila belum.
-            const colors = values.map(v => v >= target ? '#22C55E' : '#F4B400');
+            const palette = ['#F4B400', '#22C55E', '#3B82F6', '#8B5CF6', '#EF4444', '#14B8A6'];
+            const barColors = labels.map((_, i) => palette[i % palette.length]);
+            const maxVal = Math.max(...values);
 
             const valueLabelPlugin = {
-                id: 'poinValueLabel',
+                id: 'prodiValueLabel',
                 afterDatasetsDraw(chart) {
                     const { ctx } = chart;
                     const meta = chart.getDatasetMeta(0);
@@ -1151,21 +1253,19 @@
                     ctx.fillStyle = '#374151';
                     ctx.textBaseline = 'middle';
                     ctx.textAlign = 'left';
-                    meta.data.forEach((bar, i) => {
-                        ctx.fillText(values[i] + ' poin', bar.x + 8, bar.y);
-                    });
+                    meta.data.forEach((bar, i) => ctx.fillText(values[i], bar.x + 8, bar.y));
                     ctx.restore();
                 }
             };
 
-            chartMahasiswaInstance = new Chart(ctx, {
+            chartProdiInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels,
                     datasets: [{
-                        label: 'Total Poin Disetujui',
+                        label: 'Jumlah Pengajuan',
                         data: values,
-                        backgroundColor: colors,
+                        backgroundColor: barColors,
                         borderRadius: 8,
                         borderSkipped: false,
                         maxBarThickness: 34
@@ -1175,7 +1275,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     indexAxis: 'y',
-                    layout: { padding: { right: 70 } },
+                    layout: { padding: { right: 28 } },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
@@ -1183,20 +1283,14 @@
                             titleFont: { family: 'Poppins', size: 13 },
                             bodyFont: { family: 'Poppins', size: 12 },
                             padding: 12, cornerRadius: 8,
-                            callbacks: {
-                                label: (c) => {
-                                    const v = c.parsed.x;
-                                    const sisa = target - v;
-                                    return sisa > 0 ? ` ${v} poin (kurang ${sisa})` : ` ${v} poin (target tercapai)`;
-                                }
-                            }
+                            callbacks: { label: (c) => ` ${c.parsed.x} pengajuan` }
                         }
                     },
                     scales: {
                         x: {
                             beginAtZero: true,
-                            suggestedMax: Math.max(target, ...values) + 10,
-                            ticks: { stepSize: 20, font: { family: 'Poppins', size: 11 }, color: '#9CA3AF' },
+                            suggestedMax: maxVal + 1,
+                            ticks: { stepSize: 1, font: { family: 'Poppins', size: 11 }, color: '#9CA3AF' },
                             grid: { color: '#F1F1F1' },
                             border: { display: false }
                         },
@@ -1223,15 +1317,19 @@
 
             const keyword = (document.getElementById('searchMahasiswa').value || '').trim().toLowerCase();
             const statusTarget = document.getElementById('filterTarget').value;
+            const prodiFilter = document.getElementById('filterProdiSkpi').value;
+            const angkatanFilter = document.getElementById('filterAngkatan').value;
 
             let list = Object.entries(accounts)
-                .filter(([email, a]) => a.roleKey === 'mahasiswa' && a.prodi === PRODI_SAYA)
+                .filter(([email, a]) => a.roleKey === 'mahasiswa')
                 .map(([email, a]) => {
                     const poin = AppState.getTotalPoin(email);
                     return {
                         email,
                         nama: a.fullName || email,
                         nim: a.nim || '-',
+                        prodi: a.prodi || '-',
+                        angkatan: angkatanDari(a.nim),
                         poin,
                         memenuhi: poin >= target
                     };
@@ -1245,12 +1343,16 @@
                 );
             }
 
-            // Filter status target
+            if (prodiFilter) list = list.filter(m => m.prodi === prodiFilter);
+            if (angkatanFilter) list = list.filter(m => m.angkatan === angkatanFilter);
+
+            // Filter status pemenuhan syarat SKPI
             if (statusTarget === 'sudah') list = list.filter(m => m.memenuhi);
             else if (statusTarget === 'belum') list = list.filter(m => !m.memenuhi);
 
-            // Poin tertinggi di atas
-            list.sort((a, b) => b.poin - a.poin);
+            // Yang BELUM memenuhi ditampilkan lebih dulu (paling perlu perhatian),
+            // lalu diurutkan dari poin terendah.
+            list.sort((a, b) => (a.memenuhi - b.memenuhi) || (a.poin - b.poin));
 
             if (list.length === 0) {
                 wrapper.innerHTML = `
@@ -1270,30 +1372,44 @@
                 return `<tr>
                     <td><strong>${m.nim}</strong></td>
                     <td>${m.nama}</td>
+                    <td>${m.prodi}</td>
+                    <td>${m.angkatan}</td>
                     <td>
                         <div class="progress-mini"><span class="${m.memenuhi ? 'ok' : 'kurang'}" style="width:${persen}%"></span></div>
                         <div class="progress-text">${m.poin} / ${target} poin (${persen}%)</div>
                     </td>
-                    <td>${m.memenuhi ? '<span class="progress-text">Target tercapai</span>' : `<strong>${kurang}</strong> poin lagi`}</td>
+                    <td>${m.memenuhi ? '<span class="progress-text">Syarat terpenuhi</span>' : `<strong>${kurang}</strong> poin lagi`}</td>
                     <td>${badge}</td>
                     <td class="col-aksi-kanan">
-                        <a href="detail-mahasiswa.html?email=${encodeURIComponent(m.email)}" class="btn-detail">
-                            <i class="fa-solid fa-eye"></i> Lihat Detail
+                        <a href="detail-mahasiswa.html?email=${encodeURIComponent(m.email)}" class="btn-detail" title="Lihat detail mahasiswa">
+                            <i class="fa-solid fa-eye"></i> <span class="btn-label">Detail</span>
                         </a>
                     </td>
                 </tr>`;
             }).join('');
 
             wrapper.innerHTML = `
-                <div class="table-wrapper">
+                <div class="table-fixed">
                     <table>
+                        <colgroup>
+                            <col style="width:9%">
+                            <col style="width:17%">
+                            <col style="width:15%">
+                            <col style="width:8%">
+                            <col style="width:16%">
+                            <col style="width:11%">
+                            <col style="width:14%">
+                            <col style="width:10%">
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>NIM</th>
                                 <th>Nama Mahasiswa</th>
+                                <th>Program Studi</th>
+                                <th>Angkatan</th>
                                 <th>Progres Capaian</th>
                                 <th>Kekurangan</th>
-                                <th>Status Target</th>
+                                <th>Status SKPI</th>
                                 <th class="col-aksi-kanan">Aksi</th>
                             </tr>
                         </thead>
@@ -1331,15 +1447,25 @@
                     <td>${p.kategoriText || p.kategori}</td>
                     <td>${p.poin || p.estimasiPoin || 0}</td>
                     <td>${p.tanggal || '-'}</td>
-                    <td><span class="badge ${statusBadge}">${p.status}</span></td>
+                    <td><span class="badge ${statusBadge}" title="${p.status}">${p.status}</span></td>
                 </tr>`;
             }).join('');
 
             const catatanLebih = data.length > 50 ? `<p style="font-size:0.76rem; color:var(--text-muted); margin-top:10px;">Menampilkan 50 dari ${data.length} baris. Gunakan tombol "Ekspor CSV" untuk mengunduh seluruh data.</p>` : '';
 
             wrapper.innerHTML = `
-                <div class="table-wrapper">
+                <div class="table-fixed">
                     <table>
+                        <colgroup>
+                            <col style="width:14%">
+                            <col style="width:18%">
+                            <col style="width:15%">
+                            <col style="width:13%">
+                            <col style="width:6%">
+                            <col style="width:11%">
+                            <col style="width:23%"><!-- Status: cukup lebar untuk teks
+                                 terpanjang ("Pending Admin Kemahasiswaan") tanpa membungkus -->
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th>ID Pengajuan</th>
@@ -1412,20 +1538,138 @@
         };
 
         // ============================================================
+        // EKSPOR DATA DUKUNG AKREDITASI (FR-19)
+        // ============================================================
+        function escapeCsvNilai(value) {
+            const str = String(value === undefined || value === null ? '' : value);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                return '"' + str.replace(/"/g, '""') + '"';
+            }
+            return str;
+        }
+
+        function unduhCsv(namaBerkas, header, barisData, jumlah, keteranganAktivitas) {
+            if (!barisData.length) {
+                AppState.showToast('Tidak ada data untuk diekspor.', 'error');
+                return;
+            }
+            const isi = [header.map(escapeCsvNilai).join(','), ...barisData].join('\n');
+            const blob = new Blob(['\uFEFF' + isi], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const tanggalFile = new Date().toISOString().slice(0, 10);
+            link.href = url;
+            link.download = `${namaBerkas}-${tanggalFile}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            AppState.showToast(`${jumlah} baris data berhasil diekspor.`, 'success');
+            AppState.addAktivitas('sistem', 'Data akreditasi diekspor', keteranganAktivitas, 'fa-file-csv', 'info', null);
+        }
+
+        // Mahasiswa yang lolos filter Prodi/Angkatan/Status pada tabel SKPI.
+        // Dipakai bersama oleh tabel dan ekspor agar isinya selalu konsisten.
+        function mahasiswaTerfilterSkpi() {
+            const accounts = AppState.getAllAccounts();
+            const target = AppState.getState().targetPoin || 100;
+            const keyword = (document.getElementById('searchMahasiswa').value || '').trim().toLowerCase();
+            const statusTarget = document.getElementById('filterTarget').value;
+            const prodiFilter = document.getElementById('filterProdiSkpi').value;
+            const angkatanFilter = document.getElementById('filterAngkatan').value;
+
+            let list = Object.entries(accounts)
+                .filter(([email, a]) => a.roleKey === 'mahasiswa')
+                .map(([email, a]) => {
+                    const poin = AppState.getTotalPoin(email);
+                    return {
+                        email, nama: a.fullName || email, nim: a.nim || '-',
+                        prodi: a.prodi || '-', angkatan: angkatanDari(a.nim),
+                        poin, memenuhi: poin >= target
+                    };
+                });
+
+            if (keyword) {
+                list = list.filter(m => m.nama.toLowerCase().includes(keyword) ||
+                                        String(m.nim).toLowerCase().includes(keyword));
+            }
+            if (prodiFilter) list = list.filter(m => m.prodi === prodiFilter);
+            if (angkatanFilter) list = list.filter(m => m.angkatan === angkatanFilter);
+            if (statusTarget === 'sudah') list = list.filter(m => m.memenuhi);
+            else if (statusTarget === 'belum') list = list.filter(m => !m.memenuhi);
+
+            return { list, target };
+        }
+
+        window.exportCapaianCSV = function() {
+            const { list, target } = mahasiswaTerfilterSkpi();
+            const header = ['NIM', 'Nama Mahasiswa', 'Program Studi', 'Angkatan',
+                            'Total Poin SKP', 'Target Poin', 'Kekurangan Poin', 'Status Syarat SKPI'];
+            const rows = list.map(m => [
+                m.nim, m.nama, m.prodi, m.angkatan,
+                m.poin, target, Math.max(0, target - m.poin),
+                m.memenuhi ? 'Memenuhi' : 'Belum Memenuhi'
+            ].map(escapeCsvNilai).join(','));
+
+            unduhCsv('akreditasi-capaian-skpi', header, rows, list.length,
+                     `${session.fullName} mengekspor capaian SKPI (${list.length} mahasiswa) untuk akreditasi.`);
+        };
+
+        window.exportRekapProdiCSV = function() {
+            const accounts = AppState.getAllAccounts();
+            const state = AppState.getState();
+            const target = state.targetPoin || 100;
+            const semuaPengajuan = state.pengajuan || [];
+
+            const rekap = {};
+            Object.entries(accounts)
+                .filter(([email, a]) => a.roleKey === 'mahasiswa')
+                .forEach(([email, a]) => {
+                    const prodi = a.prodi || 'Tidak diketahui';
+                    if (!rekap[prodi]) {
+                        rekap[prodi] = { mahasiswa: 0, memenuhi: 0, totalPoin: 0, pengajuan: 0, disetujui: 0 };
+                    }
+                    const poin = AppState.getTotalPoin(email);
+                    rekap[prodi].mahasiswa++;
+                    rekap[prodi].totalPoin += poin;
+                    if (poin >= target) rekap[prodi].memenuhi++;
+
+                    const milik = semuaPengajuan.filter(p => p.email === email);
+                    rekap[prodi].pengajuan += milik.length;
+                    rekap[prodi].disetujui += milik.filter(p => p.status === 'Disetujui').length;
+                });
+
+            const header = ['Program Studi', 'Jumlah Mahasiswa', 'Memenuhi Syarat SKPI',
+                            'Belum Memenuhi', 'Persentase Memenuhi (%)', 'Rata-rata Poin SKP',
+                            'Total Pengajuan', 'Pengajuan Disetujui'];
+            const rows = Object.entries(rekap)
+                .sort((a, b) => b[1].mahasiswa - a[1].mahasiswa)
+                .map(([prodi, r]) => [
+                    prodi, r.mahasiswa, r.memenuhi, r.mahasiswa - r.memenuhi,
+                    r.mahasiswa ? Math.round((r.memenuhi / r.mahasiswa) * 100) : 0,
+                    r.mahasiswa ? Math.round(r.totalPoin / r.mahasiswa) : 0,
+                    r.pengajuan, r.disetujui
+                ].map(escapeCsvNilai).join(','));
+
+            unduhCsv('akreditasi-rekap-prodi', header, rows, rows.length,
+                     `${session.fullName} mengekspor rekapitulasi ${rows.length} program studi untuk akreditasi.`);
+        };
+
+        // ============================================================
         // EVENT LISTENERS — filter memicu render ulang
         // ============================================================
-        // Tidak ada listener filter Program Studi — Kaprodi terkunci pada prodinya.
+        document.getElementById('filterProdi').addEventListener('change', loadLaporan);
         document.getElementById('filterKategoriLaporan').addEventListener('change', loadLaporan);
         document.getElementById('filterStatusLaporan').addEventListener('change', loadLaporan);
 
-        // Pencarian & filter target hanya memengaruhi tabel Capaian Mahasiswa,
+        // Pencarian & filter SKPI hanya memengaruhi tabel progres SKPI,
         // jadi cukup render ulang bagian itu (lebih ringan, chart tidak berkedip).
-        document.getElementById('searchMahasiswa').addEventListener('input', () => {
-            renderCapaianMahasiswa(AppState.getAllAccounts());
-        });
-        document.getElementById('filterTarget').addEventListener('change', () => {
-            renderCapaianMahasiswa(AppState.getAllAccounts());
-        });
+        const refreshSkpi = () => renderCapaianMahasiswa(AppState.getAllAccounts());
+        document.getElementById('searchMahasiswa').addEventListener('input', refreshSkpi);
+        document.getElementById('filterTarget').addEventListener('change', refreshSkpi);
+        document.getElementById('filterProdiSkpi').addEventListener('change', refreshSkpi);
+        document.getElementById('filterAngkatan').addEventListener('change', refreshSkpi);
 
         // ============================================================
         // DARK MODE

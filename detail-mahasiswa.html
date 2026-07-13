@@ -519,6 +519,7 @@
             font-size: 0.72rem;
             font-weight: 600;
             letter-spacing: 0.2px;
+            white-space: nowrap;   /* status tidak boleh pecah dua baris */
         }
 
         .badge-warning  { background: #FEF3C7; color: #92400E; }
@@ -638,7 +639,29 @@
             font-size: 0.72rem;
             gap: 5px;
         }
-        .table-fixed .badge { white-space: normal; }
+        /* Badge status harus tetap satu baris — jangan dibiarkan membungkus,
+           karena "Belum Memenuhi" terpecah jadi dua baris dan tabel jadi tinggi
+           tidak beraturan. Lebar kolom Status sudah disiapkan agar muat. */
+        .table-fixed .badge {
+            white-space: nowrap;            /* status selalu satu baris */
+            font-size: 0.66rem;
+            padding: 4px 9px;
+            max-width: 100%;                /* tidak pernah meluber keluar sel */
+            overflow: hidden;
+            text-overflow: ellipsis;        /* dipotong rapi bila kolom sempit */
+            vertical-align: middle;
+        }
+
+        @media (max-width: 1300px) {
+            /* Layar sempit: perkecil badge & teks tabel supaya status tetap satu
+               baris dan tidak meluber keluar sel, tanpa memunculkan scroll. */
+            .table-fixed .badge { font-size: 0.6rem; padding: 3px 7px; }
+            .table-fixed th, .table-fixed td { font-size: 0.74rem; }
+            .table-fixed .progress-text { font-size: 0.64rem; }
+        }
+
+        /* Keterangan singkat pada kolom Kekurangan juga dijaga satu baris. */
+        .table-fixed .progress-text { white-space: nowrap; }
 
         @media (max-width: 900px) {
             /* Pada layar sempit, sembunyikan teks tombol dan sisakan ikonnya saja
@@ -1003,7 +1026,7 @@
         // (seluruh institusi, sesuai FR-18).
         // ============================================================
         const session = JSON.parse(sessionStorage.getItem('skp_user_session'));
-        const PERAN_DIIZINKAN = ['kaprodi', 'wakil-direktur'];
+        const PERAN_DIIZINKAN = ['kaprodi', 'wakil-direktur', 'direktur'];
         if (!session || !PERAN_DIIZINKAN.includes(session.roleKey)) {
             window.location.href = 'login.html';
         }
@@ -1030,6 +1053,15 @@
                     { href: 'laporan-wadir.html', icon: 'fa-chart-pie', label: 'Laporan' }
                 ],
                 profil: 'profil-wadir.html'
+            },
+            // Direktur bersifat read-only dan bukan validator (FR-19),
+            // sehingga menunya hanya Dashboard dan Laporan.
+            'direktur': {
+                menu: [
+                    { href: 'dashboard-direktur.html', icon: 'fa-gauge-high', label: 'Dashboard' },
+                    { href: 'laporan-direktur.html', icon: 'fa-chart-pie', label: 'Laporan' }
+                ],
+                profil: 'profil-direktur.html'
             }
         };
         const cfgSidebar = sidebarConfig[ROLE];
@@ -1058,8 +1090,14 @@
         // hanya dengan mengubah parameter ?email= di URL.
         //  - Kaprodi  : hanya mahasiswa pada program studinya sendiri.
         //  - Wakil Direktur : seluruh mahasiswa institusi (FR-18).
+        // Kaprodi dibatasi prodinya; Wakil Direktur & Direktur bercakupan institusi.
+        const LINTAS_PRODI = ['wakil-direktur', 'direktur'];
         const bolehDilihat = !!akun && akun.roleKey === 'mahasiswa' &&
-            (ROLE === 'wakil-direktur' || akun.prodi === PRODI_SAYA);
+            (LINTAS_PRODI.includes(ROLE) || akun.prodi === PRODI_SAYA);
+
+        // Menu "Laporan" berada di indeks berbeda tiap peran (Direktur hanya
+        // punya 2 menu), jadi dicari berdasarkan labelnya, bukan indeks tetap.
+        const menuLaporan = (cfgSidebar.menu.find(m => m.label === 'Laporan') || cfgSidebar.menu[0]).href;
 
         if (!bolehDilihat) {
             document.querySelector('.page-content').innerHTML = `
@@ -1069,7 +1107,7 @@
                         <p><strong>Data tidak dapat ditampilkan.</strong></p>
                         <p style="font-size:0.82rem;">Mahasiswa tidak ditemukan, atau berada di luar program studi Anda.</p>
                         <p style="margin-top:14px;">
-                            <a href="${cfgSidebar.menu[3].href}" class="btn-detail">
+                            <a href="${menuLaporan}" class="btn-detail">
                                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Laporan
                             </a>
                         </p>
@@ -1220,7 +1258,7 @@
                 <td>${p.kategoriText || p.kategori}</td>
                 <td>${p.poin || p.estimasiPoin || 0} poin</td>
                 <td>${p.tanggal || '-'}</td>
-                <td><span class="badge ${badgeFor(p.status)}">${p.status}</span></td>
+                <td><span class="badge ${badgeFor(p.status)}" title="${p.status}">${p.status}</span></td>
                 <td class="col-aksi-kanan">
                     <a href="detail-pengajuan.html?id=${p.id}" class="btn-detail" title="Lihat detail pengajuan">
                         <i class="fa-solid fa-eye"></i> <span class="btn-label">Detail</span>
@@ -1232,12 +1270,12 @@
                 <div class="table-fixed">
                     <table>
                         <colgroup>
-                            <col style="width:15%">
-                            <col style="width:27%">
                             <col style="width:14%">
-                            <col style="width:8%">
+                            <col style="width:23%">
+                            <col style="width:13%">
+                            <col style="width:7%">
                             <col style="width:11%">
-                            <col style="width:12%">
+                            <col style="width:19%">
                             <col style="width:13%">
                         </colgroup>
                         <thead>
