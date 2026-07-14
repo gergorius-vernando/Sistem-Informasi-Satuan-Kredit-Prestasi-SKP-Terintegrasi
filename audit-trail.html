@@ -1020,7 +1020,10 @@
                 (a.aksi || '').toLowerCase().includes(keyword) ||
                 (a.aktor || '').toLowerCase().includes(keyword) ||
                 (a.entitas || '').toLowerCase().includes(keyword) ||
-                (a.entitasId || '').toLowerCase().includes(keyword));
+                (a.entitasId || '').toLowerCase().includes(keyword) ||
+                (a.dataSesudah || '').toLowerCase().includes(keyword) ||
+                (a.dataSebelum || '').toLowerCase().includes(keyword) ||
+                (a.keterangan || '').toLowerCase().includes(keyword));
             if (fE) audit = audit.filter(a => a.entitas === fE);
             if (fA) audit = audit.filter(a => a.aktorRole === fA);
 

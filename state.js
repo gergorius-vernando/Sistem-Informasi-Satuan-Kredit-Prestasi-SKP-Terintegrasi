@@ -671,7 +671,7 @@
             {
                 id: 'AUD-seed-2',
                 waktu: new Date(now - 3600000 * 30).toISOString(),
-                aktor: 'Dra. Siti Nurhaliza, M.Pd.',
+                aktor: 'Habib Gili Ajiwinata, M.Pd.',
                 aktorRole: 'admin-kemahasiswaan',
                 aksi: 'Mengaktifkan Periode Akademik',
                 entitas: 'PeriodeAkademik',
@@ -698,6 +698,32 @@
     function getAuditTrail() {
         const state = getState();
         return state.auditTrail || [];
+    }
+
+    // Mencatat penerbitan SKPI ke Audit Trail (FR-21). Dipanggil dari skpi.html
+    // saat mahasiswa menerbitkan/mengunduh dokumen SKPI. Idempoten per nomor
+    // dokumen agar tidak menumpuk bila tombol ditekan berulang dalam satu sesi
+    // data (satu nomor SKPI = satu catatan penerbitan).
+    function catatPenerbitanSKPI(data, aktor, aktorRole) {
+        const state = getState();
+        const nomor = (data && data.nomor) ? data.nomor : '-';
+        const sudahAda = (state.auditTrail || []).some(
+            a => a.aksi === 'Penerbitan SKPI' && a.entitasId === nomor
+        );
+        if (sudahAda) { return { ok: true, sudahTercatat: true }; }
+
+        pushAuditTrail(state, {
+            aktor: aktor || 'Mahasiswa',
+            aktorRole: aktorRole || 'mahasiswa',
+            aksi: 'Penerbitan SKPI',
+            entitas: 'SKPI', entitasId: nomor,
+            dataSebelum: null,
+            dataSesudah: `SKPI diterbitkan dengan total ${data && data.totalPoin != null ? data.totalPoin : '-'} poin SKP` +
+                         (data && data.nama ? ` untuk ${data.nama}` : '') + '.',
+            keterangan: 'Dokumen SKPI diterbitkan sebagai pendamping ijazah.'
+        });
+        setState(state);
+        return { ok: true };
     }
 
     // Draft dummy supaya halaman draft.html tidak terlihat kosong di awal.
@@ -1004,6 +1030,20 @@
         pushAktivitas(state, 'pengajuan', 'Pengajuan dikirim',
             `Pengajuan "${pengajuan.judul || pengajuan.kategori || 'SKP'}" (${pengajuan.id}) berhasil dikirim dan sedang diverifikasi.`,
             'fa-paper-plane', 'info', pengajuan.email);
+
+        // Audit Trail formal (FR-21): pengajuan klaim adalah pergerakan penting
+        // pertama dalam siklus hidup sebuah SKP, jadi wajib tercatat sejak awal —
+        // bukan hanya saat validasi. Aktor adalah mahasiswa yang mengajukan.
+        const namaPengaju = (session && session.fullName) ? session.fullName : (pengajuan.email || 'Mahasiswa');
+        pushAuditTrail(state, {
+            aktor: namaPengaju,
+            aktorRole: 'mahasiswa',
+            aksi: 'Pengajuan Klaim SKP',
+            entitas: 'Pengajuan', entitasId: pengajuan.id,
+            dataSebelum: null,
+            dataSesudah: `"${pengajuan.judul || pengajuan.kategori}" (${pengajuan.kategoriText || pengajuan.kategori}) diajukan, status awal: Sedang Diverifikasi.`,
+            keterangan: 'Mahasiswa mengajukan klaim SKP baru untuk diverifikasi sesuai alur workflow.'
+        });
 
         setState(state);
         return pengajuan;
@@ -1464,6 +1504,7 @@
         aktifkanPeriode,
         // audit trail
         getAuditTrail,
+        catatPenerbitanSKPI,
         // draft
         addDraft,
         updateDraft,

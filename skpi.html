@@ -743,7 +743,7 @@
 
                 <!-- Tombol Unduh -->
                 <div class="download-section">
-                    <button class="btn btn-success" onclick="simulateDownload()">
+                    <button class="btn btn-success" onclick="simulateDownload(event)">
                         <i class="fa-solid fa-download"></i> Unduh SKPI (PDF)
                     </button>
                     <button class="btn btn-outline" onclick="alert('Preview PDF akan terbuka di tab baru (simulasi).')">
@@ -890,14 +890,26 @@
             }
 
             // ==================== SIMULASI DOWNLOAD ====================
-            window.simulateDownload = function() {
-                const btn = event.target;
+            window.simulateDownload = function(ev) {
+                const btn = (ev && ev.target) ? ev.target.closest('button') : document.querySelector('.download-section .btn-success');
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunduh...';
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menerbitkan...';
+
+                // Audit Trail (FR-21): penerbitan SKPI adalah pergerakan penting
+                // dan wajib tercatat. Idempoten per nomor dokumen di sisi state.
+                try {
+                    const nomor = (document.getElementById('qrNumber') || {}).textContent || '-';
+                    const totalPoin = AppState.getTotalPoin(session.email);
+                    AppState.catatPenerbitanSKPI(
+                        { nomor: nomor.trim(), nama: session.fullName, totalPoin: totalPoin },
+                        session.fullName, session.roleKey || 'mahasiswa'
+                    );
+                } catch (e) { /* pencatatan audit tidak boleh menghalangi unduhan */ }
+
                 setTimeout(() => {
                     btn.innerHTML = '<i class="fa-solid fa-download"></i> Unduh SKPI (PDF)';
                     btn.disabled = false;
-                    AppState.showToast('SKPI berhasil diunduh. (Simulasi)');
+                    AppState.showToast('SKPI berhasil diterbitkan dan diunduh. (Simulasi)');
                 }, 2000);
             };
 
